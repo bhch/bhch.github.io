@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive - March 2017 - blog of bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">This is my blog. There are many like it, but this one is mine.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+<section class="post">
+    <header class="post-header">
+        <h1 class="post-title">Archive - March 2017</h1>
+    </header>
+
+    <div class="post-description">
+        <p class="post-meta"><small>Mon 20 March 2017</small></p>
+        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/03/hello-world/">Hello, World!</a></p>
+    </div>
+</section>
+
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script> 
+        John Doe
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+
+        made with <a href="http://bitbucket.org/bhch/beak/">beak</a>
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+        
+        powered by <a href="http://blog.getpelican.com">Pelican</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

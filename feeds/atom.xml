@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-03-20T00:00:00+05:30</updated><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
+&lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
+sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
+my first programming language came when I was watching the film 
+&lt;em&gt;The Social Network&lt;/em&gt;. In a scene, Mark Zuckerberg mentions 
+&lt;em&gt;"... python webserver..."&lt;/em&gt;. Then I went on to search &lt;em&gt;"python"&lt;/em&gt; on Google. 
+I read about Python on Wikipedia and other online resources. I was really 
+fascinated by the number of applications this language had. Plus, the name is 
+so &lt;em&gt;cool&lt;/em&gt; &amp;mdash; Python. It bears an air of mystery about itself.&lt;/p&gt;
+&lt;p&gt;Here's the first line of code I ever wrote, and perhaps you did too:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello, World!&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary></entry></feed>
