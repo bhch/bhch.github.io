@@ -392,7 +392,8 @@ h1, h2, h3, h4, h5, h6 {
     font-family: sans-serif;
 }
 hr {
-    border: 1px solid #ddd;
+    border: none;
+    border-top: 1px solid #ddd;
     margin-top: 30px;
     margin-bottom: 30px;
 }

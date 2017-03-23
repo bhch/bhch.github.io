@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting started with Data Science and Machine Learning in Python - blog of bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">This is my blog. There are many like it, but this one is mine.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">Getting started with Data Science and Machine Learning in Python</h1>
+<p class="post-meta">
+    Thu 23 March 2017
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+</p>
+    </header>
+
+    <div class="post-description">
+        <p>It's been a long time since I first thought about learning Data Science and 
+Machine Learning. If you, too, want to get started with ML, let's embark on this<br />
+journey together. </p>
+<p>In this post I will share how I plan to get started with ML. This isn't supposed 
+to be a <em>guide</em>, per se. I'm also a beginner in this, you know. Feel free to 
+leave suggestions in comments below.</p>
+<h1>Do you <em>really</em> need Math?</h1>
+<p>In case you're wondering if you <em>really</em> need to know the ML related Math that
+bad before doing some actual ML stuff, then no, you don't. I believe in  <em>learn
+as you go</em> approach. Don't get me wrong, I like Math (espesially  Functions and
+Limits). But I want to  get started quickly and will learn the necessary Math
+when I'll need it.  Here's a post on R-bloggers &mdash;  <a href="http://www.r-bloggers.com/the-real-prerequisite-for-machine-learning-isnt-math-its-data-analysis/">The real prerequisite
+for machine learning isn't math, it's data analysis</a>  and here's another on
+Cross Validated &mdash;  <a href="http://stats.stackexchange.com/questions/40808/is-a-strong-background-in-maths-a-total-requisite-for-ml">Is a strong background in maths a total requisite for
+ML?</a> that you should read.  Both of these posts present pretty solid
+discussions why Math isn't an outright  necessity for ML.</p>
+<h1>Installing packages</h1>
+<p>Before installing anything, it would be a better if you create a virtualenv 
+just for Machine Learning. And then install the following packages in that 
+virtualenv.</p>
+<ol>
+<li><strong>IPython</strong><br />
+ The <em>de facto</em> IDE for scientific computing.  </li>
+<li><strong>Numpy</strong><br />
+ For array computing, also, numpy arrays are awesome.</li>
+<li><strong>Pandas</strong><br />
+ For data manipulation.</li>
+<li><strong>Matplotlib</strong><br />
+ For data visualization <em>i.e.</em> plotting graphs, etc.</li>
+<li><strong>Scipy</strong><br />
+ For scientific computing. Also, many other packages listed here require this.</li>
+<li><strong>Scikit-learn</strong><br />
+ For Machine Learning.</li>
+<li><strong>Scrapy</strong><br />
+ For web scraping. </li>
+<li><strong>BeautifulSoup</strong><br />
+ For web scraping and parsing,</li>
+<li><strong>Requests</strong><br />
+ It's like urllib but <a href="http://stackoverflow.com/a/14804320/1925257">far better</a>.</li>
+</ol>
+<p>To install, just copy the following command and run it in your terminal:</p>
+<div class="highlight"><pre><span class="nv">$ </span>pip install numpy scipy matplotlib ipython jupyter pandas scikit-learn Scrapy beautifulsoup4 requests
+</pre></div>
+
+
+<h1>Now what?</h1>
+<p>First of all, we'll need to read through the <em>Gettings started</em> docs of the above 
+libraries. However, I plan to do things in the following order:</p>
+<ol>
+<li>Web scraping (request, beautifulsoup, scrapy).</li>
+<li>Data structuring and manipulation (pandas).</li>
+<li>Data visualisation (numpy, matplotlib).</li>
+<li>Machine learning (scikit-learn).</li>
+</ol>
+<p>I think the above order is pretty good because learning curve isn't very steep 
+right from the start. I've had some experience with web scraping before, so it 
+should be relatively easier to start with that instead of directly getting into 
+ML. Think of it as <em>paving your way into ML</em>. </p>
+<p>In my next blog post, I plan to share the first web scraping project that I will 
+do.</p>
+<p>Until next time.</p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script> 
+        bhch
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+
+        content available under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+        
+        powered by <a href="http://blog.getpelican.com">Pelican</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
