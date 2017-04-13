@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting started with Data Science and Machine Learning in Python - blog of bhch</title>
+    <title>Fix the pip error: Couldn't find a version that satisfies the requirement - blog of bhch</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -55,9 +55,9 @@
 <section class="post">
     <header class="post-header">
 
-        <h1 class="post-title">Getting started with Data Science and Machine Learning in Python</h1>
+        <h1 class="post-title">Fix the pip error: Couldn't find a version that satisfies the requirement</h1>
 <p class="post-meta">
-    Thu 23 March 2017
+    Thu 13 April 2017
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
@@ -65,67 +65,58 @@
     </header>
 
     <div class="post-description">
-        <p>It's been a long time since I first thought about learning Data Science and 
-Machine Learning. If you, too, want to get started with ML, let's embark on this 
-journey together. </p>
-<p>In this post I will share how I plan to get started with ML. This isn't supposed 
-to be a <em>guide</em>, per se. I'm also a beginner in this, you know. Feel free to 
-leave suggestions in comments below.</p>
-<h1>Do you <em>really</em> need Math?</h1>
-<p>In case you're wondering if you <em>really</em> need to know the ML related Math that
-bad before doing some actual ML stuff, then no, you don't. I believe in  <em>learn
-as you go</em> approach. Don't get me wrong, I like Math (espesially  Functions and
-Limits). But I want to  get started quickly and will learn the necessary Math
-when I'll need it.  Here's a post on R-bloggers &mdash;  <a href="http://www.r-bloggers.com/the-real-prerequisite-for-machine-learning-isnt-math-its-data-analysis/">The real prerequisite
-for machine learning isn't math, it's data analysis</a>  and here's another on
-Cross Validated &mdash;  <a href="http://stats.stackexchange.com/questions/40808/is-a-strong-background-in-maths-a-total-requisite-for-ml">Is a strong background in maths a total requisite for
-ML?</a> that you should read.  Both of these posts present pretty solid
-discussions why Math isn't an outright  necessity for ML.</p>
-<h1>Installing packages</h1>
-<p>Before installing anything, it would be a better if you create a virtualenv 
-just for Machine Learning. And then install the following packages in that 
-virtualenv.</p>
-<ol>
-<li><strong>IPython:</strong>
- The <em>de facto</em> IDE for scientific computing.  </li>
-<li><strong>Numpy:</strong>
- For array computing, also, numpy arrays are awesome.</li>
-<li><strong>Pandas:</strong>
- For data manipulation.</li>
-<li><strong>Matplotlib:</strong>
- For data visualization <em>i.e.</em> plotting graphs, etc.</li>
-<li><strong>Scipy:</strong>
- For scientific computing. Also, many other packages listed here require this.</li>
-<li><strong>Scikit-learn:</strong>
- For Machine Learning.</li>
-<li><strong>Scrapy:</strong>
- For web scraping. </li>
-<li><strong>BeautifulSoup:</strong>
- For web scraping and parsing,</li>
-<li><strong>Requests:</strong>
- It's like urllib but <a href="http://stackoverflow.com/a/14804320/1925257">far better</a>.</li>
-</ol>
-<p>To install, just copy the following command and run it in your terminal:</p>
-<div class="highlight"><pre><span class="nv">$ </span>pip install numpy scipy matplotlib ipython jupyter pandas scikit-learn Scrapy beautifulsoup4 requests
+        <p>To skip the background and go to the solution, <a href="#solution">click here</a>.</p>
+<h1>Background</h1>
+<p>I was working on a server recently and I had to install some Python packages. 
+What better way to install Python packages other than by using <code>pip</code>. So, I wrote 
+this command:</p>
+<div class="highlight"><pre><span class="nv">$ </span>pip install -r requirements.txt
 </pre></div>
 
 
-<h1>Now what?</h1>
-<p>First of all, we'll need to read through the <em>Gettings started</em> docs of the above 
-libraries. However, I plan to do things in the following order:</p>
+<p>But, it spat out the following error:</p>
+<blockquote>
+<p>Could not find a version that satisfies the requirement <package-name> (from versions:)
+No matching distribution found for <package-name></p>
+</blockquote>
+<p>I tried again, didn't work. Then I searched Google for some help. I found a 
+couple of similar questions asked on Stack Overflow. I followed advice there, but 
+that didn't help me.</p>
+<p>I kept <em>searching the internet</em> for almost 2 hours, when I finally gave up. </p>
+<p>Next day, I had to get the server running. So, I decided to install the packages 
+from source. I intended to use <code>wget</code> to download the packages from PyPi. But, 
+it gave me a <code>403 Forbidden</code> error. </p>
+<p>I tried downloading with <code>curl</code>, but the files it <em>saved</em> were invalid. It just 
+created empy <code>tar.gz</code> files without actually downloading them.</p>
+<p>I also tried changning my server's DNS. Nothing worked.</p>
+<p>Finally, I though <em>"Let's just see if I can even visit PyPi webpage from this server"</em>. </p>
+<div class="highlight"><pre><span class="nv">$ </span>curl https://pypi.python.org
+
+The requestors Network has been blacklisted due to excessive request volume. 
+If you are a hosting customer, please contact your hosting company<span class="err">&#39;</span>s support. 
+If you are the hosting company, please contact infrastructure-staff@python.org to resolve
+</pre></div>
+
+
+<p>The output above shows that my server's IP was blacklisted by <a href="https://python.org">https://python.org</a>. 
+Well, obviously, because my hosting provier was running many servers 
+(virtual servers) behind a single IP. This explains the reason for getting blacklisted. </p>
+<h1>Solution<a name="solution"></a></h1>
+<p>First lets' see the solutions that I tried and <strong>didn't work</strong> for me:</p>
 <ol>
-<li>Web scraping (requests, beautifulsoup, scrapy).</li>
-<li>Data structuring and manipulation (pandas).</li>
-<li>Data visualisation (numpy, matplotlib).</li>
-<li>Machine learning (scikit-learn).</li>
+<li>Changing DNS resolver of my server</li>
+<li>Reconfiguring SSL, reinstalling CA certificates</li>
+<li>Downloading packages using <code>wget</code>. (Got 403 Forbidden error)</li>
+<li>Downloading packages using <code>curl</code>. (It just created invalid tarball files, instead of actually downloading them)</li>
 </ol>
-<p>I think the above order is pretty good because learning curve isn't very steep 
-right from the start. I've had some experience with web scraping before, so it 
-should be relatively easier to start with that instead of directly getting into 
-ML. Think of it as <em>paving your way into ML</em>. </p>
-<p>In a future blog post, I plan to share the first web scraping project that I will 
-do.</p>
-<p>Until next time.</p>
+<p>Since, all this was happening because <a href="https://python.org">https://python.org</a> has blacklisted the IP 
+of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy. </p>
+<p>Supplying a proxy address to <code>pip</code> is easy:</p>
+<div class="highlight"><pre><span class="nv">$ </span>pip install -r requirements.txt --proxy address:port
+</pre></div>
+
+
+<p>To find proxies, just <a href="https://www.google.com/search?q=proxy+list">search Google for proxy list</a>.</p>
     </div>
 </section>
 
@@ -133,8 +124,8 @@ do.</p>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'bhch-blog';
-        var disqus_identifier = 'posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/';
-        var disqus_url = 'https://bhch.github.io/posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/';
+        var disqus_identifier = 'posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//bhch-blog.disqus.com/embed.js';

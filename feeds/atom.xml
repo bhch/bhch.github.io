@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-03-23T00:00:00+05:30</updated><entry><title>Getting started with Data Science and Machine Learning in Python</title><link href="https://bhch.github.io/posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/" rel="alternate"></link><updated>2017-03-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-23:posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/</id><summary type="html">&lt;p&gt;It's been a long time since I first thought about learning Data Science and 
-Machine Learning. If you, too, want to get started with ML, let's embark on this&lt;br /&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-04-13T00:00:00+05:30</updated><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-04-13T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;To skip the background and go to the solution, &lt;a href="#solution"&gt;click here&lt;/a&gt;.&lt;/p&gt;
+&lt;h1&gt;Background&lt;/h1&gt;
+&lt;p&gt;I was working on a server recently and I had to install some Python packages. 
+What better way to install Python packages other than by using &lt;code&gt;pip&lt;/code&gt;. So, I wrote 
+this command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;pip install -r requirements.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;But, it spat out the following error:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Could not find a version that satisfies the requirement &lt;package-name&gt; (from versions:)
+No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I tried again, didn't work. Then I searched Google for some help. I found a 
+couple of similar questions asked on Stack Overflow. I followed advice there, but 
+that didn't help me.&lt;/p&gt;
+&lt;p&gt;I kept &lt;em&gt;searching the internet&lt;/em&gt; for almost 2 hours, when I finally gave up. &lt;/p&gt;
+&lt;p&gt;Next day, I had to get the server running. So, I decided to install the packages 
+from source. I intended to use &lt;code&gt;wget&lt;/code&gt; to download the packages from PyPi. But, 
+it gave me a &lt;code&gt;403 Forbidden&lt;/code&gt; error. &lt;/p&gt;
+&lt;p&gt;I tried downloading with &lt;code&gt;curl&lt;/code&gt;, but the files it &lt;em&gt;saved&lt;/em&gt; were invalid. It just 
+created empy &lt;code&gt;tar.gz&lt;/code&gt; files without actually downloading them.&lt;/p&gt;
+&lt;p&gt;I also tried changning my server's DNS. Nothing worked.&lt;/p&gt;
+&lt;p&gt;Finally, I though &lt;em&gt;"Let's just see if I can even visit PyPi webpage from this server"&lt;/em&gt;. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;curl https://pypi.python.org
+
+The requestors Network has been blacklisted due to excessive request volume. 
+If you are a hosting customer, please contact your hosting company&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;s support. 
+If you are the hosting company, please contact infrastructure-staff@python.org to resolve
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The output above shows that my server's IP was blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. 
+Well, obviously, because my hosting provier was running many servers 
+(virtual servers) behind a single IP. This explains the reason for getting blacklisted. &lt;/p&gt;
+&lt;h1&gt;Solution&lt;a name="solution"&gt;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;First lets' see the solutions that I tried and &lt;strong&gt;didn't work&lt;/strong&gt; for me:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Changing DNS resolver of my server&lt;/li&gt;
+&lt;li&gt;Reconfiguring SSL, reinstalling CA certificates&lt;/li&gt;
+&lt;li&gt;Downloading packages using &lt;code&gt;wget&lt;/code&gt;. (Got 403 Forbidden error)&lt;/li&gt;
+&lt;li&gt;Downloading packages using &lt;code&gt;curl&lt;/code&gt;. (It just created invalid tarball files, instead of actually downloading them)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Since, all this was happening because &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt; has blacklisted the IP 
+of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/code&gt; install via a proxy. &lt;/p&gt;
+&lt;p&gt;Supplying a proxy address to &lt;code&gt;pip&lt;/code&gt; is easy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;pip install -r requirements.txt --proxy address:port
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;</summary></entry><entry><title>Getting started with Data Science and Machine Learning in Python</title><link href="https://bhch.github.io/posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/" rel="alternate"></link><updated>2017-03-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-23:posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/</id><summary type="html">&lt;p&gt;It's been a long time since I first thought about learning Data Science and 
+Machine Learning. If you, too, want to get started with ML, let's embark on this 
 journey together. &lt;/p&gt;
 &lt;p&gt;In this post I will share how I plan to get started with ML. This isn't supposed 
 to be a &lt;em&gt;guide&lt;/em&gt;, per se. I'm also a beginner in this, you know. Feel free to 
