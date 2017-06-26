@@ -82,7 +82,7 @@ result on the &lt;code&gt;Future&lt;/code&gt; instance. Then, if you yield the F
 get the result. &lt;/p&gt;
 &lt;p&gt;For the most part, you don't need to worry about Futures. But sometimes, you 
 might need to return a Future manually from functions/coroutines. But that's a 
-somewhat advanced usage. &lt;a href="http://github.com/"&gt;This example code&lt;/a&gt; from Tornado's
+somewhat advanced usage. &lt;a href="https://github.com/tornadoweb/tornado/blob/master/demos/chat/chatdemo.py#L38-L54"&gt;This example code&lt;/a&gt; from Tornado's
 GitHub repo might be helpful for that. &lt;/p&gt;
 &lt;h4&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
 &lt;ol&gt;
