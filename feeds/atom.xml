@@ -1,5 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-04-13T00:00:00+05:30</updated><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-04-13T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;To skip the background and go to the solution, &lt;a href="#solution"&gt;click here&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-06-23T00:00:00+05:30</updated><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-06-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
+explain some things in depth. Being new to async programming model, I found many things 
+quite difficult to understand. The documentation also lacks a good tutorial, like 
+the Django's documnetation has an excellent Polls tutorial which explains almost 
+everything that one needs to get started with Django.&lt;/p&gt;
+&lt;p&gt;I feel I should share what I learned in the hope that it might help somebody. 
+These are the things I think if were present in the documentation, would have 
+made my life much easier.&lt;/p&gt;
+&lt;h1&gt;Can Tornado make blocking code non-blocking?&lt;/h1&gt;
+&lt;p&gt;No, it can't. Tornado isn't magic. For example, you can't use &lt;code&gt;time.sleep&lt;/code&gt; in your 
+Tornado app and expect that Tornado will pause the code execution for one particular 
+client while serving other clients. Tornado is a single threaded server. And 
+&lt;code&gt;time.sleep&lt;/code&gt; blocks the thread. So, if you use &lt;code&gt;time.sleep&lt;/code&gt;, for example, to simulate 
+a slow network connection, the whole server will block.&lt;/p&gt;
+&lt;p&gt;Try yourself. Use &lt;code&gt;time.sleep(10)&lt;/code&gt; in your code and then 
+visit your Tornado app from a few different tabs from your browser. None of the 
+pages will load for 10 seconds, and as soon as 10 seconds are over, all the pages 
+will load at the same time.&lt;/p&gt;
+&lt;p&gt;This is what will happen if you try to query a database synchronously. It will 
+block the server &lt;strong&gt;for all the clients&lt;/strong&gt; until the query finishes.&lt;/p&gt;
+&lt;h1&gt;How coroutines make writing async code easier than callbacks?&lt;/h1&gt;
+&lt;p&gt;With callbacks, you need to write &lt;em&gt;extra&lt;/em&gt; code that you won't even require if 
+you use coroutines. Thus, code becomes shorter and more readable. Other than that, 
+coroutines won't automatically make your code async. Agian, they just make the 
+code shorter and easier to maintain and debug. In smaller projects, this might not 
+seem a big advantage, but in bigger projects, it's a godsend.&lt;/p&gt;
+&lt;p&gt;Let's say we want do the following things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Dowload a page asynchronously from a given url&lt;/li&gt;
+&lt;li&gt;Do some processing on the downloaded page&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;First, let's see the code using callbacks:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.httpclient&lt;/span&gt; &lt;span class="nn"&gt;AsyncHttpClient&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_url&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;http://example.com&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;http_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;http_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c"&gt;# do something with result&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can see we can't process the result in the &lt;code&gt;fetch_url&lt;/code&gt; function (sure, you can
+move the &lt;code&gt;process_result&lt;/code&gt; function inside &lt;code&gt;fetch_url&lt;/code&gt; but still it's a different 
+function). You need to create a separate function to process the result. A separate 
+function is required which will be called when the page downloads.&lt;/p&gt;
+&lt;p&gt;Now let's do the same thing using coroutines:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.http&lt;/span&gt; &lt;span class="nn"&gt;client&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpClient&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;
+
+&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_url_and_process_result&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;http://example.com&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;http_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;http_client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c"&gt;# do something with the result&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The code is shorter and much straight forward. The way it works is that the coroutine 
+pauses everytime it sees the &lt;code&gt;yield&lt;/code&gt; statement. Then you need to call the coroutine's
+&lt;code&gt;next()&lt;/code&gt; method to execute the &lt;code&gt;yield&lt;/code&gt; statement and the code after that. So, when 
+the page downloads, Tornado will call the &lt;code&gt;next()&lt;/code&gt; on &lt;code&gt;fetch_url_and_process_result&lt;/code&gt;
+and it will execute the &lt;code&gt;yield&lt;/code&gt; statement and the code after that. So, all the 
+processing can be done below the &lt;code&gt;yield&lt;/code&gt; statement. No need for a separete function.
+More is explained below in the &lt;code&gt;gen.coroutine&lt;/code&gt; section.&lt;/p&gt;
+&lt;p&gt;This example is a very simple use case. Consider this: let's say you need to do 
+many different operations on the result. If you're using callbacks, you'll need 
+to create as many functions as many time you need to process the result.&lt;/p&gt;
+&lt;p&gt;But with coroutines, you can do all the operations in one single function (coroutine).&lt;/p&gt;
+&lt;h1&gt;What are Futures?&lt;/h1&gt;
+&lt;p&gt;A Future is a &lt;em&gt;promise&lt;/em&gt; to return the result when it's available. For example, 
+if you request a web page using Tornado's &lt;code&gt;httpclient.AsyncHttpClient&lt;/code&gt;, it will 
+return a &lt;em&gt;Future&lt;/em&gt; - an instance of Tornado's &lt;code&gt;Future&lt;/code&gt; class - while it waits for 
+the web page to load. As soon as the web page is loaded, Tornado will set the 
+result on the &lt;code&gt;Future&lt;/code&gt; instance. Then, if you yield the Future object, you will 
+get the result. &lt;/p&gt;
+&lt;p&gt;For the most part, you don't need to worry about Futures. But sometimes, you 
+might need to return a Future manually from functions/coroutines. But that's a 
+somewhat advanced usage. &lt;a href="http://github.com/"&gt;This example code&lt;/a&gt; from Tornado's
+GitHub repo might be helpful for that. &lt;/p&gt;
+&lt;h4&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Yielding a Future returns it's result&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;&lt;code&gt;gen.coroutine&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; is a decorator that you can use with your functions or coroutines 
+to avoid callback based programming. But its real use case is if you're calling a 
+function/coroutine that returns a Future, you should decorate the caller with 
+&lt;code&gt;gen.coroutine&lt;/code&gt; to make things work as expected.&lt;/p&gt;
+&lt;p&gt;See the code below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;This returns a Future object&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+
+&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt;
+    &lt;span class="c"&gt;# do something with the result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Code explanation:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; automatically calls &lt;code&gt;process_result&lt;/code&gt;'s &lt;code&gt;next()&lt;/code&gt;method 
+ (to start the generator).&lt;/li&gt;
+&lt;li&gt;Then it puts this &lt;code&gt;process_result&lt;/code&gt; corutine to a &lt;em&gt;"waiting list"&lt;/em&gt; until 
+ &lt;code&gt;future&lt;/code&gt; has a result. There might be some other code that's
+  responsible for setting the result on the &lt;code&gt;future&lt;/code&gt;, I've not shown that code. 
+  So, no need to dwell into that. &lt;/li&gt;
+&lt;li&gt;When the result is set on the &lt;code&gt;future&lt;/code&gt;, it calls the &lt;code&gt;next()&lt;/code&gt; method of 
+ &lt;code&gt;process_result&lt;/code&gt; again which executes the &lt;code&gt;result = yield future&lt;/code&gt; statement and 
+ sets &lt;code&gt;result&lt;/code&gt; variable to &lt;code&gt;future&lt;/code&gt;'s result.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you don't decorate the &lt;code&gt;process_result&lt;/code&gt; with &lt;code&gt;gen.coroutine&lt;/code&gt; you will need to 
+use callbacks and the code becomes a mess. Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_done_callback&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_future&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c"&gt;# do something with the result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;&lt;strong&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will return a Future automatically&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;If you decorate a function/coroutine using &lt;code&gt;gen.coroutine&lt;/code&gt;, a Future object 
+will be returned automatically.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt; &lt;span class="c"&gt;# return nothing&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;# OUTPUTS:  tornado.concurrent.Future&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;See? Even if you don't return anything, &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future.
+So, if you return a Future from a decorated function, &lt;code&gt;gen.coroutine&lt;/code&gt; will 
+wrap that Future object inside another Future object, which is not what you want.&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In above code, you're returning a Future object, but that is not what you'll get. 
+You'll get this instead - &lt;code&gt;Future(f)&lt;/code&gt; - a Future within a Future. Because of this,
+you'll have to &lt;code&gt;yield&lt;/code&gt; twice to get the result.&lt;/p&gt;
+&lt;p&gt;If you're returning a Future manually, you don't need to decorate the function.&lt;/p&gt;
+&lt;h4&gt;&lt;strong&gt;Calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;If you're calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function/coroutine, you must decorate 
+the caller with &lt;code&gt;gen.coroutine&lt;/code&gt; too. And you must use the &lt;code&gt;yield&lt;/code&gt; keyword in the caller.&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;do_nothing&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;do_nothing&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It makes perfect sense to use &lt;code&gt;yield&lt;/code&gt; keyword in the caller (above, &lt;code&gt;do_something&lt;/code&gt;)
+because &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future. And to get it's result, you need to 
+yield it. &lt;/p&gt;
+&lt;h4&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will automatically retrurn a Future&lt;/li&gt;
+&lt;li&gt;You don't need to use callbacks if you're using coroutines&lt;/li&gt;
+&lt;li&gt;If a function/coroutine is calling another coroutine decorated with &lt;code&gt;gen.coroutine&lt;/code&gt;,
+ it must also be decorated with &lt;code&gt;gen.coroutine&lt;/code&gt; and must use the &lt;code&gt;yield&lt;/code&gt; keyword&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;&lt;code&gt;web.asynchronous&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;This decorator is meant to be used on methods of Tornado's &lt;code&gt;web.RequestHandler&lt;/code&gt;, namely: &lt;code&gt;get&lt;/code&gt;, 
+&lt;code&gt;post&lt;/code&gt; etc. Since all Tornado handlers are synchronous, you can't perform any async 
+operations inside them. As soon as the method ends or returns, the request is considered 
+finished.&lt;/p&gt;
+&lt;p&gt;Look at the following code example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpHandler&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;example.com&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c"&gt;# do something with response ...&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finish&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The above code aims to do the following things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Asynchronously fetch "example.com" from &lt;code&gt;get&lt;/code&gt; method&lt;/li&gt;
+&lt;li&gt;Keep the client waiting unless url is fetched&lt;/li&gt;
+&lt;li&gt;When url is fetched, call &lt;code&gt;on_response&lt;/code&gt; method&lt;/li&gt;
+&lt;li&gt;Perform some operations on the response (fetched url)&lt;/li&gt;
+&lt;li&gt;Return the response to the client&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;But this won't work. Because &lt;code&gt;get&lt;/code&gt; is synchronous by default, as soon as this method 
+ends, the request is considered finished. Tornado won't keep the client in the waiting 
+list while the url is fetched. It will just return an empty response.&lt;/p&gt;
+&lt;p&gt;This is where the &lt;code&gt;web.asynchronous&lt;/code&gt; decorator comes in. You decorate the &lt;code&gt;get&lt;/code&gt; method 
+with this decorator and Tornado won't terminate the request when &lt;code&gt;get&lt;/code&gt; method exists.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nd"&gt;@web.asynchronous&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpHandler&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;example.com&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c"&gt;# do something with response ...&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finish&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The updated code will work as expected. One thing to note here is the last line -
+&lt;code&gt;self.finish()&lt;/code&gt;. It means you are telling Tornado to terminate the request. If 
+you don't write this line, Tornado will keep the request open. You only need to 
+use &lt;code&gt;self.finish()&lt;/code&gt; when you're using &lt;code&gt;web.asynchronous&lt;/code&gt; decorator.&lt;/p&gt;
+&lt;h4&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;web.asynchronous&lt;/code&gt; is used with handler methods (eg. &lt;code&gt;get&lt;/code&gt;, &lt;code&gt;post&lt;/code&gt;, etc.)&lt;/li&gt;
+&lt;li&gt;It's used to make handler methods wait and not terminate the request on exit&lt;/li&gt;
+&lt;li&gt;You need to manually terminate the request using &lt;code&gt;self.finish()&lt;/code&gt; when using 
+ this decorator&lt;/li&gt;
+&lt;li&gt;This is useful when using callbacks&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;That's it&lt;/h1&gt;
+&lt;p&gt;The things that I've written about in this post were the only things that I found 
+most confusing. The other features of Tornado are straight-forward and 
+documentation covers them nicely.&lt;/p&gt;
+&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-04-13T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;To skip the background and go to the solution, &lt;a href="#solution"&gt;click here&lt;/a&gt;.&lt;/p&gt;
 &lt;h1&gt;Background&lt;/h1&gt;
 &lt;p&gt;I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using &lt;code&gt;pip&lt;/code&gt;. So, I wrote 
@@ -50,67 +302,7 @@ of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/cod
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;</summary></entry><entry><title>Getting started with Data Science and Machine Learning in Python</title><link href="https://bhch.github.io/posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/" rel="alternate"></link><updated>2017-03-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-23:posts/2017/03/getting-started-with-data-science-and-machine-learning-in-python/</id><summary type="html">&lt;p&gt;It's been a long time since I first thought about learning Data Science and 
-Machine Learning. If you, too, want to get started with ML, let's embark on this 
-journey together. &lt;/p&gt;
-&lt;p&gt;In this post I will share how I plan to get started with ML. This isn't supposed 
-to be a &lt;em&gt;guide&lt;/em&gt;, per se. I'm also a beginner in this, you know. Feel free to 
-leave suggestions in comments below.&lt;/p&gt;
-&lt;h1&gt;Do you &lt;em&gt;really&lt;/em&gt; need Math?&lt;/h1&gt;
-&lt;p&gt;In case you're wondering if you &lt;em&gt;really&lt;/em&gt; need to know the ML related Math that
-bad before doing some actual ML stuff, then no, you don't. I believe in  &lt;em&gt;learn
-as you go&lt;/em&gt; approach. Don't get me wrong, I like Math (espesially  Functions and
-Limits). But I want to  get started quickly and will learn the necessary Math
-when I'll need it.  Here's a post on R-bloggers &amp;mdash;  &lt;a href="http://www.r-bloggers.com/the-real-prerequisite-for-machine-learning-isnt-math-its-data-analysis/"&gt;The real prerequisite
-for machine learning isn't math, it's data analysis&lt;/a&gt;  and here's another on
-Cross Validated &amp;mdash;  &lt;a href="http://stats.stackexchange.com/questions/40808/is-a-strong-background-in-maths-a-total-requisite-for-ml"&gt;Is a strong background in maths a total requisite for
-ML?&lt;/a&gt; that you should read.  Both of these posts present pretty solid
-discussions why Math isn't an outright  necessity for ML.&lt;/p&gt;
-&lt;h1&gt;Installing packages&lt;/h1&gt;
-&lt;p&gt;Before installing anything, it would be a better if you create a virtualenv 
-just for Machine Learning. And then install the following packages in that 
-virtualenv.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;IPython:&lt;/strong&gt;
- The &lt;em&gt;de facto&lt;/em&gt; IDE for scientific computing.  &lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Numpy:&lt;/strong&gt;
- For array computing, also, numpy arrays are awesome.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Pandas:&lt;/strong&gt;
- For data manipulation.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Matplotlib:&lt;/strong&gt;
- For data visualization &lt;em&gt;i.e.&lt;/em&gt; plotting graphs, etc.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Scipy:&lt;/strong&gt;
- For scientific computing. Also, many other packages listed here require this.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Scikit-learn:&lt;/strong&gt;
- For Machine Learning.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Scrapy:&lt;/strong&gt;
- For web scraping. &lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;BeautifulSoup:&lt;/strong&gt;
- For web scraping and parsing,&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Requests:&lt;/strong&gt;
- It's like urllib but &lt;a href="http://stackoverflow.com/a/14804320/1925257"&gt;far better&lt;/a&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;To install, just copy the following command and run it in your terminal:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;pip install numpy scipy matplotlib ipython jupyter pandas scikit-learn Scrapy beautifulsoup4 requests
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h1&gt;Now what?&lt;/h1&gt;
-&lt;p&gt;First of all, we'll need to read through the &lt;em&gt;Gettings started&lt;/em&gt; docs of the above 
-libraries. However, I plan to do things in the following order:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Web scraping (requests, beautifulsoup, scrapy).&lt;/li&gt;
-&lt;li&gt;Data structuring and manipulation (pandas).&lt;/li&gt;
-&lt;li&gt;Data visualisation (numpy, matplotlib).&lt;/li&gt;
-&lt;li&gt;Machine learning (scikit-learn).&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;I think the above order is pretty good because learning curve isn't very steep 
-right from the start. I've had some experience with web scraping before, so it 
-should be relatively easier to start with that instead of directly getting into 
-ML. Think of it as &lt;em&gt;paving your way into ML&lt;/em&gt;. &lt;/p&gt;
-&lt;p&gt;In a future blog post, I plan to share the first web scraping project that I will 
-do.&lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</summary></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
+&lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;</summary><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
 &lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
 sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
 my first programming language came when I was watching the film 
