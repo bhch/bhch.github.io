@@ -1,5 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-06-23T00:00:00+05:30</updated><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-06-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-08-28T00:00:00+05:30</updated><entry><title>How to integrate haystack search with Django admin</title><link href="https://bhch.github.io/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/" rel="alternate"></link><updated>2017-08-28T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-08-28:posts/2017/08/how-to-integrate-haystack-search-with-django-admin/</id><summary type="html">&lt;p&gt;Recently, I had to integrate Haystack with Django admin so as to be able to 
+perform a full text search just via the admin. Looking around for resources on the 
+internet, I came across &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/admin.html"&gt;this page&lt;/a&gt; in Haystack's docs. Turns out Haystack 
+has provided a solution to ease the integration of Haystack with Django admin.&lt;/p&gt;
+&lt;p&gt;Well, sort of. You see, the solution they've provided in the docs is only partial.
+You can do exactly what the docs instruct, yet the example won't work. &lt;/p&gt;
+&lt;p&gt;The solution is to set the &lt;a href="https://docs.djangoproject.com/en/1.11/ref/contrib/admin/#django.contrib.admin.ModelAdmin.search_fields"&gt;&lt;code&gt;search_fields&lt;/code&gt;&lt;/a&gt; attribute in your admin class. 
+The value of &lt;code&gt;search_fields&lt;/code&gt; can be set to any field that is present in your model.
+Haystack's &lt;code&gt;SearchModelAdmin&lt;/code&gt; class will override it and will search your 
+search index's &lt;code&gt;text&lt;/code&gt; field. &lt;/p&gt;
+&lt;p&gt;If you've already setup search indexes for you app, below is an example that would 
+provide a little more illustration to the solution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# models.py&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Article&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TextField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c"&gt;# we want to search this field&lt;/span&gt;
+    &lt;span class="n"&gt;pub_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTimeField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;auto_now_add&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I'm not gonna show how to set up Haystack search index. This post is not about that. 
+Hopefully, you've already done that. If not, you can read Haystacks &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data"&gt;docs&lt;/a&gt; about 
+that.&lt;/p&gt;
+&lt;p&gt;Let's see the admin:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# admin.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;haystack.admin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Article&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ArticleAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c"&gt;# set the search_fields attribute to a field present in MyModel&lt;/span&gt;
+    &lt;span class="n"&gt;search_fields&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt; &lt;span class="c"&gt;# or (&amp;#39;body&amp;#39;,) it doesn&amp;#39;t really matter&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We have inherited our admin class from &lt;code&gt;SearchModelAdmin&lt;/code&gt; class provided 
+by Haystack. This will take the the search query argument, search the index, then 
+return the results.&lt;/p&gt;
+&lt;p&gt;That's it! Try searching for something in Django admin, it should be working 
+(if it's not, have you updated or created a search index yet?).&lt;/p&gt;
+&lt;h3&gt;Heads up&lt;/h3&gt;
+&lt;p&gt;There's are two downsides of integrating Haystack search with Django admin.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; The checkboxes on the left of the changelist page table will not appear in the
+search results will not appear. I don't 
+find this a big issue, though. If a find a solution to this, I will post it here.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.&lt;/strong&gt; The search results will not be ordered as expected. For example, let's say 
+we've ordered the Articles by &lt;code&gt;pub_date&lt;/code&gt; in reverse order so that newest articles 
+appear first. But this ordering won't apply to haystack's 
+search results. They will appear, in this case, as oldest first. &lt;/p&gt;
+&lt;p&gt;There's a workaround for that. You might not like it. I don't like. Having said 
+that, I used that workaround for the project since I was on a deadline. And now 
+I'm too lazy to look for other solutions. Anyways, here it is:&lt;/p&gt;
+&lt;p&gt;Fistly, make sure that you've included the model field in your haystack search index 
+class that you want to use for ordering. So in this case, that field is &lt;code&gt;pub_date&lt;/code&gt;. 
+What I mean is, &lt;strong&gt;you have to included &lt;code&gt;pub_date&lt;/code&gt; in your search index&lt;/strong&gt; if you want 
+to use it for ordering. Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ArticleIndex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SearchIndex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Indexable&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;document&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;use_template&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;pub_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTimeField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model_attr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;pub_date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now copy the &lt;code&gt;haystack/admin.py&lt;/code&gt; file to your project or app's directory. Save it 
+as &lt;code&gt;search_admin.py&lt;/code&gt;. Open it in a text editor. You'll see a class defined as 
+&lt;code&gt;SearchChangeList&lt;/code&gt;. You'll have to change a line inside it. Find the following 
+line in that class:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;sqs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SearchQuerySet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;haystack_connection&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;auto_query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;SEARCH_VAR&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, all you have to do is append &lt;code&gt;.order_by('field_name')&lt;/code&gt; to that line. In this case, 
+&lt;code&gt;.order_by('-pub_date')&lt;/code&gt; (&lt;strong&gt;"&lt;code&gt;-&lt;/code&gt;"&lt;/strong&gt; means reverse ordering). Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;sqs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SearchQuerySet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;haystack_connection&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;auto_query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;SEARCH_VAR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;order_by&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;-pub-date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally, in your &lt;code&gt;admin.py&lt;/code&gt; file, you've to import the &lt;code&gt;SearchModelAdmin&lt;/code&gt; from this file, 
+instead of from &lt;code&gt;haystack.admin&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;haystack.admin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt; &lt;span class="c"&gt;# Replace this&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;search_admin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt; &lt;span class="c"&gt;# with this&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I know, this workaround is really ugly. The more preferable way would be to 
+override the code, instead of copying  an changing it. Believe me, I tried that. 
+But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
+overriding is not possible. Well, it is possible, but, it would still be ugly. 
+Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-06-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
 explain some things in depth. Being new to async programming model, I found many things 
 quite difficult to understand. The documentation also lacks a good tutorial, like 
 the Django's documnetation has an excellent Polls tutorial which explains almost 

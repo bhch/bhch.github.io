@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to integrate haystack search with Django admin - blog of bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">This is my blog. There are many like it, but this one is mine.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">How to integrate haystack search with Django admin</h1>
+<p class="post-meta">
+    Mon 28 August 2017
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/django/" class="tag">django</a>
+                <a href="https://bhch.github.io/tag/haystack/" class="tag">haystack</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <p>Recently, I had to integrate Haystack with Django admin so as to be able to 
+perform a full text search just via the admin. Looking around for resources on the 
+internet, I came across <a href="http://django-haystack.readthedocs.io/en/v2.4.1/admin.html">this page</a> in Haystack's docs. Turns out Haystack 
+has provided a solution to ease the integration of Haystack with Django admin.</p>
+<p>Well, sort of. You see, the solution they've provided in the docs is only partial.
+You can do exactly what the docs instruct, yet the example won't work. </p>
+<p>The solution is to set the <a href="https://docs.djangoproject.com/en/1.11/ref/contrib/admin/#django.contrib.admin.ModelAdmin.search_fields"><code>search_fields</code></a> attribute in your admin class. 
+The value of <code>search_fields</code> can be set to any field that is present in your model.
+Haystack's <code>SearchModelAdmin</code> class will override it and will search your 
+search index's <code>text</code> field. </p>
+<p>If you've already setup search indexes for you app, below is an example that would 
+provide a little more illustration to the solution:</p>
+<div class="highlight"><pre><span class="c"># models.py</span>
+
+<span class="k">class</span> <span class="nc">Article</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span> <span class="c"># we want to search this field</span>
+    <span class="n">pub_date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I'm not gonna show how to set up Haystack search index. This post is not about that. 
+Hopefully, you've already done that. If not, you can read Haystacks <a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data">docs</a> about 
+that.</p>
+<p>Let's see the admin:</p>
+<div class="highlight"><pre><span class="c"># admin.py</span>
+
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">haystack.admin</span> <span class="kn">import</span> <span class="n">SearchModelAdmin</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Article</span>
+
+
+<span class="k">class</span> <span class="nc">ArticleAdmin</span><span class="p">(</span><span class="n">SearchModelAdmin</span><span class="p">):</span>
+    <span class="c"># set the search_fields attribute to a field present in MyModel</span>
+    <span class="n">search_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,)</span> <span class="c"># or (&#39;body&#39;,) it doesn&#39;t really matter</span>
+</pre></div>
+
+
+<p>We have inherited our admin class from <code>SearchModelAdmin</code> class provided 
+by Haystack. This will take the the search query argument, search the index, then 
+return the results.</p>
+<p>That's it! Try searching for something in Django admin, it should be working 
+(if it's not, have you updated or created a search index yet?).</p>
+<h3>Heads up</h3>
+<p>There's are two downsides of integrating Haystack search with Django admin.</p>
+<p><strong>1.</strong> The checkboxes on the left of the changelist page table will not appear in the
+search results will not appear. I don't 
+find this a big issue, though. If a find a solution to this, I will post it here.</p>
+<p><strong>2.</strong> The search results will not be ordered as expected. For example, let's say 
+we've ordered the Articles by <code>pub_date</code> in reverse order so that newest articles 
+appear first. But this ordering won't apply to haystack's 
+search results. They will appear, in this case, as oldest first. </p>
+<p>There's a workaround for that. You might not like it. I don't like. Having said 
+that, I used that workaround for the project since I was on a deadline. And now 
+I'm too lazy to look for other solutions. Anyways, here it is:</p>
+<p>Fistly, make sure that you've included the model field in your haystack search index 
+class that you want to use for ordering. So in this case, that field is <code>pub_date</code>. 
+What I mean is, <strong>you have to included <code>pub_date</code> in your search index</strong> if you want 
+to use it for ordering. Example:</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">ArticleIndex</span><span class="p">(</span><span class="n">indexes</span><span class="o">.</span><span class="n">SearchIndex</span><span class="p">,</span> <span class="n">indexes</span><span class="o">.</span><span class="n">Indexable</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_template</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">pub_date</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s">&#39;pub_date&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now copy the <code>haystack/admin.py</code> file to your project or app's directory. Save it 
+as <code>search_admin.py</code>. Open it in a text editor. You'll see a class defined as 
+<code>SearchChangeList</code>. You'll have to change a line inside it. Find the following 
+line in that class:</p>
+<div class="highlight"><pre><span class="n">sqs</span> <span class="o">=</span> <span class="n">SearchQuerySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">haystack_connection</span><span class="p">)</span><span class="o">.</span><span class="n">models</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">auto_query</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="n">SEARCH_VAR</span><span class="p">])</span><span class="o">.</span><span class="n">load_all</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Now, all you have to do is append <code>.order_by('field_name')</code> to that line. In this case, 
+<code>.order_by('-pub_date')</code> (<strong>"<code>-</code>"</strong> means reverse ordering). Example:</p>
+<div class="highlight"><pre><span class="n">sqs</span> <span class="o">=</span> <span class="n">SearchQuerySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">haystack_connection</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">models</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">auto_query</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="n">SEARCH_VAR</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">load_all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-pub-date&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Finally, in your <code>admin.py</code> file, you've to import the <code>SearchModelAdmin</code> from this file, 
+instead of from <code>haystack.admin</code>.</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">haystack.admin</span> <span class="kn">import</span> <span class="n">SearchModelAdmin</span> <span class="c"># Replace this</span>
+
+<span class="kn">from</span> <span class="nn">search_admin</span> <span class="kn">import</span> <span class="n">SearchModelAdmin</span> <span class="c"># with this</span>
+</pre></div>
+
+
+<p>I know, this workaround is really ugly. The more preferable way would be to 
+override the code, instead of copying  an changing it. Believe me, I tried that. 
+But if you go through the source code in <code>haystack/admin.py</code> file, you'll see 
+overriding is not possible. Well, it is possible, but, it would still be ugly. 
+Just go through the code, you'll see. If you have a better workaround, I'd love to know. </p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2017/08/how-to-integrate-haystack-search-with-django-admin/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script> 
+        bhch
+ 
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+ 
+        content available under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+
+        made with <a href="http://bitbucket.org/bhch/beak/">beak</a>
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+        
+        powered by <a href="http://blog.getpelican.com">Pelican</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
