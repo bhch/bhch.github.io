@@ -81,19 +81,21 @@ You can do exactly what the docs instruct, yet the example won't work. </p>
 The value of <code>search_fields</code> can be set to any field that is present in your model.
 Haystack's <code>SearchModelAdmin</code> class will override it and will search your 
 search index's <code>text</code> field. </p>
-<p>If you've already setup search indexes for you app, below is an example that would 
-provide a little more illustration to the solution:</p>
+<p>Bbelow is an example that would provide a little more illustration to the solution:</p>
 <div class="highlight"><pre><span class="c"># models.py</span>
 
 <span class="k">class</span> <span class="nc">Article</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
     <span class="n">body</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span> <span class="c"># we want to search this field</span>
     <span class="n">pub_date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;-pub_date&#39;</span><span class="p">]</span> <span class="c"># show newest articles first</span>
 </pre></div>
 
 
 <p>I'm not gonna show how to set up Haystack search index. This post is not about that. 
-Hopefully, you've already done that. If not, you can read Haystacks <a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data">docs</a> about 
+Hopefully, you've already done that. If not, you can read Haystack's <a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data">docs</a> about 
 that.</p>
 <p>Let's see the admin:</p>
 <div class="highlight"><pre><span class="c"># admin.py</span>
@@ -104,29 +106,29 @@ that.</p>
 
 
 <span class="k">class</span> <span class="nc">ArticleAdmin</span><span class="p">(</span><span class="n">SearchModelAdmin</span><span class="p">):</span>
-    <span class="c"># set the search_fields attribute to a field present in MyModel</span>
+    <span class="c"># set the search_fields attribute to a field present in Article</span>
     <span class="n">search_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,)</span> <span class="c"># or (&#39;body&#39;,) it doesn&#39;t really matter</span>
 </pre></div>
 
 
 <p>We have inherited our admin class from <code>SearchModelAdmin</code> class provided 
-by Haystack. This will take the the search query argument, search the index, then 
+by Haystack. This will take the search query argument, search the index, then 
 return the results.</p>
 <p>That's it! Try searching for something in Django admin, it should be working 
 (if it's not, have you updated or created a search index yet?).</p>
 <h3>Heads up</h3>
-<p>There's are two downsides of integrating Haystack search with Django admin.</p>
+<p>There are two downsides of integrating Haystack search with Django admin.</p>
 <p><strong>1.</strong> The checkboxes on the left of the changelist page table will not appear in the
-search results will not appear. I don't 
-find this a big issue, though. If a find a solution to this, I will post it here.</p>
-<p><strong>2.</strong> The search results will not be ordered as expected. For example, let's say 
-we've ordered the Articles by <code>pub_date</code> in reverse order so that newest articles 
-appear first. But this ordering won't apply to haystack's 
-search results. They will appear, in this case, as oldest first. </p>
+search results. I don't find this a big issue, though. If a find a solution to 
+this, I will post it here.</p>
+<p><strong>2.</strong> The search results will not be ordered as expected. For example, we've 
+ordered the Articles by <code>pub_date</code> in reverse order so that newest articles 
+appear first. But this ordering won't apply to haystack's search results. 
+They will appear, in this case, as oldest first. </p>
 <p>There's a workaround for that. You might not like it. I don't like. Having said 
 that, I used that workaround for the project since I was on a deadline. And now 
-I'm too lazy to look for other solutions. Anyways, here it is:</p>
-<p>Fistly, make sure that you've included the model field in your haystack search index 
+I'm too lazy to look for another solutions. Anyways, here it is:</p>
+<p>Firstly, make sure that you've included the model field in your haystack search index 
 class that you want to use for ordering. So in this case, that field is <code>pub_date</code>. 
 What I mean is, <strong>you have to included <code>pub_date</code> in your search index</strong> if you want 
 to use it for ordering. Example:</p>
@@ -162,7 +164,7 @@ instead of from <code>haystack.admin</code>.</p>
 
 
 <p>I know, this workaround is really ugly. The more preferable way would be to 
-override the code, instead of copying  an changing it. Believe me, I tried that. 
+override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in <code>haystack/admin.py</code> file, you'll see 
 overriding is not possible. Well, it is possible, but, it would still be ugly. 
 Just go through the code, you'll see. If you have a better workaround, I'd love to know. </p>

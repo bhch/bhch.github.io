@@ -9,19 +9,21 @@ You can do exactly what the docs instruct, yet the example won't work. &lt;/p&gt
 The value of &lt;code&gt;search_fields&lt;/code&gt; can be set to any field that is present in your model.
 Haystack's &lt;code&gt;SearchModelAdmin&lt;/code&gt; class will override it and will search your 
 search index's &lt;code&gt;text&lt;/code&gt; field. &lt;/p&gt;
-&lt;p&gt;If you've already setup search indexes for you app, below is an example that would 
-provide a little more illustration to the solution:&lt;/p&gt;
+&lt;p&gt;Bbelow is an example that would provide a little more illustration to the solution:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# models.py&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Article&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TextField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c"&gt;# we want to search this field&lt;/span&gt;
     &lt;span class="n"&gt;pub_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTimeField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;auto_now_add&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;ordering&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;-pub_date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;# show newest articles first&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;I'm not gonna show how to set up Haystack search index. This post is not about that. 
-Hopefully, you've already done that. If not, you can read Haystacks &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data"&gt;docs&lt;/a&gt; about 
+Hopefully, you've already done that. If not, you can read Haystack's &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data"&gt;docs&lt;/a&gt; about 
 that.&lt;/p&gt;
 &lt;p&gt;Let's see the admin:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# admin.py&lt;/span&gt;
@@ -32,29 +34,29 @@ that.&lt;/p&gt;
 
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ArticleAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="c"&gt;# set the search_fields attribute to a field present in MyModel&lt;/span&gt;
+    &lt;span class="c"&gt;# set the search_fields attribute to a field present in Article&lt;/span&gt;
     &lt;span class="n"&gt;search_fields&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt; &lt;span class="c"&gt;# or (&amp;#39;body&amp;#39;,) it doesn&amp;#39;t really matter&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;We have inherited our admin class from &lt;code&gt;SearchModelAdmin&lt;/code&gt; class provided 
-by Haystack. This will take the the search query argument, search the index, then 
+by Haystack. This will take the search query argument, search the index, then 
 return the results.&lt;/p&gt;
 &lt;p&gt;That's it! Try searching for something in Django admin, it should be working 
 (if it's not, have you updated or created a search index yet?).&lt;/p&gt;
 &lt;h3&gt;Heads up&lt;/h3&gt;
-&lt;p&gt;There's are two downsides of integrating Haystack search with Django admin.&lt;/p&gt;
+&lt;p&gt;There are two downsides of integrating Haystack search with Django admin.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; The checkboxes on the left of the changelist page table will not appear in the
-search results will not appear. I don't 
-find this a big issue, though. If a find a solution to this, I will post it here.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;2.&lt;/strong&gt; The search results will not be ordered as expected. For example, let's say 
-we've ordered the Articles by &lt;code&gt;pub_date&lt;/code&gt; in reverse order so that newest articles 
-appear first. But this ordering won't apply to haystack's 
-search results. They will appear, in this case, as oldest first. &lt;/p&gt;
+search results. I don't find this a big issue, though. If a find a solution to 
+this, I will post it here.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.&lt;/strong&gt; The search results will not be ordered as expected. For example, we've 
+ordered the Articles by &lt;code&gt;pub_date&lt;/code&gt; in reverse order so that newest articles 
+appear first. But this ordering won't apply to haystack's search results. 
+They will appear, in this case, as oldest first. &lt;/p&gt;
 &lt;p&gt;There's a workaround for that. You might not like it. I don't like. Having said 
 that, I used that workaround for the project since I was on a deadline. And now 
-I'm too lazy to look for other solutions. Anyways, here it is:&lt;/p&gt;
-&lt;p&gt;Fistly, make sure that you've included the model field in your haystack search index 
+I'm too lazy to look for another solutions. Anyways, here it is:&lt;/p&gt;
+&lt;p&gt;Firstly, make sure that you've included the model field in your haystack search index 
 class that you want to use for ordering. So in this case, that field is &lt;code&gt;pub_date&lt;/code&gt;. 
 What I mean is, &lt;strong&gt;you have to included &lt;code&gt;pub_date&lt;/code&gt; in your search index&lt;/strong&gt; if you want 
 to use it for ordering. Example:&lt;/p&gt;
@@ -90,7 +92,7 @@ instead of from &lt;code&gt;haystack.admin&lt;/code&gt;.&lt;/p&gt;
 
 
 &lt;p&gt;I know, this workaround is really ugly. The more preferable way would be to 
-override the code, instead of copying  an changing it. Believe me, I tried that. 
+override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
 overriding is not possible. Well, it is possible, but, it would still be ugly. 
 Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-06-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
