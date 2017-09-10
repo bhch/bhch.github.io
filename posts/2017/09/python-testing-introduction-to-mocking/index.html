@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python testing - Introduction to mocking - blog of bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">This is my blog. There are many like it, but this one is mine.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">Python testing - Introduction to mocking</h1>
+<p class="post-meta">
+    Sun 10 September 2017
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/mock/" class="tag">mock</a>
+                <a href="https://bhch.github.io/tag/unittest/" class="tag">unittest</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <h1>What is mocking?</h1>
+<p>Let me try and explain what mocking is and when you need it, with an example &mdash;</p>
+<p>Suppose you have a web app where users can sign up. When a user signs up, 
+your app automatically sends them an email asking them to verify their email 
+address. The workflow would look like this:</p>
+<ol>
+<li>User sees the page</li>
+<li>User submits the sign up form</li>
+<li>Check if credentials are valid</li>
+<li>Create the user if valid OR show error if invalid</li>
+<li>Send email if user is created</li>
+</ol>
+<p>So, your app probably has a few functions (or classes) for doing specific tasks 
+such as <em>validating</em>, <em>saving to database</em>, <em>sending email</em>, and a main <em>sign up</em>
+funtion to render the form. etc. </p>
+<p>Let's say the function that handles sign ups, and the function that sends email 
+look roughly like this:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sign_up</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The sign up function, called when a user submits form&quot;&quot;&quot;</span>
+
+    <span class="c1"># check if user credentials are valid</span>
+
+    <span class="c1"># save user</span>
+
+    <span class="c1"># send email</span>
+    <span class="n">send_verification_mail</span><span class="p">(</span><span class="n">emal</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">send_verification_mail</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+    <span class="c1"># compose a mail and send</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
+
+<p>Say you want to test the <code>sign_up</code> function to see if the sign up workflow behaves
+as expected, but you don't want to trigger sending emails. You might be creating 
+users many times during the tests. So, sending emails every time can be 
+a bad idea because it can slow down your tests. Or if the mail server returns 
+any error, your tests would fail (of course, you can handle those errors, but 
+for the sake of this example, bear with me).</p>
+<p>Since, the <code>sign_up</code> function calls the <code>send_verification_mail</code> function 
+from within, it's guaranteed that if you test <code>sign_up</code> function, 
+you will trigger sending email.</p>
+<p>This gives rise to the question: How can I test <code>sign_up</code> function without 
+calling <code>send_verification_mail</code> function? </p>
+<p>This is where mocking comes in. Mocking means you can create a <em>fake</em> function 
+to replace <code>send_verifiation_mail</code> in your tests. That's it.</p>
+<h1>A Simple example</h1>
+<hr />
+<p><strong>Note:</strong></p>
+<p>If you're using Python 2.7 or any version &lt; 3.3, you'll need to install the 
+<code>mock</code> package:</p>
+<div class="highlight"><pre><span></span>$ pip install mock
+</pre></div>
+
+
+<p>For Python &gt;= 3.3, the <code>mock</code> is included in the standard library and 
+can be imported as <code>unittest.mock</code>. </p>
+<hr />
+<p>First create a file called <code>main.py</code>. Our code will live in this.</p>
+<div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">long_process</span><span class="p">():</span>
+    <span class="c1"># to emulate a long running </span>
+    <span class="c1"># process, we&#39;ll use time.sleep</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+<span class="k">def</span> <span class="nf">call_long_process</span><span class="p">():</span>
+    <span class="n">long_process</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
+
+<p>In <code>main.py</code>, we have a function called <code>long_process()</code> which sleeps for <code>5</code> seconds 
+and returns <code>True</code>. </p>
+<p>There's another function in <code>main.py</code> called <code>call_long_process()</code>. It just calls 
+the <code>long_process_function()</code> and returns <code>True</code>.</p>
+<p>Now, let's write some tests for the above code in a file called <code>tests.py</code>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># tests.py</span>
+
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span> <span class="c1"># for Python &gt;= 3.3 use unittest.mock</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">long_process</span><span class="p">,</span> <span class="n">call_long_process</span>
+
+
+<span class="k">class</span> <span class="nc">MainTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tests for `long_process`&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">test_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># test if `long_process` returns true</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">long_process</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">test_call_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># test if `call_long_process`</span>
+        <span class="c1"># actually calls `long_process`</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">call_long_process</span><span class="p">())</span>
+</pre></div>
+
+
+<p>In <code>tests.py</code>, we are testing that <code>long_process()</code> function works correctly and 
+it should return <code>True</code>.</p>
+<p>We,re also testing that <code>call_long_process()</code> function calls the <code>long_process()</code>
+function.</p>
+<p>Run the tests:</p>
+<div class="highlight"><pre><span></span>$ python -m unittest tests
+
+<span class="c1"># Output</span>
+
+..
+----------------------------------------------------------------------
+Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">10</span>.004s
+
+OK
+</pre></div>
+
+
+<p>Our test passed but it took a long time. In our tests, the <code>long_process()</code> function 
+is being called twice - once in <code>test_long_process</code> and again in <code>test_call_long_process</code>.</p>
+<p>In the second test, we only want to test if <code>call_long_process()</code> actually calls 
+<code>long_process()</code>. We don't care it <code>long_process()</code> works properly or not, because 
+we have tested that in the first test. So, there's no point in waiting 5 more seconds 
+for the process to finish.</p>
+<p>Let's patch the <code>long_process()</code> function in our second test.</p>
+<div class="highlight"><pre><span></span><span class="c1"># tests.py</span>
+
+<span class="k">class</span> <span class="nc">MainTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># same code as above ...</span>
+
+    <span class="k">def</span> <span class="nf">test_call_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;main.long_process&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_process</span><span class="p">:</span>
+
+            <span class="c1"># test the return value of `call_long_process` </span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">call_long_process</span><span class="p">())</span>
+
+            <span class="c1"># test if `call_long_process`</span>
+            <span class="c1"># issues a call to `long_process`</span>
+            <span class="n">mock_process</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Above, we've patched the <code>long_process()</code> function in the second test. We've called 
+the mock object <code>mock_process</code>. We test that the return value of <code>call_long_process()</code> 
+is <code>True</code>, and we also test that it actually calls <code>long_process()</code>. But since, 
+we've created a mock object for it, we have to test if <code>mock_process</code> is called or 
+not. That would tell us if <code>call_long_process()</code> issued a call, or not.</p>
+<p>Let's run our tests:</p>
+<div class="highlight"><pre><span></span>$ python -m unittest tests
+
+<span class="c1"># Output</span>
+
+..
+----------------------------------------------------------------------
+Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">5</span>.003s
+
+OK
+</pre></div>
+
+
+<p>It worked! This time it took only 5 seconds to run all the tests. This means that 
+the <code>long_process()</code> was actually called only once. </p>
+<p>To execute our tests even faster, we can keep the tests for <code>long_process()</code> in a 
+separate file and run them only when we have to. </p>
+<h1>That's it</h1>
+<p>In this post, I covered what mocking is and when you need it. I've also shown a 
+very basic example of getting started with mocking.</p>
+<p>In the next post, I'll write about how you can mock HTTP requests made using the 
+<code>requests</code> library.</p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2017/09/python-testing-introduction-to-mocking/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script> 
+        bhch
+ 
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+ 
+        content available under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+
+        made with <a href="http://bitbucket.org/bhch/beak/">beak</a>
+
+        <!-- middot spacer-->
+        &nbsp;&middot;&nbsp;
+        
+        powered by <a href="http://blog.getpelican.com">Pelican</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

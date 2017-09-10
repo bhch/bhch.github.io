@@ -75,7 +75,7 @@
 <p>I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using <code>pip</code>. So, I wrote 
 this command:</p>
-<div class="highlight"><pre><span class="nv">$ </span>pip install -r requirements.txt
+<div class="highlight"><pre><span></span>$ pip install -r requirements.txt
 </pre></div>
 
 
@@ -95,7 +95,7 @@ it gave me a <code>403 Forbidden</code> error. </p>
 created empy <code>tar.gz</code> files without actually downloading them.</p>
 <p>I also tried changning my server's DNS. Nothing worked.</p>
 <p>Finally, I though <em>"Let's just see if I can even visit PyPi webpage from this server"</em>. </p>
-<div class="highlight"><pre><span class="nv">$ </span>curl https://pypi.python.org
+<div class="highlight"><pre><span></span>$ curl https://pypi.python.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
 If you are a hosting customer, please contact your hosting company<span class="err">&#39;</span>s support. 
@@ -107,7 +107,7 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 Well, obviously, because my hosting provier was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. </p>
 <h1>Solution<a name="solution"></a></h1>
-<p>First lets' see the solutions that I tried and <strong>didn't work</strong> for me:</p>
+<p>First let's see the solutions that I tried and <strong>didn't work</strong> for me:</p>
 <ol>
 <li>Changing DNS resolver of my server</li>
 <li>Reconfiguring SSL, reinstalling CA certificates</li>
@@ -117,7 +117,7 @@ Well, obviously, because my hosting provier was running many servers
 <p>Since, all this was happening because <a href="https://python.org">https://python.org</a> has blacklisted the IP 
 of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy. </p>
 <p>Supplying a proxy address to <code>pip</code> is easy:</p>
-<div class="highlight"><pre><span class="nv">$ </span>pip install -r requirements.txt --proxy address:port
+<div class="highlight"><pre><span></span>$ pip install -r requirements.txt --proxy address:port
 </pre></div>
 
 

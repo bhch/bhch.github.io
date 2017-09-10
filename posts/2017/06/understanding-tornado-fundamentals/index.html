@@ -103,15 +103,15 @@ seem a big advantage, but in bigger projects, it's a godsend.</p>
 <li>Do some processing on the downloaded page</li>
 </ol>
 <p>First, let's see the code using callbacks:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">tornado.httpclient</span> <span class="nn">AsyncHttpClient</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado.httpclient</span> <span class="nn">AsyncHttpClient</span>
 
 <span class="k">def</span> <span class="nf">fetch_url</span><span class="p">():</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://example.com&#39;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://example.com&#39;</span>
     <span class="n">http_client</span> <span class="o">=</span> <span class="n">AsyncHttpClient</span><span class="p">()</span>
     <span class="n">http_client</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">process_result</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">process_result</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-    <span class="c"># do something with result</span>
+    <span class="c1"># do something with result</span>
     <span class="k">pass</span>
 </pre></div>
 
@@ -121,15 +121,15 @@ move the <code>process_result</code> function inside <code>fetch_url</code> but 
 function). You need to create a separate function to process the result. A separate 
 function is required which will be called when the page downloads.</p>
 <p>Now let's do the same thing using coroutines:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">tornado.http</span> <span class="nn">client</span> <span class="kn">import</span> <span class="n">AsyncHttpClient</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado.http</span> <span class="nn">client</span> <span class="kn">import</span> <span class="n">AsyncHttpClient</span>
 <span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">gen</span>
 
 <span class="nd">@gen.coroutine</span>
 <span class="k">def</span> <span class="nf">fetch_url_and_process_result</span><span class="p">():</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://example.com&#39;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://example.com&#39;</span>
     <span class="n">http_client</span> <span class="o">=</span> <span class="n">AsyncHttpClient</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">http_client</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="c"># do something with the result</span>
+    <span class="c1"># do something with the result</span>
     <span class="k">pass</span>
 </pre></div>
 
@@ -166,7 +166,7 @@ to avoid callback based programming. But its real use case is if you're calling 
 function/coroutine that returns a Future, you should decorate the caller with 
 <code>gen.coroutine</code> to make things work as expected.</p>
 <p>See the code below:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">return_future</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">return_future</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;This returns a Future object&quot;&quot;&quot;</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">Future</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">f</span>
@@ -175,7 +175,7 @@ function/coroutine that returns a Future, you should decorate the caller with
 <span class="k">def</span> <span class="nf">process_result</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">return_future</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">future</span>
-    <span class="c"># do something with the result</span>
+    <span class="c1"># do something with the result</span>
 </pre></div>
 
 
@@ -193,7 +193,7 @@ function/coroutine that returns a Future, you should decorate the caller with
 </ol>
 <p>If you don't decorate the <code>process_result</code> with <code>gen.coroutine</code> you will need to 
 use callbacks and the code becomes a mess. Example:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">return_future</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">return_future</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">Future</span><span class="p">()</span>
     <span class="n">f</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">f</span>
@@ -204,21 +204,21 @@ use callbacks and the code becomes a mess. Example:</p>
 
 <span class="k">def</span> <span class="nf">process_result</span><span class="p">(</span><span class="n">future</span><span class="p">):</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-    <span class="c"># do something with the result</span>
+    <span class="c1"># do something with the result</span>
 </pre></div>
 
 
 <h4><strong><code>gen.coroutine</code> decorated functions will return a Future automatically</strong></h4>
 <p>If you decorate a function/coroutine using <code>gen.coroutine</code>, a Future object 
 will be returned automatically.</p>
-<div class="highlight"><pre><span class="nd">@gen.coroutine</span>
+<div class="highlight"><pre><span></span><span class="nd">@gen.coroutine</span>
 <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
-    <span class="k">pass</span> <span class="c"># return nothing</span>
+    <span class="k">pass</span> <span class="c1"># return nothing</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">my_func</span><span class="p">()</span>
 
 <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="c"># OUTPUTS:  tornado.concurrent.Future</span>
+<span class="c1"># OUTPUTS:  tornado.concurrent.Future</span>
 </pre></div>
 
 
@@ -226,7 +226,7 @@ will be returned automatically.</p>
 So, if you return a Future from a decorated function, <code>gen.coroutine</code> will 
 wrap that Future object inside another Future object, which is not what you want.</p>
 <p>Example:</p>
-<div class="highlight"><pre><span class="nd">@gen.coroutine</span>
+<div class="highlight"><pre><span></span><span class="nd">@gen.coroutine</span>
 <span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">Future</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">f</span>
@@ -241,7 +241,7 @@ you'll have to <code>yield</code> twice to get the result.</p>
 <p>If you're calling a <code>gen.coroutine</code> decorated function/coroutine, you must decorate 
 the caller with <code>gen.coroutine</code> too. And you must use the <code>yield</code> keyword in the caller.</p>
 <p>Example:</p>
-<div class="highlight"><pre><span class="nd">@gen.coroutine</span>
+<div class="highlight"><pre><span></span><span class="nd">@gen.coroutine</span>
 <span class="k">def</span> <span class="nf">do_nothing</span><span class="p">():</span>
     <span class="k">pass</span>
 
@@ -269,13 +269,13 @@ yield it. </p>
 operations inside them. As soon as the method ends or returns, the request is considered 
 finished.</p>
 <p>Look at the following code example:</p>
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">MainHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MainHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">http</span> <span class="o">=</span> <span class="n">AsyncHttpHandler</span><span class="p">()</span>
-        <span class="n">http</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s">&quot;example.com&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_response</span><span class="p">)</span>
+        <span class="n">http</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;example.com&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_response</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="c"># do something with response ...</span>
+        <span class="c1"># do something with response ...</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 </pre></div>
@@ -294,14 +294,14 @@ ends, the request is considered finished. Tornado won't keep the client in the w
 list while the url is fetched. It will just return an empty response.</p>
 <p>This is where the <code>web.asynchronous</code> decorator comes in. You decorate the <code>get</code> method 
 with this decorator and Tornado won't terminate the request when <code>get</code> method exists.</p>
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">MainHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MainHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
     <span class="nd">@web.asynchronous</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">http</span> <span class="o">=</span> <span class="n">AsyncHttpHandler</span><span class="p">()</span>
-        <span class="n">http</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s">&quot;example.com&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_response</span><span class="p">)</span>
+        <span class="n">http</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;example.com&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_response</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">on_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
-        <span class="c"># do something with response ...</span>
+        <span class="c1"># do something with response ...</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 </pre></div>
