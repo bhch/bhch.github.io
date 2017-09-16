@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-10T00:00:00+05:30</updated><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1&gt;What is mocking?&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-16T00:00:00+05:30</updated><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1&gt;What is mocking?&lt;/h1&gt;
 &lt;p&gt;Let me try and explain what mocking is and when you need it, with an example &amp;mdash;&lt;/p&gt;
 &lt;p&gt;Suppose you have a web app where users can sign up. When a user signs up, 
 your app automatically sends them an email asking them to verify their email 
@@ -267,7 +267,7 @@ instead of from &lt;code&gt;haystack.admin&lt;/code&gt;.&lt;/p&gt;
 override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
 overriding is not possible. Well, it is possible, but, it would still be ugly. 
-Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-06-23T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
+Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-09-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
 explain some things in depth. Being new to async programming model, I found many things 
 quite difficult to understand. The documentation also lacks a good tutorial, like 
 the Django's documnetation has an excellent Polls tutorial which explains almost 
@@ -281,12 +281,36 @@ Tornado app and expect that Tornado will pause the code execution for one partic
 client while serving other clients. Tornado is a single threaded server. And 
 &lt;code&gt;time.sleep&lt;/code&gt; blocks the thread. So, if you use &lt;code&gt;time.sleep&lt;/code&gt;, for example, to simulate 
 a slow network connection, the whole server will block.&lt;/p&gt;
-&lt;p&gt;Try yourself. Use &lt;code&gt;time.sleep(10)&lt;/code&gt; in your code and then 
-visit your Tornado app from a few different tabs from your browser. None of the 
-pages will load for 10 seconds, and as soon as 10 seconds are over, all the pages 
-will load at the same time.&lt;/p&gt;
+&lt;p&gt;Consider this code: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BlockingHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello 1&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;NonBlockingHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello 2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The code is pretty obvious: &lt;code&gt;BlockingHandler&lt;/code&gt; will wait 10 seconds before returning 
+a response. &lt;code&gt;NonBlockingHandler&lt;/code&gt; will return the response as soon as it gets a request.&lt;/p&gt;
+&lt;p&gt;So, you might think that if you make a request to &lt;code&gt;BlockingHandler&lt;/code&gt; and then make 
+another request to &lt;code&gt;NonBlockingHandler&lt;/code&gt;, you'll get a response from &lt;code&gt;NonBlockingHander&lt;/code&gt; 
+first and then 10 seconds later, you'll get a response from &lt;code&gt;BlockingHandler&lt;/code&gt;. 
+&lt;strong&gt;But that's not the case.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Try it yourself: make a request to &lt;code&gt;BlockingHandler&lt;/code&gt; from your broswer. Then open a new tab
+and make a request to &lt;code&gt;NonBlockingHandler&lt;/code&gt;. You'll notice that even though the 
+&lt;code&gt;NonBlockingHandler&lt;/code&gt; doesn't block anywhere, you're not getting a response for it.&lt;/p&gt;
+&lt;p&gt;But as soon as the 10 seconds pass, you'll get the response for both &lt;code&gt;BlockingHandler&lt;/code&gt; 
+and &lt;code&gt;NonBlockingHandler&lt;/code&gt;. This is happening because the &lt;code&gt;BlockingHandler&lt;/code&gt; blocks 
+the event loop. Therefore, Tornado can't accept other requests as long as this 
+handler is running. That is why you won't get a response for &lt;code&gt;NonBlockingHandler&lt;/code&gt; 
+if &lt;code&gt;BlockingHandler&lt;/code&gt; is already running.&lt;/p&gt;
 &lt;p&gt;This is what will happen if you try to query a database synchronously. It will 
-block the server &lt;strong&gt;for all the clients&lt;/strong&gt; until the query finishes.&lt;/p&gt;
+block the server &lt;strong&gt;for all the clients&lt;/strong&gt; and &lt;strong&gt;all the handlers&lt;/strong&gt; until the query finishes.&lt;/p&gt;
 &lt;h1&gt;How coroutines make writing async code easier than callbacks?&lt;/h1&gt;
 &lt;p&gt;With callbacks, you need to write &lt;em&gt;extra&lt;/em&gt; code that you won't even require if 
 you use coroutines. Thus, code becomes shorter and more readable. Other than that, 
