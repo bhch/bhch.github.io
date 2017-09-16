@@ -71,14 +71,13 @@
 
     <div class="post-description">
         <p>To skip the background and go to the solution, <a href="#solution">click here</a>.</p>
-<h1>Background</h1>
+<h1 id="background">Background</h1>
 <p>I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using <code>pip</code>. So, I wrote 
 this command:</p>
-<div class="highlight"><pre><span></span>$ pip install -r requirements.txt
-</pre></div>
-
-
+<pre><code>:::sh
+$ pip install -r requirements.txt
+</code></pre>
 <p>But, it spat out the following error:</p>
 <blockquote>
 <p>Could not find a version that satisfies the requirement <package-name> (from versions:)
@@ -95,18 +94,17 @@ it gave me a <code>403 Forbidden</code> error. </p>
 created empy <code>tar.gz</code> files without actually downloading them.</p>
 <p>I also tried changning my server's DNS. Nothing worked.</p>
 <p>Finally, I though <em>"Let's just see if I can even visit PyPi webpage from this server"</em>. </p>
-<div class="highlight"><pre><span></span>$ curl https://pypi.python.org
+<pre><code>:::sh    
+$ curl https://pypi.python.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
-If you are a hosting customer, please contact your hosting company<span class="err">&#39;</span>s support. 
+If you are a hosting customer, please contact your hosting company's support. 
 If you are the hosting company, please contact infrastructure-staff@python.org to resolve
-</pre></div>
-
-
+</code></pre>
 <p>The output above shows that my server's IP was blacklisted by <a href="https://python.org">https://python.org</a>. 
 Well, obviously, because my hosting provier was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. </p>
-<h1>Solution<a name="solution"></a></h1>
+<h1 id="solution">Solution<a name="solution"></a></h1>
 <p>First let's see the solutions that I tried and <strong>didn't work</strong> for me:</p>
 <ol>
 <li>Changing DNS resolver of my server</li>
@@ -117,10 +115,9 @@ Well, obviously, because my hosting provier was running many servers
 <p>Since, all this was happening because <a href="https://python.org">https://python.org</a> has blacklisted the IP 
 of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy. </p>
 <p>Supplying a proxy address to <code>pip</code> is easy:</p>
-<div class="highlight"><pre><span></span>$ pip install -r requirements.txt --proxy address:port
-</pre></div>
-
-
+<pre><code>:::sh
+$ pip install -r requirements.txt --proxy address:port
+</code></pre>
 <p>To find proxies, just <a href="https://www.google.com/search?q=proxy+list">search Google for proxy list</a>.</p>
     </div>
 </section>
