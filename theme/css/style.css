@@ -387,15 +387,13 @@ h6 {
 }
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
-    margin-top: 50px;
-    margin-bottom: 25px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    padding: 10px 0;
     font-family: sans-serif;
 }
-hr {
-    border: none;
-    border-top: 1px solid #ddd;
-    margin-top: 30px;
-    margin-bottom: 30px;
+:target {
+    background: #fffdc7;
 }
 .pull-left {
     float: left;
