@@ -13,7 +13,7 @@ address. The workflow would look like this:&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;So, your app probably has a few functions (or classes) for doing specific tasks 
 such as &lt;em&gt;validating&lt;/em&gt;, &lt;em&gt;saving to database&lt;/em&gt;, &lt;em&gt;sending email&lt;/em&gt;, and a main &lt;em&gt;sign up&lt;/em&gt;
-funtion to render the form. etc. &lt;/p&gt;
+function to render the form. etc. &lt;/p&gt;
 &lt;p&gt;Let's say the function that handles sign ups, and the function that sends email 
 look roughly like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;:::python
@@ -100,7 +100,7 @@ class MainTests(TestCase):
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In &lt;code&gt;tests.py&lt;/code&gt;, we are testing that &lt;code&gt;long_process()&lt;/code&gt; function works correctly and 
 it should return &lt;code&gt;True&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;We,re also testing that &lt;code&gt;call_long_process()&lt;/code&gt; function calls the &lt;code&gt;long_process()&lt;/code&gt;
+&lt;p&gt;We're also testing that &lt;code&gt;call_long_process()&lt;/code&gt; function calls the &lt;code&gt;long_process()&lt;/code&gt;
 function.&lt;/p&gt;
 &lt;p&gt;Run the tests:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;:::sh
@@ -286,7 +286,7 @@ a response. &lt;code&gt;NonBlockingHandler&lt;/code&gt; will return the response
 another request to &lt;code&gt;NonBlockingHandler&lt;/code&gt;, you'll get a response from &lt;code&gt;NonBlockingHander&lt;/code&gt; 
 first and then 10 seconds later, you'll get a response from &lt;code&gt;BlockingHandler&lt;/code&gt;. 
 &lt;strong&gt;But that's not the case.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Try it yourself: make a request to &lt;code&gt;BlockingHandler&lt;/code&gt; from your broswer. Then open a new tab
+&lt;p&gt;Try it yourself: make a request to &lt;code&gt;BlockingHandler&lt;/code&gt; from your browser. Then open a new tab
 and make a request to &lt;code&gt;NonBlockingHandler&lt;/code&gt;. You'll notice that even though the 
 &lt;code&gt;NonBlockingHandler&lt;/code&gt; doesn't block anywhere, you're not getting a response for it.&lt;/p&gt;
 &lt;p&gt;But as soon as the 10 seconds pass, you'll get the response for both &lt;code&gt;BlockingHandler&lt;/code&gt; 
@@ -299,7 +299,7 @@ block the server &lt;strong&gt;for all the clients&lt;/strong&gt; and &lt;strong
 &lt;h1 id="how-coroutines-make-writing-async-code-easier-than-callbacks"&gt;How coroutines make writing async code easier than callbacks?&lt;/h1&gt;
 &lt;p&gt;With callbacks, you need to write &lt;em&gt;extra&lt;/em&gt; code that you won't even require if 
 you use coroutines. Thus, code becomes shorter and more readable. Other than that, 
-coroutines won't automatically make your code async. Agian, they just make the 
+coroutines won't automatically make your code async. Again, they just make the 
 code shorter and easier to maintain and debug. In smaller projects, this might not 
 seem a big advantage, but in bigger projects, it's a godsend.&lt;/p&gt;
 &lt;p&gt;Let's say we want do the following things:&lt;/p&gt;
@@ -338,11 +338,11 @@ def fetch_url_and_process_result():
     pass
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The code is shorter and much straight forward. The way it works is that the coroutine 
-pauses everytime it sees the &lt;code&gt;yield&lt;/code&gt; statement. Then you need to call the coroutine's
+pauses every time it sees the &lt;code&gt;yield&lt;/code&gt; statement. Then you need to call the coroutine's
 &lt;code&gt;next()&lt;/code&gt; method to execute the &lt;code&gt;yield&lt;/code&gt; statement and the code after that. So, when 
 the page downloads, Tornado will call the &lt;code&gt;next()&lt;/code&gt; on &lt;code&gt;fetch_url_and_process_result&lt;/code&gt;
 and it will execute the &lt;code&gt;yield&lt;/code&gt; statement and the code after that. So, all the 
-processing can be done below the &lt;code&gt;yield&lt;/code&gt; statement. No need for a separete function.
+processing can be done below the &lt;code&gt;yield&lt;/code&gt; statement. No need for a separate function.
 More is explained below in the &lt;code&gt;gen.coroutine&lt;/code&gt; section.&lt;/p&gt;
 &lt;p&gt;This example is a very simple use case. Consider this: let's say you need to do 
 many different operations on the result. If you're using callbacks, you'll need 
@@ -385,7 +385,7 @@ def process_result():
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; automatically calls &lt;code&gt;process_result&lt;/code&gt;'s &lt;code&gt;next()&lt;/code&gt;method 
  (to start the generator).&lt;/li&gt;
-&lt;li&gt;Then it puts this &lt;code&gt;process_result&lt;/code&gt; corutine to a &lt;em&gt;"waiting list"&lt;/em&gt; until 
+&lt;li&gt;Then it puts this &lt;code&gt;process_result&lt;/code&gt; coroutine to a &lt;em&gt;"waiting list"&lt;/em&gt; until 
  &lt;code&gt;future&lt;/code&gt; has a result. There might be some other code that's
   responsible for setting the result on the &lt;code&gt;future&lt;/code&gt;, I've not shown that code. 
   So, no need to dwell into that. &lt;/li&gt;
@@ -540,8 +540,8 @@ that didn't help me.&lt;/p&gt;
 from source. I intended to use &lt;code&gt;wget&lt;/code&gt; to download the packages from PyPi. But, 
 it gave me a &lt;code&gt;403 Forbidden&lt;/code&gt; error. &lt;/p&gt;
 &lt;p&gt;I tried downloading with &lt;code&gt;curl&lt;/code&gt;, but the files it &lt;em&gt;saved&lt;/em&gt; were invalid. It just 
-created empy &lt;code&gt;tar.gz&lt;/code&gt; files without actually downloading them.&lt;/p&gt;
-&lt;p&gt;I also tried changning my server's DNS. Nothing worked.&lt;/p&gt;
+created empty &lt;code&gt;tar.gz&lt;/code&gt; files without actually downloading them.&lt;/p&gt;
+&lt;p&gt;I also tried changing my server's DNS. Nothing worked.&lt;/p&gt;
 &lt;p&gt;Finally, I though &lt;em&gt;"Let's just see if I can even visit PyPi webpage from this server"&lt;/em&gt;. &lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;:::sh    
 $ curl https://pypi.python.org
@@ -551,7 +551,7 @@ If you are a hosting customer, please contact your hosting company's support.
 If you are the hosting company, please contact infrastructure-staff@python.org to resolve
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The output above shows that my server's IP was blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. 
-Well, obviously, because my hosting provier was running many servers 
+Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. &lt;/p&gt;
 &lt;h1 id="solution"&gt;Solution&lt;a name="solution"&gt;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First let's see the solutions that I tried and &lt;strong&gt;didn't work&lt;/strong&gt; for me:&lt;/p&gt;

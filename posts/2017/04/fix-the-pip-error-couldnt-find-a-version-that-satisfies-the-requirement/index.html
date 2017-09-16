@@ -91,8 +91,8 @@ that didn't help me.</p>
 from source. I intended to use <code>wget</code> to download the packages from PyPi. But, 
 it gave me a <code>403 Forbidden</code> error. </p>
 <p>I tried downloading with <code>curl</code>, but the files it <em>saved</em> were invalid. It just 
-created empy <code>tar.gz</code> files without actually downloading them.</p>
-<p>I also tried changning my server's DNS. Nothing worked.</p>
+created empty <code>tar.gz</code> files without actually downloading them.</p>
+<p>I also tried changing my server's DNS. Nothing worked.</p>
 <p>Finally, I though <em>"Let's just see if I can even visit PyPi webpage from this server"</em>. </p>
 <pre><code>:::sh    
 $ curl https://pypi.python.org
@@ -102,7 +102,7 @@ If you are a hosting customer, please contact your hosting company's support.
 If you are the hosting company, please contact infrastructure-staff@python.org to resolve
 </code></pre>
 <p>The output above shows that my server's IP was blacklisted by <a href="https://python.org">https://python.org</a>. 
-Well, obviously, because my hosting provier was running many servers 
+Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. </p>
 <h1 id="solution">Solution<a name="solution"></a></h1>
 <p>First let's see the solutions that I tried and <strong>didn't work</strong> for me:</p>

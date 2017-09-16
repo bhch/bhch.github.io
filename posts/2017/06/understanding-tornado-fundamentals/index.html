@@ -106,7 +106,7 @@ a response. <code>NonBlockingHandler</code> will return the response as soon as 
 another request to <code>NonBlockingHandler</code>, you'll get a response from <code>NonBlockingHander</code> 
 first and then 10 seconds later, you'll get a response from <code>BlockingHandler</code>. 
 <strong>But that's not the case.</strong></p>
-<p>Try it yourself: make a request to <code>BlockingHandler</code> from your broswer. Then open a new tab
+<p>Try it yourself: make a request to <code>BlockingHandler</code> from your browser. Then open a new tab
 and make a request to <code>NonBlockingHandler</code>. You'll notice that even though the 
 <code>NonBlockingHandler</code> doesn't block anywhere, you're not getting a response for it.</p>
 <p>But as soon as the 10 seconds pass, you'll get the response for both <code>BlockingHandler</code> 
@@ -119,7 +119,7 @@ block the server <strong>for all the clients</strong> and <strong>all the handle
 <h1 id="how-coroutines-make-writing-async-code-easier-than-callbacks">How coroutines make writing async code easier than callbacks?</h1>
 <p>With callbacks, you need to write <em>extra</em> code that you won't even require if 
 you use coroutines. Thus, code becomes shorter and more readable. Other than that, 
-coroutines won't automatically make your code async. Agian, they just make the 
+coroutines won't automatically make your code async. Again, they just make the 
 code shorter and easier to maintain and debug. In smaller projects, this might not 
 seem a big advantage, but in bigger projects, it's a godsend.</p>
 <p>Let's say we want do the following things:</p>
@@ -158,11 +158,11 @@ def fetch_url_and_process_result():
     pass
 </code></pre>
 <p>The code is shorter and much straight forward. The way it works is that the coroutine 
-pauses everytime it sees the <code>yield</code> statement. Then you need to call the coroutine's
+pauses every time it sees the <code>yield</code> statement. Then you need to call the coroutine's
 <code>next()</code> method to execute the <code>yield</code> statement and the code after that. So, when 
 the page downloads, Tornado will call the <code>next()</code> on <code>fetch_url_and_process_result</code>
 and it will execute the <code>yield</code> statement and the code after that. So, all the 
-processing can be done below the <code>yield</code> statement. No need for a separete function.
+processing can be done below the <code>yield</code> statement. No need for a separate function.
 More is explained below in the <code>gen.coroutine</code> section.</p>
 <p>This example is a very simple use case. Consider this: let's say you need to do 
 many different operations on the result. If you're using callbacks, you'll need 
@@ -205,7 +205,7 @@ def process_result():
 <ol>
 <li><code>gen.coroutine</code> automatically calls <code>process_result</code>'s <code>next()</code>method 
  (to start the generator).</li>
-<li>Then it puts this <code>process_result</code> corutine to a <em>"waiting list"</em> until 
+<li>Then it puts this <code>process_result</code> coroutine to a <em>"waiting list"</em> until 
  <code>future</code> has a result. There might be some other code that's
   responsible for setting the result on the <code>future</code>, I've not shown that code. 
   So, no need to dwell into that. </li>
