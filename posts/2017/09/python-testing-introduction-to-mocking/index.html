@@ -88,21 +88,22 @@ such as <em>validating</em>, <em>saving to database</em>, <em>sending email</em>
 function to render the form. etc. </p>
 <p>Let's say the function that handles sign ups, and the function that sends email 
 look roughly like this:</p>
-<pre><code>:::python
-def sign_up(username, password):
-    """The sign up function, called when a user submits form"""
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sign_up</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The sign up function, called when a user submits form&quot;&quot;&quot;</span>
 
-    # check if user credentials are valid
+    <span class="c1"># check if user credentials are valid</span>
 
-    # save user
+    <span class="c1"># save user</span>
 
-    # send email
-    send_verification_mail(emal=user.email)
+    <span class="c1"># send email</span>
+    <span class="n">send_verification_mail</span><span class="p">(</span><span class="n">emal</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
 
-def send_verification_mail(email):
-    # compose a mail and send
-    return True
-</code></pre>
+<span class="k">def</span> <span class="nf">send_verification_mail</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+    <span class="c1"># compose a mail and send</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
+
 <p>Say you want to test the <code>sign_up</code> function to see if the sign up workflow behaves
 as expected, but you don't want to trigger sending emails. You might be creating 
 users many times during the tests. So, sending emails every time can be 
@@ -121,71 +122,76 @@ to replace <code>send_verifiation_mail</code> in your tests. That's it.</p>
 <p><strong>Note:</strong></p>
 <p>If you're using Python 2.7 or any version &lt; 3.3, you'll need to install the 
 <code>mock</code> package:</p>
-<pre><code>:::sh
-$ pip install mock
-</code></pre>
+<div class="highlight"><pre><span></span>$ pip install mock
+</pre></div>
+
+
 <p>For Python &gt;= 3.3, the <code>mock</code> is included in the standard library and 
 can be imported as <code>unittest.mock</code>. </p>
 <hr />
 <p>First create a file called <code>main.py</code>. Our code will live in this.</p>
-<pre><code>:::python
-# main.py
+<div class="highlight"><pre><span></span><span class="c1"># main.py</span>
 
-import time
+<span class="kn">import</span> <span class="nn">time</span>
 
-def long_process():
-    # to emulate a long running 
-    # process, we'll use time.sleep
-    time.sleep(5)
-    return True
+<span class="k">def</span> <span class="nf">long_process</span><span class="p">():</span>
+    <span class="c1"># to emulate a long running </span>
+    <span class="c1"># process, we&#39;ll use time.sleep</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
 
-def call_long_process():
-    long_process()
-    return True
-</code></pre>
+<span class="k">def</span> <span class="nf">call_long_process</span><span class="p">():</span>
+    <span class="n">long_process</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
+
 <p>In <code>main.py</code>, we have a function called <code>long_process()</code> which sleeps for <code>5</code> seconds 
 and returns <code>True</code>. </p>
 <p>There's another function in <code>main.py</code> called <code>call_long_process()</code>. It just calls 
 the <code>long_process_function()</code> and returns <code>True</code>.</p>
 <p>Now, let's write some tests for the above code in a file called <code>tests.py</code>:</p>
-<pre><code># tests.py
+<div class="highlight"><pre><span></span><span class="c1"># tests.py</span>
 
-from unittest import TestCase
-from mock import patch # for Python &gt;= 3.3 use unittest.mock
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span> <span class="c1"># for Python &gt;= 3.3 use unittest.mock</span>
 
-from main import long_process, call_long_process
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">long_process</span><span class="p">,</span> <span class="n">call_long_process</span>
 
 
-class MainTests(TestCase):
-    """Tests for `long_process`"""
+<span class="k">class</span> <span class="nc">MainTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tests for `long_process`&quot;&quot;&quot;</span>
 
-    def test_long_process(self):
-        # test if `long_process` returns true
+    <span class="k">def</span> <span class="nf">test_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># test if `long_process` returns true</span>
 
-        self.assertTrue(long_process())
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">long_process</span><span class="p">())</span>
 
-    def test_call_long_process(self):
-        # test if `call_long_process`
-        # actually calls `long_process`
+    <span class="k">def</span> <span class="nf">test_call_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># test if `call_long_process`</span>
+        <span class="c1"># actually calls `long_process`</span>
 
-        self.assertTrue(call_long_process())
-</code></pre>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">call_long_process</span><span class="p">())</span>
+</pre></div>
+
+
 <p>In <code>tests.py</code>, we are testing that <code>long_process()</code> function works correctly and 
 it should return <code>True</code>.</p>
 <p>We're also testing that <code>call_long_process()</code> function calls the <code>long_process()</code>
 function.</p>
 <p>Run the tests:</p>
-<pre><code>:::sh
-$ python -m unittest tests
+<div class="highlight"><pre><span></span>$ python -m unittest tests
 
-# Output
+<span class="c1"># Output</span>
 
 ..
 ----------------------------------------------------------------------
-Ran 2 test in 10.004s
+Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">10</span>.004s
 
 OK
-</code></pre>
+</pre></div>
+
+
 <p>Our test passed but it took a long time. In our tests, the <code>long_process()</code> function 
 is being called twice - once in <code>test_long_process</code> and again in <code>test_call_long_process</code>.</p>
 <p>In the second test, we only want to test if <code>call_long_process()</code> actually calls 
@@ -193,40 +199,42 @@ is being called twice - once in <code>test_long_process</code> and again in <cod
 we have tested that in the first test. So, there's no point in waiting 5 more seconds 
 for the process to finish.</p>
 <p>Let's patch the <code>long_process()</code> function in our second test.</p>
-<pre><code>:::python
-# tests.py
+<div class="highlight"><pre><span></span><span class="c1"># tests.py</span>
 
-class MainTests(TestCase):
-    # ...
-    # same code as above ...
+<span class="k">class</span> <span class="nc">MainTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># same code as above ...</span>
 
-    def test_call_long_process(self):
-        with patch('main.long_process', return_value=True) as mock_process:
+    <span class="k">def</span> <span class="nf">test_call_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;main.long_process&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_process</span><span class="p">:</span>
 
-            # test the return value of `call_long_process` 
-            self.assertTrue(call_long_process())
+            <span class="c1"># test the return value of `call_long_process` </span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">call_long_process</span><span class="p">())</span>
 
-            # test if `call_long_process`
-            # issues a call to `long_process`
-            mock_process.assert_called_once()
-</code></pre>
+            <span class="c1"># test if `call_long_process`</span>
+            <span class="c1"># issues a call to `long_process`</span>
+            <span class="n">mock_process</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span>
+</pre></div>
+
+
 <p>Above, we've patched the <code>long_process()</code> function in the second test. We've called 
 the mock object <code>mock_process</code>. We test that the return value of <code>call_long_process()</code> 
 is <code>True</code>, and we also test that it actually calls <code>long_process()</code>. But since, 
 we've created a mock object for it, we have to test if <code>mock_process</code> is called or 
 not. That would tell us if <code>call_long_process()</code> issued a call, or not.</p>
 <p>Let's run our tests:</p>
-<pre><code>:::sh
-$ python -m unittest tests
+<div class="highlight"><pre><span></span>$ python -m unittest tests
 
-# Output
+<span class="c1"># Output</span>
 
 ..
 ----------------------------------------------------------------------
-Ran 2 test in 5.003s
+Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">5</span>.003s
 
 OK
-</code></pre>
+</pre></div>
+
+
 <p>It worked! This time it took only 5 seconds to run all the tests. This means that 
 the <code>long_process()</code> was actually called only once. </p>
 <p>To execute our tests even faster, we can keep the tests for <code>long_process()</code> in a 

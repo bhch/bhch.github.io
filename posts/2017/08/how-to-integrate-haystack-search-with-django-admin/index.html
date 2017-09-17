@@ -82,33 +82,35 @@ The value of <code>search_fields</code> can be set to any field that is present 
 Haystack's <code>SearchModelAdmin</code> class will override it and will search your 
 search index's <code>text</code> field. </p>
 <p>Below is an example that would provide a little more illustration to the solution:</p>
-<pre><code>:::python
-# models.py
+<div class="highlight"><pre><span></span><span class="c1"># models.py</span>
 
-class Article(models.Model):
-    title = models.CharField(max_length=100)
-    body = models.TextField() # we want to search this field
-    pub_date = models.DateTimeField(auto_now_add=True)
+<span class="k">class</span> <span class="nc">Article</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span> <span class="c1"># we want to search this field</span>
+    <span class="n">pub_date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    class Meta:
-        ordering = ['-pub_date'] # show newest articles first
-</code></pre>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-pub_date&#39;</span><span class="p">]</span> <span class="c1"># show newest articles first</span>
+</pre></div>
+
+
 <p>I'm not gonna show how to set up Haystack search index. This post is not about that. 
 Hopefully, you've already done that. If not, you can read Haystack's <a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data">docs</a> about 
 that.</p>
 <p>Let's see the admin:</p>
-<pre><code>:::python
-# admin.py
+<div class="highlight"><pre><span></span><span class="c1"># admin.py</span>
 
-from django.contrib import admin
-from haystack.admin import SearchModelAdmin
-from .models import Article
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">haystack.admin</span> <span class="kn">import</span> <span class="n">SearchModelAdmin</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Article</span>
 
 
-class ArticleAdmin(SearchModelAdmin):
-    # set the search_fields attribute to a field present in Article
-    search_fields = ('title',) # or ('body',) it doesn't really matter
-</code></pre>
+<span class="k">class</span> <span class="nc">ArticleAdmin</span><span class="p">(</span><span class="n">SearchModelAdmin</span><span class="p">):</span>
+    <span class="c1"># set the search_fields attribute to a field present in Article</span>
+    <span class="n">search_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,)</span> <span class="c1"># or (&#39;body&#39;,) it doesn&#39;t really matter</span>
+</pre></div>
+
+
 <p>We have inherited our admin class from <code>SearchModelAdmin</code> class provided 
 by Haystack. This will take the search query argument, search the index, then 
 return the results.</p>
@@ -130,33 +132,37 @@ I'm too lazy to look for another solutions. Anyways, here it is:</p>
 class that you want to use for ordering. So in this case, that field is <code>pub_date</code>. 
 What I mean is, <strong>you have to included <code>pub_date</code> in your search index</strong> if you want 
 to use it for ordering. Example:</p>
-<pre><code>:::python
-class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    pub_date = indexes.DateTimeField(model_attr='pub_date')
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ArticleIndex</span><span class="p">(</span><span class="n">indexes</span><span class="o">.</span><span class="n">SearchIndex</span><span class="p">,</span> <span class="n">indexes</span><span class="o">.</span><span class="n">Indexable</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_template</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">pub_date</span> <span class="o">=</span> <span class="n">indexes</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">model_attr</span><span class="o">=</span><span class="s1">&#39;pub_date&#39;</span><span class="p">)</span>
+</pre></div>
+
+
 <p>Now copy the <code>haystack/admin.py</code> file to your project or app's directory. Save it 
 as <code>search_admin.py</code>. Open it in a text editor. You'll see a class defined as 
 <code>SearchChangeList</code>. You'll have to change a line inside it. Find the following 
 line in that class:</p>
-<pre><code>:::python
-sqs = SearchQuerySet(self.haystack_connection).models(self.model).auto_query(request.GET[SEARCH_VAR]).load_all()
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sqs</span> <span class="o">=</span> <span class="n">SearchQuerySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">haystack_connection</span><span class="p">)</span><span class="o">.</span><span class="n">models</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">auto_query</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="n">SEARCH_VAR</span><span class="p">])</span><span class="o">.</span><span class="n">load_all</span><span class="p">()</span>
+</pre></div>
+
+
 <p>Now, all you have to do is append <code>.order_by('field_name')</code> to that line. In this case, 
 <code>.order_by('-pub_date')</code> (<strong>"<code>-</code>"</strong> means reverse ordering). Example:</p>
-<pre><code>:::python
-sqs = SearchQuerySet(self.haystack_connection
-    ).models(self.model
-    ).auto_query(request.GET[SEARCH_VAR]
-    ).load_all().order_by('-pub-date')
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sqs</span> <span class="o">=</span> <span class="n">SearchQuerySet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">haystack_connection</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">models</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">auto_query</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="n">SEARCH_VAR</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">load_all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-pub-date&#39;</span><span class="p">)</span>
+</pre></div>
+
+
 <p>Finally, in your <code>admin.py</code> file, you've to import the <code>SearchModelAdmin</code> from this file, 
 instead of from <code>haystack.admin</code>.</p>
-<pre><code>:::python
-from haystack.admin import SearchModelAdmin # Replace this
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">haystack.admin</span> <span class="kn">import</span> <span class="n">SearchModelAdmin</span> <span class="c1"># Replace this</span>
 
-from search_admin import SearchModelAdmin # with this
-</code></pre>
+<span class="kn">from</span> <span class="nn">search_admin</span> <span class="kn">import</span> <span class="n">SearchModelAdmin</span> <span class="c1"># with this</span>
+</pre></div>
+
+
 <p>I know, this workaround is really ugly. The more preferable way would be to 
 override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in <code>haystack/admin.py</code> file, you'll see 

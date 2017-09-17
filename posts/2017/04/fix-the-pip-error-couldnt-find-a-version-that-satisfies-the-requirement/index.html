@@ -75,9 +75,10 @@
 <p>I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using <code>pip</code>. So, I wrote 
 this command:</p>
-<pre><code>:::sh
-$ pip install -r requirements.txt
-</code></pre>
+<div class="highlight"><pre><span></span>$ pip install -r requirements.txt
+</pre></div>
+
+
 <p>But, it spat out the following error:</p>
 <blockquote>
 <p>Could not find a version that satisfies the requirement <package-name> (from versions:)
@@ -94,13 +95,14 @@ it gave me a <code>403 Forbidden</code> error. </p>
 created empty <code>tar.gz</code> files without actually downloading them.</p>
 <p>I also tried changing my server's DNS. Nothing worked.</p>
 <p>Finally, I though <em>"Let's just see if I can even visit PyPi webpage from this server"</em>. </p>
-<pre><code>:::sh    
-$ curl https://pypi.python.org
+<div class="highlight"><pre><span></span>$ curl https://pypi.python.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
-If you are a hosting customer, please contact your hosting company's support. 
+If you are a hosting customer, please contact your hosting company<span class="err">&#39;</span>s support. 
 If you are the hosting company, please contact infrastructure-staff@python.org to resolve
-</code></pre>
+</pre></div>
+
+
 <p>The output above shows that my server's IP was blacklisted by <a href="https://python.org">https://python.org</a>. 
 Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. </p>
@@ -115,9 +117,10 @@ Well, obviously, because my hosting provider was running many servers
 <p>Since, all this was happening because <a href="https://python.org">https://python.org</a> has blacklisted the IP 
 of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy. </p>
 <p>Supplying a proxy address to <code>pip</code> is easy:</p>
-<pre><code>:::sh
-$ pip install -r requirements.txt --proxy address:port
-</code></pre>
+<div class="highlight"><pre><span></span>$ pip install -r requirements.txt --proxy address:port
+</pre></div>
+
+
 <p>To find proxies, just <a href="https://www.google.com/search?q=proxy+list">search Google for proxy list</a>.</p>
     </div>
 </section>

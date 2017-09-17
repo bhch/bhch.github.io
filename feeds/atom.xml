@@ -16,21 +16,22 @@ such as &lt;em&gt;validating&lt;/em&gt;, &lt;em&gt;saving to database&lt;/em&gt;
 function to render the form. etc. &lt;/p&gt;
 &lt;p&gt;Let's say the function that handles sign ups, and the function that sends email 
 look roughly like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-def sign_up(username, password):
-    """The sign up function, called when a user submits form"""
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;sign_up&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;password&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;The sign up function, called when a user submits form&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 
-    # check if user credentials are valid
+    &lt;span class="c1"&gt;# check if user credentials are valid&lt;/span&gt;
 
-    # save user
+    &lt;span class="c1"&gt;# save user&lt;/span&gt;
 
-    # send email
-    send_verification_mail(emal=user.email)
+    &lt;span class="c1"&gt;# send email&lt;/span&gt;
+    &lt;span class="n"&gt;send_verification_mail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;emal&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-def send_verification_mail(email):
-    # compose a mail and send
-    return True
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_verification_mail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# compose a mail and send&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Say you want to test the &lt;code&gt;sign_up&lt;/code&gt; function to see if the sign up workflow behaves
 as expected, but you don't want to trigger sending emails. You might be creating 
 users many times during the tests. So, sending emails every time can be 
@@ -49,71 +50,76 @@ to replace &lt;code&gt;send_verifiation_mail&lt;/code&gt; in your tests. That's 
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;If you're using Python 2.7 or any version &amp;lt; 3.3, you'll need to install the 
 &lt;code&gt;mock&lt;/code&gt; package:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::sh
-$ pip install mock
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install mock
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;For Python &amp;gt;= 3.3, the &lt;code&gt;mock&lt;/code&gt; is included in the standard library and 
 can be imported as &lt;code&gt;unittest.mock&lt;/code&gt;. &lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;First create a file called &lt;code&gt;main.py&lt;/code&gt;. Our code will live in this.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-# main.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
 
-import time
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 
-def long_process():
-    # to emulate a long running 
-    # process, we'll use time.sleep
-    time.sleep(5)
-    return True
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;long_process&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;# to emulate a long running &lt;/span&gt;
+    &lt;span class="c1"&gt;# process, we&amp;#39;ll use time.sleep&lt;/span&gt;
+    &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
 
-def call_long_process():
-    long_process()
-    return True
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;call_long_process&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;long_process&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;In &lt;code&gt;main.py&lt;/code&gt;, we have a function called &lt;code&gt;long_process()&lt;/code&gt; which sleeps for &lt;code&gt;5&lt;/code&gt; seconds 
 and returns &lt;code&gt;True&lt;/code&gt;. &lt;/p&gt;
 &lt;p&gt;There's another function in &lt;code&gt;main.py&lt;/code&gt; called &lt;code&gt;call_long_process()&lt;/code&gt;. It just calls 
 the &lt;code&gt;long_process_function()&lt;/code&gt; and returns &lt;code&gt;True&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Now, let's write some tests for the above code in a file called &lt;code&gt;tests.py&lt;/code&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# tests.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# tests.py&lt;/span&gt;
 
-from unittest import TestCase
-from mock import patch # for Python &amp;gt;= 3.3 use unittest.mock
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TestCase&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt; &lt;span class="c1"&gt;# for Python &amp;gt;= 3.3 use unittest.mock&lt;/span&gt;
 
-from main import long_process, call_long_process
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;main&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;long_process&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;call_long_process&lt;/span&gt;
 
 
-class MainTests(TestCase):
-    """Tests for `long_process`"""
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Tests for `long_process`&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 
-    def test_long_process(self):
-        # test if `long_process` returns true
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_long_process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# test if `long_process` returns true&lt;/span&gt;
 
-        self.assertTrue(long_process())
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;long_process&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
 
-    def test_call_long_process(self):
-        # test if `call_long_process`
-        # actually calls `long_process`
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_call_long_process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# test if `call_long_process`&lt;/span&gt;
+        &lt;span class="c1"&gt;# actually calls `long_process`&lt;/span&gt;
 
-        self.assertTrue(call_long_process())
-&lt;/code&gt;&lt;/pre&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call_long_process&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;In &lt;code&gt;tests.py&lt;/code&gt;, we are testing that &lt;code&gt;long_process()&lt;/code&gt; function works correctly and 
 it should return &lt;code&gt;True&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;We're also testing that &lt;code&gt;call_long_process()&lt;/code&gt; function calls the &lt;code&gt;long_process()&lt;/code&gt;
 function.&lt;/p&gt;
 &lt;p&gt;Run the tests:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::sh
-$ python -m unittest tests
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -m unittest tests
 
-# Output
+&lt;span class="c1"&gt;# Output&lt;/span&gt;
 
 ..
 ----------------------------------------------------------------------
-Ran 2 test in 10.004s
+Ran &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; in &lt;span class="m"&gt;10&lt;/span&gt;.004s
 
 OK
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Our test passed but it took a long time. In our tests, the &lt;code&gt;long_process()&lt;/code&gt; function 
 is being called twice - once in &lt;code&gt;test_long_process&lt;/code&gt; and again in &lt;code&gt;test_call_long_process&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;In the second test, we only want to test if &lt;code&gt;call_long_process()&lt;/code&gt; actually calls 
@@ -121,40 +127,42 @@ is being called twice - once in &lt;code&gt;test_long_process&lt;/code&gt; and a
 we have tested that in the first test. So, there's no point in waiting 5 more seconds 
 for the process to finish.&lt;/p&gt;
 &lt;p&gt;Let's patch the &lt;code&gt;long_process()&lt;/code&gt; function in our second test.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-# tests.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# tests.py&lt;/span&gt;
 
-class MainTests(TestCase):
-    # ...
-    # same code as above ...
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+    &lt;span class="c1"&gt;# same code as above ...&lt;/span&gt;
 
-    def test_call_long_process(self):
-        with patch('main.long_process', return_value=True) as mock_process:
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_call_long_process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;main.long_process&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_process&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 
-            # test the return value of `call_long_process` 
-            self.assertTrue(call_long_process())
+            &lt;span class="c1"&gt;# test the return value of `call_long_process` &lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;call_long_process&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
 
-            # test if `call_long_process`
-            # issues a call to `long_process`
-            mock_process.assert_called_once()
-&lt;/code&gt;&lt;/pre&gt;
+            &lt;span class="c1"&gt;# test if `call_long_process`&lt;/span&gt;
+            &lt;span class="c1"&gt;# issues a call to `long_process`&lt;/span&gt;
+            &lt;span class="n"&gt;mock_process&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Above, we've patched the &lt;code&gt;long_process()&lt;/code&gt; function in the second test. We've called 
 the mock object &lt;code&gt;mock_process&lt;/code&gt;. We test that the return value of &lt;code&gt;call_long_process()&lt;/code&gt; 
 is &lt;code&gt;True&lt;/code&gt;, and we also test that it actually calls &lt;code&gt;long_process()&lt;/code&gt;. But since, 
 we've created a mock object for it, we have to test if &lt;code&gt;mock_process&lt;/code&gt; is called or 
 not. That would tell us if &lt;code&gt;call_long_process()&lt;/code&gt; issued a call, or not.&lt;/p&gt;
 &lt;p&gt;Let's run our tests:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::sh
-$ python -m unittest tests
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -m unittest tests
 
-# Output
+&lt;span class="c1"&gt;# Output&lt;/span&gt;
 
 ..
 ----------------------------------------------------------------------
-Ran 2 test in 5.003s
+Ran &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; in &lt;span class="m"&gt;5&lt;/span&gt;.003s
 
 OK
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;It worked! This time it took only 5 seconds to run all the tests. This means that 
 the &lt;code&gt;long_process()&lt;/code&gt; was actually called only once. &lt;/p&gt;
 &lt;p&gt;To execute our tests even faster, we can keep the tests for &lt;code&gt;long_process()&lt;/code&gt; in a 
@@ -174,33 +182,35 @@ The value of &lt;code&gt;search_fields&lt;/code&gt; can be set to any field that
 Haystack's &lt;code&gt;SearchModelAdmin&lt;/code&gt; class will override it and will search your 
 search index's &lt;code&gt;text&lt;/code&gt; field. &lt;/p&gt;
 &lt;p&gt;Below is an example that would provide a little more illustration to the solution:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-# models.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# models.py&lt;/span&gt;
 
-class Article(models.Model):
-    title = models.CharField(max_length=100)
-    body = models.TextField() # we want to search this field
-    pub_date = models.DateTimeField(auto_now_add=True)
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Article&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TextField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# we want to search this field&lt;/span&gt;
+    &lt;span class="n"&gt;pub_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTimeField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;auto_now_add&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    class Meta:
-        ordering = ['-pub_date'] # show newest articles first
-&lt;/code&gt;&lt;/pre&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;ordering&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-pub_date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# show newest articles first&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;I'm not gonna show how to set up Haystack search index. This post is not about that. 
 Hopefully, you've already done that. If not, you can read Haystack's &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/tutorial.html#handling-data"&gt;docs&lt;/a&gt; about 
 that.&lt;/p&gt;
 &lt;p&gt;Let's see the admin:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-# admin.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# admin.py&lt;/span&gt;
 
-from django.contrib import admin
-from haystack.admin import SearchModelAdmin
-from .models import Article
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;haystack.admin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Article&lt;/span&gt;
 
 
-class ArticleAdmin(SearchModelAdmin):
-    # set the search_fields attribute to a field present in Article
-    search_fields = ('title',) # or ('body',) it doesn't really matter
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ArticleAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# set the search_fields attribute to a field present in Article&lt;/span&gt;
+    &lt;span class="n"&gt;search_fields&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt; &lt;span class="c1"&gt;# or (&amp;#39;body&amp;#39;,) it doesn&amp;#39;t really matter&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;We have inherited our admin class from &lt;code&gt;SearchModelAdmin&lt;/code&gt; class provided 
 by Haystack. This will take the search query argument, search the index, then 
 return the results.&lt;/p&gt;
@@ -222,33 +232,37 @@ I'm too lazy to look for another solutions. Anyways, here it is:&lt;/p&gt;
 class that you want to use for ordering. So in this case, that field is &lt;code&gt;pub_date&lt;/code&gt;. 
 What I mean is, &lt;strong&gt;you have to included &lt;code&gt;pub_date&lt;/code&gt; in your search index&lt;/strong&gt; if you want 
 to use it for ordering. Example:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-    pub_date = indexes.DateTimeField(model_attr='pub_date')
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ArticleIndex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SearchIndex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Indexable&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;document&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;use_template&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;pub_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;indexes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTimeField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model_attr&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pub_date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Now copy the &lt;code&gt;haystack/admin.py&lt;/code&gt; file to your project or app's directory. Save it 
 as &lt;code&gt;search_admin.py&lt;/code&gt;. Open it in a text editor. You'll see a class defined as 
 &lt;code&gt;SearchChangeList&lt;/code&gt;. You'll have to change a line inside it. Find the following 
 line in that class:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-sqs = SearchQuerySet(self.haystack_connection).models(self.model).auto_query(request.GET[SEARCH_VAR]).load_all()
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sqs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SearchQuerySet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;haystack_connection&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;auto_query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;SEARCH_VAR&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Now, all you have to do is append &lt;code&gt;.order_by('field_name')&lt;/code&gt; to that line. In this case, 
 &lt;code&gt;.order_by('-pub_date')&lt;/code&gt; (&lt;strong&gt;"&lt;code&gt;-&lt;/code&gt;"&lt;/strong&gt; means reverse ordering). Example:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-sqs = SearchQuerySet(self.haystack_connection
-    ).models(self.model
-    ).auto_query(request.GET[SEARCH_VAR]
-    ).load_all().order_by('-pub-date')
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sqs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SearchQuerySet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;haystack_connection&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;auto_query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;SEARCH_VAR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;order_by&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-pub-date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Finally, in your &lt;code&gt;admin.py&lt;/code&gt; file, you've to import the &lt;code&gt;SearchModelAdmin&lt;/code&gt; from this file, 
 instead of from &lt;code&gt;haystack.admin&lt;/code&gt;.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-from haystack.admin import SearchModelAdmin # Replace this
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;haystack.admin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt; &lt;span class="c1"&gt;# Replace this&lt;/span&gt;
 
-from search_admin import SearchModelAdmin # with this
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;search_admin&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SearchModelAdmin&lt;/span&gt; &lt;span class="c1"&gt;# with this&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;I know, this workaround is really ugly. The more preferable way would be to 
 override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
@@ -268,18 +282,19 @@ client while serving other clients. Tornado is a single threaded server. And
 &lt;code&gt;time.sleep&lt;/code&gt; blocks the thread. So, if you use &lt;code&gt;time.sleep&lt;/code&gt;, for example, to simulate 
 a slow network connection, the whole server will block.&lt;/p&gt;
 &lt;p&gt;Consider this code: &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-import time
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 
-class BlockingHandler(web.RequestHandler):
-    def get(self):
-        time.sleep(10) 
-        self.write("Hello 1")
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BlockingHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello 1&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-class NonBlockingHandler(web.RequestHandler):
-    def get(self):
-        self.write("Hello 2")
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;NonBlockingHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello 2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;The code is pretty obvious: &lt;code&gt;BlockingHandler&lt;/code&gt; will wait 10 seconds before returning 
 a response. &lt;code&gt;NonBlockingHandler&lt;/code&gt; will return the response as soon as it gets a request.&lt;/p&gt;
 &lt;p&gt;So, you might think that if you make a request to &lt;code&gt;BlockingHandler&lt;/code&gt; and then make 
@@ -308,35 +323,37 @@ seem a big advantage, but in bigger projects, it's a godsend.&lt;/p&gt;
 &lt;li&gt;Do some processing on the downloaded page&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;First, let's see the code using callbacks:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-from tornado.httpclient AsyncHttpClient
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.httpclient&lt;/span&gt; &lt;span class="nn"&gt;AsyncHttpClient&lt;/span&gt;
 
-def fetch_url():
-    url = 'http://example.com'
-    http_client = AsyncHttpClient()
-    http_client.fetch(url, callback=process_result)
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_url&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://example.com&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;http_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;http_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-def process_result(result):
-    # do something with result
-    pass
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# do something with result&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;You can see we can't process the result in the &lt;code&gt;fetch_url&lt;/code&gt; function (sure, you can
 move the &lt;code&gt;process_result&lt;/code&gt; function inside &lt;code&gt;fetch_url&lt;/code&gt; but still it's a different 
 function). You need to create a separate function to process the result. A separate 
 function is required which will be called when the page downloads.&lt;/p&gt;
 &lt;p&gt;Now let's do the same thing using coroutines:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-from tornado.http client import AsyncHttpClient
-from tornado import gen
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.http&lt;/span&gt; &lt;span class="nn"&gt;client&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpClient&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;
 
-@gen.coroutine
-def fetch_url_and_process_result():
-    url = 'http://example.com'
-    http_client = AsyncHttpClient()
-    result = yield http_client(url)
-    # do something with the result
-    pass
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_url_and_process_result&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://example.com&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;http_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;http_client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;# do something with the result&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;The code is shorter and much straight forward. The way it works is that the coroutine 
 pauses every time it sees the &lt;code&gt;yield&lt;/code&gt; statement. Then you need to call the coroutine's
 &lt;code&gt;next()&lt;/code&gt; method to execute the &lt;code&gt;yield&lt;/code&gt; statement and the code after that. So, when 
@@ -369,18 +386,19 @@ to avoid callback based programming. But its real use case is if you're calling 
 function/coroutine that returns a Future, you should decorate the caller with 
 &lt;code&gt;gen.coroutine&lt;/code&gt; to make things work as expected.&lt;/p&gt;
 &lt;p&gt;See the code below:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-def return_future():
-    """This returns a Future object"""
-    f = Future()
-    return f
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;This returns a Future object&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
 
-@gen.coroutine
-def process_result():
-    future = return_future()
-    result = yield future
-    # do something with the result
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt;
+    &lt;span class="c1"&gt;# do something with the result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Code explanation:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; automatically calls &lt;code&gt;process_result&lt;/code&gt;'s &lt;code&gt;next()&lt;/code&gt;method 
@@ -395,43 +413,46 @@ def process_result():
 &lt;/ol&gt;
 &lt;p&gt;If you don't decorate the &lt;code&gt;process_result&lt;/code&gt; with &lt;code&gt;gen.coroutine&lt;/code&gt; you will need to 
 use callbacks and the code becomes a mess. Example:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-def return_future(callback):
-    f = Future()
-    f.add_done_callback(callback)
-    return f
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_done_callback&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
 
-def get_future():
-    future = return_future(callback=process_result)
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_future&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 
-def process_result(future):
-    result = future.result()
-    # do something with the result
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;# do something with the result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h4 id="gencoroutine-decorated-functions-will-return-a-future-automatically"&gt;&lt;strong&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will return a Future automatically&lt;/strong&gt;&lt;/h4&gt;
 &lt;p&gt;If you decorate a function/coroutine using &lt;code&gt;gen.coroutine&lt;/code&gt;, a Future object 
 will be returned automatically.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-@gen.coroutine
-def my_func():
-    pass # return nothing
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt; &lt;span class="c1"&gt;# return nothing&lt;/span&gt;
 
-x = my_func()
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-print type(x)
-# OUTPUTS:  tornado.concurrent.Future
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# OUTPUTS:  tornado.concurrent.Future&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;See? Even if you don't return anything, &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future.
 So, if you return a Future from a decorated function, &lt;code&gt;gen.coroutine&lt;/code&gt; will 
 wrap that Future object inside another Future object, which is not what you want.&lt;/p&gt;
 &lt;p&gt;Example:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-@gen.coroutine
-def my_func():
-    f = Future()
-    return f
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;In above code, you're returning a Future object, but that is not what you'll get. 
 You'll get this instead - &lt;code&gt;Future(f)&lt;/code&gt; - a Future within a Future. Because of this,
 you'll have to &lt;code&gt;yield&lt;/code&gt; twice to get the result.&lt;/p&gt;
@@ -440,17 +461,18 @@ you'll have to &lt;code&gt;yield&lt;/code&gt; twice to get the result.&lt;/p&gt;
 &lt;p&gt;If you're calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function/coroutine, you must decorate 
 the caller with &lt;code&gt;gen.coroutine&lt;/code&gt; too. And you must use the &lt;code&gt;yield&lt;/code&gt; keyword in the caller.&lt;/p&gt;
 &lt;p&gt;Example:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-@gen.coroutine
-def do_nothing():
-    pass
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;do_nothing&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
 
-@gen.coroutine
-def do_something():
-    result = yield do_nothing()
-    if result is not None:
-        print result
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;do_nothing&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;It makes perfect sense to use &lt;code&gt;yield&lt;/code&gt; keyword in the caller (above, &lt;code&gt;do_something&lt;/code&gt;)
 because &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future. And to get it's result, you need to 
 yield it. &lt;/p&gt;
@@ -467,17 +489,18 @@ yield it. &lt;/p&gt;
 operations inside them. As soon as the method ends or returns, the request is considered 
 finished.&lt;/p&gt;
 &lt;p&gt;Look at the following code example:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-class MainHandler(web.RequestHandler):
-    def get(self):
-        http = AsyncHttpHandler()
-        http.fetch("example.com", callback=self.on_response)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpHandler&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;example.com&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    def on_response(self, response):
-        # do something with response ...
-        self.write(response)
-        self.finish()
-&lt;/code&gt;&lt;/pre&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# do something with response ...&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finish&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;The above code aims to do the following things:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Asynchronously fetch "example.com" from &lt;code&gt;get&lt;/code&gt; method&lt;/li&gt;
@@ -491,18 +514,19 @@ ends, the request is considered finished. Tornado won't keep the client in the w
 list while the url is fetched. It will just return an empty response.&lt;/p&gt;
 &lt;p&gt;This is where the &lt;code&gt;web.asynchronous&lt;/code&gt; decorator comes in. You decorate the &lt;code&gt;get&lt;/code&gt; method 
 with this decorator and Tornado won't terminate the request when &lt;code&gt;get&lt;/code&gt; method exists.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-class MainHandler(web.RequestHandler):
-    @web.asynchronous
-    def get(self):
-        http = AsyncHttpHandler()
-        http.fetch("example.com", callback=self.on_response)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="nd"&gt;@web.asynchronous&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHttpHandler&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;example.com&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    def on_response(self, response):
-        # do something with response ...
-        self.write(response)
-        self.finish()
-&lt;/code&gt;&lt;/pre&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# do something with response ...&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;finish&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;The updated code will work as expected. One thing to note here is the last line -
 &lt;code&gt;self.finish()&lt;/code&gt;. It means you are telling Tornado to terminate the request. If 
 you don't write this line, Tornado will keep the request open. You only need to 
@@ -524,9 +548,10 @@ documentation covers them nicely.&lt;/p&gt;
 &lt;p&gt;I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using &lt;code&gt;pip&lt;/code&gt;. So, I wrote 
 this command:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::sh
-$ pip install -r requirements.txt
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install -r requirements.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;But, it spat out the following error:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Could not find a version that satisfies the requirement &lt;package-name&gt; (from versions:)
@@ -543,13 +568,14 @@ it gave me a &lt;code&gt;403 Forbidden&lt;/code&gt; error. &lt;/p&gt;
 created empty &lt;code&gt;tar.gz&lt;/code&gt; files without actually downloading them.&lt;/p&gt;
 &lt;p&gt;I also tried changing my server's DNS. Nothing worked.&lt;/p&gt;
 &lt;p&gt;Finally, I though &lt;em&gt;"Let's just see if I can even visit PyPi webpage from this server"&lt;/em&gt;. &lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::sh    
-$ curl https://pypi.python.org
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl https://pypi.python.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
-If you are a hosting customer, please contact your hosting company's support. 
+If you are a hosting customer, please contact your hosting company&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;s support. 
 If you are the hosting company, please contact infrastructure-staff@python.org to resolve
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;The output above shows that my server's IP was blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. 
 Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. &lt;/p&gt;
@@ -564,9 +590,10 @@ Well, obviously, because my hosting provider was running many servers
 &lt;p&gt;Since, all this was happening because &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt; has blacklisted the IP 
 of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/code&gt; install via a proxy. &lt;/p&gt;
 &lt;p&gt;Supplying a proxy address to &lt;code&gt;pip&lt;/code&gt; is easy:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::sh
-$ pip install -r requirements.txt --proxy address:port
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install -r requirements.txt --proxy address:port
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;</summary><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
 &lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
 sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
@@ -577,6 +604,5 @@ I read about Python on Wikipedia and other online resources. I was really
 fascinated by the number of applications this language had. Plus, the name is cool.
  It bears an air of mystery about itself.&lt;/p&gt;
 &lt;p&gt;Here's the first line of code I ever wrote, and perhaps you did too:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::python
-print "Hello, World!"
-&lt;/code&gt;&lt;/pre&gt;</summary></entry></feed>
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello, World!&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary></entry></feed>
