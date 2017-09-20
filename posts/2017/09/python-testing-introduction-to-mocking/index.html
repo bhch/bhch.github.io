@@ -30,7 +30,7 @@
                     bhch
                 </a>
             </h3>
-            <p class="brand-tagline">This is my blog. There are many like it, but this one is mine.</p>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
             <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
               <span class="hamburger-box">
                 <span class="hamburger-inner"></span>
@@ -71,7 +71,7 @@
     </header>
 
     <div class="post-description">
-        <h1 id="what-is-mocking">What is mocking?</h1>
+        <h1 id="what-is-mocking">What is mocking?<a class="headerlink" href="#what-is-mocking" title="Permanent link">&para;</a></h1>
 <p>Let me try and explain what mocking is and when you need it, with an example &mdash;</p>
 <p>Suppose you have a web app where users can sign up. When a user signs up, 
 your app automatically sends them an email asking them to verify their email 
@@ -117,7 +117,7 @@ you will trigger sending email.</p>
 calling <code>send_verification_mail</code> function? </p>
 <p>This is where mocking comes in. Mocking means you can create a <em>fake</em> function 
 to replace <code>send_verifiation_mail</code> in your tests. That's it.</p>
-<h1 id="a-simple-example">A Simple example</h1>
+<h1 id="a-simple-example">A Simple example<a class="headerlink" href="#a-simple-example" title="Permanent link">&para;</a></h1>
 <hr />
 <p><strong>Note:</strong></p>
 <p>If you're using Python 2.7 or any version &lt; 3.3, you'll need to install the 
@@ -239,7 +239,7 @@ OK
 the <code>long_process()</code> was actually called only once. </p>
 <p>To execute our tests even faster, we can keep the tests for <code>long_process()</code> in a 
 separate file and run them only when we have to. </p>
-<h1 id="thats-it">That's it</h1>
+<h1 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h1>
 <p>In this post, I covered what mocking is and when you need it. I've also shown a 
 very basic example of getting started with mocking.</p>
 <p>In the next post, I'll write about how you can mock HTTP requests made using the 
@@ -267,24 +267,29 @@ very basic example of getting started with mocking.</p>
     <p>
         &copy; 
         <!-- Use JS to render year of copyright-->
-        <script>document.write(new Date().getFullYear())</script> 
-        bhch
- 
-        <!-- middot spacer-->
-        &nbsp;&middot;&nbsp;
- 
-        content available under 
-        <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+        <script>document.write(new Date().getFullYear())</script>
 
-        <!-- middot spacer-->
-        &nbsp;&middot;&nbsp;
+                <!-- plain text -->
+                bhch
 
-        made with <a href="http://bitbucket.org/bhch/beak/">beak</a>
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
 
-        <!-- middot spacer-->
-        &nbsp;&middot;&nbsp;
-        
-        powered by <a href="http://blog.getpelican.com">Pelican</a>
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
     </p>
 </div>        </div>
     </div>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-16T00:00:00+05:30</updated><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1 id="what-is-mocking"&gt;What is mocking?&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-16T00:00:00+05:30</updated><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1 id="what-is-mocking"&gt;What is mocking?&lt;a class="headerlink" href="#what-is-mocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Let me try and explain what mocking is and when you need it, with an example &amp;mdash;&lt;/p&gt;
 &lt;p&gt;Suppose you have a web app where users can sign up. When a user signs up, 
 your app automatically sends them an email asking them to verify their email 
@@ -45,7 +45,7 @@ you will trigger sending email.&lt;/p&gt;
 calling &lt;code&gt;send_verification_mail&lt;/code&gt; function? &lt;/p&gt;
 &lt;p&gt;This is where mocking comes in. Mocking means you can create a &lt;em&gt;fake&lt;/em&gt; function 
 to replace &lt;code&gt;send_verifiation_mail&lt;/code&gt; in your tests. That's it.&lt;/p&gt;
-&lt;h1 id="a-simple-example"&gt;A Simple example&lt;/h1&gt;
+&lt;h1 id="a-simple-example"&gt;A Simple example&lt;a class="headerlink" href="#a-simple-example" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;hr /&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;If you're using Python 2.7 or any version &amp;lt; 3.3, you'll need to install the 
@@ -167,7 +167,7 @@ OK
 the &lt;code&gt;long_process()&lt;/code&gt; was actually called only once. &lt;/p&gt;
 &lt;p&gt;To execute our tests even faster, we can keep the tests for &lt;code&gt;long_process()&lt;/code&gt; in a 
 separate file and run them only when we have to. &lt;/p&gt;
-&lt;h1 id="thats-it"&gt;That's it&lt;/h1&gt;
+&lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In this post, I covered what mocking is and when you need it. I've also shown a 
 very basic example of getting started with mocking.&lt;/p&gt;
 &lt;p&gt;In the next post, I'll write about how you can mock HTTP requests made using the 
@@ -216,7 +216,7 @@ by Haystack. This will take the search query argument, search the index, then
 return the results.&lt;/p&gt;
 &lt;p&gt;That's it! Try searching for something in Django admin, it should be working 
 (if it's not, have you updated or created a search index yet?).&lt;/p&gt;
-&lt;h3 id="heads-up"&gt;Heads up&lt;/h3&gt;
+&lt;h3 id="heads-up"&gt;Heads up&lt;a class="headerlink" href="#heads-up" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;There are two downsides of integrating Haystack search with Django admin.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; The checkboxes on the left of the changelist page table will not appear in the
 search results. I don't find this a big issue, though. If a find a solution to 
@@ -268,14 +268,14 @@ override the code, instead of copying  and changing it. Believe me, I tried that
 But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
 overriding is not possible. Well, it is possible, but, it would still be ugly. 
 Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-09-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
-explain some things in depth. Being new to async programming model, I found many things 
+explain certain things in depth. Being new to async programming model, I found many things 
 quite difficult to understand. The documentation also lacks a good tutorial, like 
 the Django's documnetation has an excellent Polls tutorial which explains almost 
 everything that one needs to get started with Django.&lt;/p&gt;
 &lt;p&gt;I feel I should share what I learned in the hope that it might help somebody. 
 These are the things I think if were present in the documentation, would have 
 made my life much easier.&lt;/p&gt;
-&lt;h1 id="can-tornado-make-blocking-code-non-blocking"&gt;Can Tornado make blocking code non-blocking?&lt;/h1&gt;
+&lt;h1 id="can-tornado-make-blocking-code-non-blocking"&gt;Can Tornado make blocking code non-blocking?&lt;a class="headerlink" href="#can-tornado-make-blocking-code-non-blocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;No, it can't. Tornado isn't magic. For example, you can't use &lt;code&gt;time.sleep&lt;/code&gt; in your 
 Tornado app and expect that Tornado will pause the code execution for one particular 
 client while serving other clients. Tornado is a single threaded server. And 
@@ -311,7 +311,7 @@ handler is running. That is why you won't get a response for &lt;code&gt;NonBloc
 if &lt;code&gt;BlockingHandler&lt;/code&gt; is already running.&lt;/p&gt;
 &lt;p&gt;This is what will happen if you try to query a database synchronously. It will 
 block the server &lt;strong&gt;for all the clients&lt;/strong&gt; and &lt;strong&gt;all the handlers&lt;/strong&gt; until the query finishes.&lt;/p&gt;
-&lt;h1 id="how-coroutines-make-writing-async-code-easier-than-callbacks"&gt;How coroutines make writing async code easier than callbacks?&lt;/h1&gt;
+&lt;h1 id="how-coroutines-make-writing-async-code-easier-than-callbacks"&gt;How coroutines make writing async code easier than callbacks?&lt;a class="headerlink" href="#how-coroutines-make-writing-async-code-easier-than-callbacks" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;With callbacks, you need to write &lt;em&gt;extra&lt;/em&gt; code that you won't even require if 
 you use coroutines. Thus, code becomes shorter and more readable. Other than that, 
 coroutines won't automatically make your code async. Again, they just make the 
@@ -365,7 +365,7 @@ More is explained below in the &lt;code&gt;gen.coroutine&lt;/code&gt; section.&l
 many different operations on the result. If you're using callbacks, you'll need 
 to create as many functions as many time you need to process the result.&lt;/p&gt;
 &lt;p&gt;But with coroutines, you can do all the operations in one single function (coroutine).&lt;/p&gt;
-&lt;h1 id="what-are-futures"&gt;What are Futures?&lt;/h1&gt;
+&lt;h1 id="what-are-futures"&gt;What are Futures?&lt;a class="headerlink" href="#what-are-futures" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;A Future is a &lt;em&gt;promise&lt;/em&gt; to return the result when it's available. For example, 
 if you request a web page using Tornado's &lt;code&gt;httpclient.AsyncHttpClient&lt;/code&gt;, it will 
 return a &lt;em&gt;Future&lt;/em&gt; - an instance of Tornado's &lt;code&gt;Future&lt;/code&gt; class - while it waits for 
@@ -376,11 +376,11 @@ get the result. &lt;/p&gt;
 might need to return a Future manually from functions/coroutines. But that's a 
 somewhat advanced usage. &lt;a href="https://github.com/tornadoweb/tornado/blob/master/demos/chat/chatdemo.py#L38-L54"&gt;This example code&lt;/a&gt; from Tornado's
 GitHub repo might be helpful for that. &lt;/p&gt;
-&lt;h4 id="summary"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id="summary"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;a class="headerlink" href="#summary" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;ol&gt;
 &lt;li&gt;Yielding a Future returns it's result&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id="gencoroutine"&gt;&lt;code&gt;gen.coroutine&lt;/code&gt;&lt;/h1&gt;
+&lt;h1 id="gencoroutine"&gt;&lt;code&gt;gen.coroutine&lt;/code&gt;&lt;a class="headerlink" href="#gencoroutine" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; is a decorator that you can use with your functions or coroutines 
 to avoid callback based programming. But its real use case is if you're calling a 
 function/coroutine that returns a Future, you should decorate the caller with 
@@ -428,7 +428,7 @@ use callbacks and the code becomes a mess. Example:&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h4 id="gencoroutine-decorated-functions-will-return-a-future-automatically"&gt;&lt;strong&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will return a Future automatically&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id="gencoroutine-decorated-functions-will-return-a-future-automatically"&gt;&lt;strong&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will return a Future automatically&lt;/strong&gt;&lt;a class="headerlink" href="#gencoroutine-decorated-functions-will-return-a-future-automatically" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;If you decorate a function/coroutine using &lt;code&gt;gen.coroutine&lt;/code&gt;, a Future object 
 will be returned automatically.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
@@ -457,7 +457,7 @@ wrap that Future object inside another Future object, which is not what you want
 You'll get this instead - &lt;code&gt;Future(f)&lt;/code&gt; - a Future within a Future. Because of this,
 you'll have to &lt;code&gt;yield&lt;/code&gt; twice to get the result.&lt;/p&gt;
 &lt;p&gt;If you're returning a Future manually, you don't need to decorate the function.&lt;/p&gt;
-&lt;h4 id="calling-a-gencoroutine-decorated-function"&gt;&lt;strong&gt;Calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id="calling-a-gencoroutine-decorated-function"&gt;&lt;strong&gt;Calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function&lt;/strong&gt;&lt;a class="headerlink" href="#calling-a-gencoroutine-decorated-function" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;If you're calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function/coroutine, you must decorate 
 the caller with &lt;code&gt;gen.coroutine&lt;/code&gt; too. And you must use the &lt;code&gt;yield&lt;/code&gt; keyword in the caller.&lt;/p&gt;
 &lt;p&gt;Example:&lt;/p&gt;
@@ -476,14 +476,14 @@ the caller with &lt;code&gt;gen.coroutine&lt;/code&gt; too. And you must use the
 &lt;p&gt;It makes perfect sense to use &lt;code&gt;yield&lt;/code&gt; keyword in the caller (above, &lt;code&gt;do_something&lt;/code&gt;)
 because &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future. And to get it's result, you need to 
 yield it. &lt;/p&gt;
-&lt;h4 id="summary_1"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id="summary_1"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;a class="headerlink" href="#summary_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will automatically retrurn a Future&lt;/li&gt;
 &lt;li&gt;You don't need to use callbacks if you're using coroutines&lt;/li&gt;
 &lt;li&gt;If a function/coroutine is calling another coroutine decorated with &lt;code&gt;gen.coroutine&lt;/code&gt;,
  it must also be decorated with &lt;code&gt;gen.coroutine&lt;/code&gt; and must use the &lt;code&gt;yield&lt;/code&gt; keyword&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id="webasynchronous"&gt;&lt;code&gt;web.asynchronous&lt;/code&gt;&lt;/h1&gt;
+&lt;h1 id="webasynchronous"&gt;&lt;code&gt;web.asynchronous&lt;/code&gt;&lt;a class="headerlink" href="#webasynchronous" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;This decorator is meant to be used on methods of Tornado's &lt;code&gt;web.RequestHandler&lt;/code&gt;, namely: &lt;code&gt;get&lt;/code&gt;, 
 &lt;code&gt;post&lt;/code&gt; etc. Since all Tornado handlers are synchronous, you can't perform any async 
 operations inside them. As soon as the method ends or returns, the request is considered 
@@ -531,7 +531,7 @@ with this decorator and Tornado won't terminate the request when &lt;code&gt;get
 &lt;code&gt;self.finish()&lt;/code&gt;. It means you are telling Tornado to terminate the request. If 
 you don't write this line, Tornado will keep the request open. You only need to 
 use &lt;code&gt;self.finish()&lt;/code&gt; when you're using &lt;code&gt;web.asynchronous&lt;/code&gt; decorator.&lt;/p&gt;
-&lt;h4 id="summary_2"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/h4&gt;
+&lt;h4 id="summary_2"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;a class="headerlink" href="#summary_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;web.asynchronous&lt;/code&gt; is used with handler methods (eg. &lt;code&gt;get&lt;/code&gt;, &lt;code&gt;post&lt;/code&gt;, etc.)&lt;/li&gt;
 &lt;li&gt;It's used to make handler methods wait and not terminate the request on exit&lt;/li&gt;
@@ -539,12 +539,12 @@ use &lt;code&gt;self.finish()&lt;/code&gt; when you're using &lt;code&gt;web.asy
  this decorator&lt;/li&gt;
 &lt;li&gt;This is useful when using callbacks&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id="thats-it"&gt;That's it&lt;/h1&gt;
+&lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
 documentation covers them nicely.&lt;/p&gt;
 &lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-04-13T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;To skip the background and go to the solution, &lt;a href="#solution"&gt;click here&lt;/a&gt;.&lt;/p&gt;
-&lt;h1 id="background"&gt;Background&lt;/h1&gt;
+&lt;h1 id="background"&gt;Background&lt;a class="headerlink" href="#background" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using &lt;code&gt;pip&lt;/code&gt;. So, I wrote 
 this command:&lt;/p&gt;
@@ -579,7 +579,7 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 &lt;p&gt;The output above shows that my server's IP was blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. 
 Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. &lt;/p&gt;
-&lt;h1 id="solution"&gt;Solution&lt;a name="solution"&gt;&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id="solution"&gt;Solution&lt;a name="solution"&gt;&lt;/a&gt;&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First let's see the solutions that I tried and &lt;strong&gt;didn't work&lt;/strong&gt; for me:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Changing DNS resolver of my server&lt;/li&gt;

@@ -41,6 +41,7 @@ body {
         position: fixed;
         top: 0;
         bottom: 0;
+        overflow-y: auto;
     }
 }
 
@@ -75,6 +76,7 @@ a:focus {
     margin-bottom: 30px;
     font-weight: 300;
     color: #e5e5e5;
+    line-height: 1.35
 }
 .sidebar a {
     color: #e5e5e5;
@@ -392,8 +394,26 @@ h1, h2, h3, h4, h5, h6 {
     padding: 10px 0;
     font-family: sans-serif;
 }
+.headerlink {
+    margin-left: 15px;
+    visibility: hidden;
+}
+h1:hover .headerlink, 
+h2:hover .headerlink,
+h3:hover .headerlink, 
+h4:hover .headerlink,
+h5:hover .headerlink,
+h6:hover .headerlink {
+    visibility: visible;
+}
 :target {
     background: #fffdc7;
+}
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 .pull-left {
     float: left;

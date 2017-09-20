@@ -30,7 +30,7 @@
                     bhch
                 </a>
             </h3>
-            <p class="brand-tagline">This is my blog. There are many like it, but this one is mine.</p>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
             <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
               <span class="hamburger-box">
                 <span class="hamburger-inner"></span>
@@ -74,14 +74,14 @@
 
     <div class="post-description">
         <p>Tornado's documentation is very feeble, or at least I found it so. It doesn't 
-explain some things in depth. Being new to async programming model, I found many things 
+explain certain things in depth. Being new to async programming model, I found many things 
 quite difficult to understand. The documentation also lacks a good tutorial, like 
 the Django's documnetation has an excellent Polls tutorial which explains almost 
 everything that one needs to get started with Django.</p>
 <p>I feel I should share what I learned in the hope that it might help somebody. 
 These are the things I think if were present in the documentation, would have 
 made my life much easier.</p>
-<h1 id="can-tornado-make-blocking-code-non-blocking">Can Tornado make blocking code non-blocking?</h1>
+<h1 id="can-tornado-make-blocking-code-non-blocking">Can Tornado make blocking code non-blocking?<a class="headerlink" href="#can-tornado-make-blocking-code-non-blocking" title="Permanent link">&para;</a></h1>
 <p>No, it can't. Tornado isn't magic. For example, you can't use <code>time.sleep</code> in your 
 Tornado app and expect that Tornado will pause the code execution for one particular 
 client while serving other clients. Tornado is a single threaded server. And 
@@ -117,7 +117,7 @@ handler is running. That is why you won't get a response for <code>NonBlockingHa
 if <code>BlockingHandler</code> is already running.</p>
 <p>This is what will happen if you try to query a database synchronously. It will 
 block the server <strong>for all the clients</strong> and <strong>all the handlers</strong> until the query finishes.</p>
-<h1 id="how-coroutines-make-writing-async-code-easier-than-callbacks">How coroutines make writing async code easier than callbacks?</h1>
+<h1 id="how-coroutines-make-writing-async-code-easier-than-callbacks">How coroutines make writing async code easier than callbacks?<a class="headerlink" href="#how-coroutines-make-writing-async-code-easier-than-callbacks" title="Permanent link">&para;</a></h1>
 <p>With callbacks, you need to write <em>extra</em> code that you won't even require if 
 you use coroutines. Thus, code becomes shorter and more readable. Other than that, 
 coroutines won't automatically make your code async. Again, they just make the 
@@ -171,7 +171,7 @@ More is explained below in the <code>gen.coroutine</code> section.</p>
 many different operations on the result. If you're using callbacks, you'll need 
 to create as many functions as many time you need to process the result.</p>
 <p>But with coroutines, you can do all the operations in one single function (coroutine).</p>
-<h1 id="what-are-futures">What are Futures?</h1>
+<h1 id="what-are-futures">What are Futures?<a class="headerlink" href="#what-are-futures" title="Permanent link">&para;</a></h1>
 <p>A Future is a <em>promise</em> to return the result when it's available. For example, 
 if you request a web page using Tornado's <code>httpclient.AsyncHttpClient</code>, it will 
 return a <em>Future</em> - an instance of Tornado's <code>Future</code> class - while it waits for 
@@ -182,11 +182,11 @@ get the result. </p>
 might need to return a Future manually from functions/coroutines. But that's a 
 somewhat advanced usage. <a href="https://github.com/tornadoweb/tornado/blob/master/demos/chat/chatdemo.py#L38-L54">This example code</a> from Tornado's
 GitHub repo might be helpful for that. </p>
-<h4 id="summary"><strong>Summary:</strong></h4>
+<h4 id="summary"><strong>Summary:</strong><a class="headerlink" href="#summary" title="Permanent link">&para;</a></h4>
 <ol>
 <li>Yielding a Future returns it's result</li>
 </ol>
-<h1 id="gencoroutine"><code>gen.coroutine</code></h1>
+<h1 id="gencoroutine"><code>gen.coroutine</code><a class="headerlink" href="#gencoroutine" title="Permanent link">&para;</a></h1>
 <p><code>gen.coroutine</code> is a decorator that you can use with your functions or coroutines 
 to avoid callback based programming. But its real use case is if you're calling a 
 function/coroutine that returns a Future, you should decorate the caller with 
@@ -234,7 +234,7 @@ use callbacks and the code becomes a mess. Example:</p>
 </pre></div>
 
 
-<h4 id="gencoroutine-decorated-functions-will-return-a-future-automatically"><strong><code>gen.coroutine</code> decorated functions will return a Future automatically</strong></h4>
+<h4 id="gencoroutine-decorated-functions-will-return-a-future-automatically"><strong><code>gen.coroutine</code> decorated functions will return a Future automatically</strong><a class="headerlink" href="#gencoroutine-decorated-functions-will-return-a-future-automatically" title="Permanent link">&para;</a></h4>
 <p>If you decorate a function/coroutine using <code>gen.coroutine</code>, a Future object 
 will be returned automatically.</p>
 <div class="highlight"><pre><span></span><span class="nd">@gen.coroutine</span>
@@ -263,7 +263,7 @@ wrap that Future object inside another Future object, which is not what you want
 You'll get this instead - <code>Future(f)</code> - a Future within a Future. Because of this,
 you'll have to <code>yield</code> twice to get the result.</p>
 <p>If you're returning a Future manually, you don't need to decorate the function.</p>
-<h4 id="calling-a-gencoroutine-decorated-function"><strong>Calling a <code>gen.coroutine</code> decorated function</strong></h4>
+<h4 id="calling-a-gencoroutine-decorated-function"><strong>Calling a <code>gen.coroutine</code> decorated function</strong><a class="headerlink" href="#calling-a-gencoroutine-decorated-function" title="Permanent link">&para;</a></h4>
 <p>If you're calling a <code>gen.coroutine</code> decorated function/coroutine, you must decorate 
 the caller with <code>gen.coroutine</code> too. And you must use the <code>yield</code> keyword in the caller.</p>
 <p>Example:</p>
@@ -282,14 +282,14 @@ the caller with <code>gen.coroutine</code> too. And you must use the <code>yield
 <p>It makes perfect sense to use <code>yield</code> keyword in the caller (above, <code>do_something</code>)
 because <code>gen.coroutine</code> will return a Future. And to get it's result, you need to 
 yield it. </p>
-<h4 id="summary_1"><strong>Summary:</strong></h4>
+<h4 id="summary_1"><strong>Summary:</strong><a class="headerlink" href="#summary_1" title="Permanent link">&para;</a></h4>
 <ol>
 <li><code>gen.coroutine</code> decorated functions will automatically retrurn a Future</li>
 <li>You don't need to use callbacks if you're using coroutines</li>
 <li>If a function/coroutine is calling another coroutine decorated with <code>gen.coroutine</code>,
  it must also be decorated with <code>gen.coroutine</code> and must use the <code>yield</code> keyword</li>
 </ol>
-<h1 id="webasynchronous"><code>web.asynchronous</code></h1>
+<h1 id="webasynchronous"><code>web.asynchronous</code><a class="headerlink" href="#webasynchronous" title="Permanent link">&para;</a></h1>
 <p>This decorator is meant to be used on methods of Tornado's <code>web.RequestHandler</code>, namely: <code>get</code>, 
 <code>post</code> etc. Since all Tornado handlers are synchronous, you can't perform any async 
 operations inside them. As soon as the method ends or returns, the request is considered 
@@ -337,7 +337,7 @@ with this decorator and Tornado won't terminate the request when <code>get</code
 <code>self.finish()</code>. It means you are telling Tornado to terminate the request. If 
 you don't write this line, Tornado will keep the request open. You only need to 
 use <code>self.finish()</code> when you're using <code>web.asynchronous</code> decorator.</p>
-<h4 id="summary_2"><strong>Summary:</strong></h4>
+<h4 id="summary_2"><strong>Summary:</strong><a class="headerlink" href="#summary_2" title="Permanent link">&para;</a></h4>
 <ol>
 <li><code>web.asynchronous</code> is used with handler methods (eg. <code>get</code>, <code>post</code>, etc.)</li>
 <li>It's used to make handler methods wait and not terminate the request on exit</li>
@@ -345,7 +345,7 @@ use <code>self.finish()</code> when you're using <code>web.asynchronous</code> d
  this decorator</li>
 <li>This is useful when using callbacks</li>
 </ol>
-<h1 id="thats-it">That's it</h1>
+<h1 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h1>
 <p>The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
 documentation covers them nicely.</p>
@@ -373,24 +373,29 @@ documentation covers them nicely.</p>
     <p>
         &copy; 
         <!-- Use JS to render year of copyright-->
-        <script>document.write(new Date().getFullYear())</script> 
-        bhch
- 
-        <!-- middot spacer-->
-        &nbsp;&middot;&nbsp;
- 
-        content available under 
-        <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+        <script>document.write(new Date().getFullYear())</script>
 
-        <!-- middot spacer-->
-        &nbsp;&middot;&nbsp;
+                <!-- plain text -->
+                bhch
 
-        made with <a href="http://bitbucket.org/bhch/beak/">beak</a>
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
 
-        <!-- middot spacer-->
-        &nbsp;&middot;&nbsp;
-        
-        powered by <a href="http://blog.getpelican.com">Pelican</a>
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
     </p>
 </div>        </div>
     </div>
