@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python testing - How to mock requests during tests - blog of bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">Python testing - How to mock requests during tests</h1>
+<p class="post-meta">
+    Sat 30 September 2017
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/mock/" class="tag">mock</a>
+                <a href="https://bhch.github.io/tag/unittest/" class="tag">unittest</a>
+                <a href="https://bhch.github.io/tag/requests/" class="tag">requests</a>
+                <a href="https://bhch.github.io/tag/urllib/" class="tag">urllib</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <p>In the previous post, I wrote an introductory post about getting started with 
+mocking tests in Python. You can find it here: 
+<a href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/">Python testing - Introduction to mocking</a>.</p>
+<p>In this post, I'll discuss how you can mock HTTP requests made using <code>urllib</code> 
+or <a href="http://docs.python-requests.org/en/master/"><code>requests</code></a> package.</p>
+<h1 id="a-simple-example">A simple example<a class="headerlink" href="#a-simple-example" title="Permanent link">&para;</a></h1>
+<p>This is a very simple example:</p>
+<div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">elif</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+
+
+<p>The <code>url_exists</code> function takes a url and makes an HTTP request to that url. If the 
+response status code is <code>200</code>, it returns <code>True</code>,  if status code is <code>404</code>, it 
+returns <code>False</code>.</p>
+<p>Now, we'll test if it works as expected. But instead of making actual requests to 
+the url, we'll mock the requests and set the desired status codes for our mock 
+object manually.</p>
+<div class="highlight"><pre><span></span><span class="c1"># tests.py</span>
+
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span> <span class="c1"># for Python &gt;= 3.3 use unittest.mock</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">url_exists</span>
+
+
+<span class="k">class</span> <span class="nc">FetchTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_returns_true_if_url_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;requests.get&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_request</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://google.com&#39;</span>
+
+            <span class="c1"># set a `status_code` attribute on the mock object</span>
+            <span class="c1"># with value 200</span>
+            <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_returns_false_if_url_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;requests.get&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_request</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://google.com/nonexistingurl&#39;</span>
+
+                <span class="c1"># set a `status_code` attribute on the mock object</span>
+                <span class="c1"># with value 404</span>
+                <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Let's run the tests:</p>
+<div class="highlight"><pre><span></span>$ python -m unittest tests
+
+<span class="c1"># Output</span>
+
+..
+----------------------------------------------------------------------
+Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">0</span>.003s
+
+OK
+</pre></div>
+
+
+<p>So it worked!</p>
+<h3 id="testing-if-the-mocked-object-actually-gets-called">Testing if the mocked object actually gets called<a class="headerlink" href="#testing-if-the-mocked-object-actually-gets-called" title="Permanent link">&para;</a></h3>
+<p>In our tests above, we only test the return value of <code>url_exists</code> function. 
+But there's a problem with our tests. We don't know for sure if the <code>url_exists</code> 
+function calls <code>requests.get</code> method because we've mocked it in our tests. 
+We have to know for sure that <code>url_exists</code> function really calls <code>requests.get</code> 
+method.</p>
+<p>Well, <code>mock</code> makes it easy for us to test that. To test if <code>url_exits</code> tries 
+to call <code>requests.get</code> once with the given <code>url</code>, we can use <code>assert_called_once_with</code>
+attribute on the mocked object.</p>
+<p><strong>NOTE:</strong> From our small example, it is very obvious that <code>url_exists</code> does call 
+<code>requests.get</code> method. But in a large piece of code, with a lot of variables and 
+conditional statements, things don't remain so obvious any more - you will have 
+to write tests to make sure things work as expected.</p>
+<p>Let's modify our test:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FetchTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_returns_true_if_url_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;requests.get&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_request</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://google.com&#39;</span>
+
+            <span class="c1"># set a `status_code` attribute on the mock object</span>
+            <span class="c1"># with value 200</span>
+            <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+            <span class="c1"># test if requests.get was called </span>
+            <span class="c1"># with the given url or not</span>
+            <span class="n">mock_request</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">test_returns_false_if_url_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;requests.get&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_request</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://google.com/nonexistingurl&#39;</span>
+
+                <span class="c1"># set a `status_code` attribute on the mock object</span>
+                <span class="c1"># with value 404</span>
+                <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+                <span class="c1"># test if requests.get was called </span>
+                <span class="c1"># with the given url or not</span>
+                <span class="n">mock_request</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Run it again and it should still work.</p>
+<h1 id="faking-the-response">Faking the response<a class="headerlink" href="#faking-the-response" title="Permanent link">&para;</a></h1>
+<p>At certain times, just mocking requests isn't enough because you'd need to do some 
+operations on the response. For those purposes, you can make the mocked request 
+object return a <em>fake</em> response for the purpose of testing.</p>
+<p>Let's write another function in the <em>main.py</em> file called <code>process_response</code>. </p>
+<div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">process_response</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+
+
+<p>The <code>process_response</code> function just requests a url and returns the content of 
+the response. It's a very simple example.</p>
+<p>Since <code>mock</code> allows you to set attributes on the mocked object on-the-fly while 
+testing, setting a fake response is pretty straight forward. We can even create 
+attributes of attributes. So, to mock the content, we'll need to set a <code>content</code> 
+attribute on the the <code>return_value</code> of the <code>mock_request</code>, something like - 
+<code>mock_request.return_value.content = "Fake content"</code>. </p>
+<p>It's very convenient that we can create attributes of attributes like this. In a 
+general Python class, you'll first need to create an attribute before you can 
+create it's sub-attribute.</p>
+<p>Let's test our code:</p>
+<div class="highlight"><pre><span></span><span class="c1"># tests.py</span>
+
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">process_response</span>
+
+<span class="k">class</span> <span class="nc">ProcessResponseTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_response_content_is_not_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;requests.get&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_request</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://google.com&#39;</span>
+
+            <span class="c1"># set fake content</span>
+            <span class="n">mock_request</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;Fake content&quot;</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="n">process_response</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertNotNone</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Run the tests again and they should all pass.</p>
+<h1 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h1>
+<p>In this post we saw how we can mock HTTP requests by mocking <code>requests.get</code> or 
+(<code>urllib.urlopen</code>). We also saw that we can mock  <code>requests.get</code> directly or we 
+can mock the funciton/code that calls <code>requests.get</code>. Both the ways work, so it 
+doesn't matter which way we choose.</p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2017/09/python-testing-how-to-mock-requests-during-tests/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script>
+
+                <!-- plain text -->
+                bhch
+
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
+
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

@@ -361,13 +361,21 @@ a code {
     color: rgb(61, 146, 201);
 }
 blockquote {
-    background-color: #f8f8f8;
-    border-left: 5px solid #b7b7b7;
+    background-color: #ffffed;
+    border-left: 5px solid #bfad7a;
     padding: 1px 15px;
     margin: 0;
 }
 blockquote em {
   font-size: small;
+}
+blockquote h1:first-child, 
+blockquote h2:first-child, 
+blockquote h3:first-child, 
+blockquote h4:first-child, 
+blockquote h5:first-child, 
+blockquote h6:first-child {
+    margin-top: 0;
 }
 h1 {
     font-size: 2em;

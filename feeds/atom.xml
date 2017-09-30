@@ -1,5 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-16T00:00:00+05:30</updated><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1 id="what-is-mocking"&gt;What is mocking?&lt;a class="headerlink" href="#what-is-mocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-30T00:00:00+05:30</updated><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
+mocking tests in Python. You can find it here: 
+&lt;a href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/"&gt;Python testing - Introduction to mocking&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In this post, I'll discuss how you can mock HTTP requests made using &lt;code&gt;urllib&lt;/code&gt; 
+or &lt;a href="http://docs.python-requests.org/en/master/"&gt;&lt;code&gt;requests&lt;/code&gt;&lt;/a&gt; package.&lt;/p&gt;
+&lt;h1 id="a-simple-example"&gt;A simple example&lt;a class="headerlink" href="#a-simple-example" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;This is a very simple example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;url_exists&lt;/code&gt; function takes a url and makes an HTTP request to that url. If the 
+response status code is &lt;code&gt;200&lt;/code&gt;, it returns &lt;code&gt;True&lt;/code&gt;,  if status code is &lt;code&gt;404&lt;/code&gt;, it 
+returns &lt;code&gt;False&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now, we'll test if it works as expected. But instead of making actual requests to 
+the url, we'll mock the requests and set the desired status codes for our mock 
+object manually.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# tests.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TestCase&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt; &lt;span class="c1"&gt;# for Python &amp;gt;= 3.3 use unittest.mock&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;main&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;url_exists&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FetchTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_returns_true_if_url_found&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;requests.get&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://google.com&amp;#39;&lt;/span&gt;
+
+            &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
+            &lt;span class="c1"&gt;# with value 200&lt;/span&gt;
+            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
+
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_returns_false_if_url_not_found&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;requests.get&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://google.com/nonexistingurl&amp;#39;&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
+                &lt;span class="c1"&gt;# with value 404&lt;/span&gt;
+                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
+
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's run the tests:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -m unittest tests
+
+&lt;span class="c1"&gt;# Output&lt;/span&gt;
+
+..
+----------------------------------------------------------------------
+Ran &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; in &lt;span class="m"&gt;0&lt;/span&gt;.003s
+
+OK
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So it worked!&lt;/p&gt;
+&lt;h3 id="testing-if-the-mocked-object-actually-gets-called"&gt;Testing if the mocked object actually gets called&lt;a class="headerlink" href="#testing-if-the-mocked-object-actually-gets-called" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;In our tests above, we only test the return value of &lt;code&gt;url_exists&lt;/code&gt; function. 
+But there's a problem with our tests. We don't know for sure if the &lt;code&gt;url_exists&lt;/code&gt; 
+function calls &lt;code&gt;requests.get&lt;/code&gt; method because we've mocked it in our tests. 
+We have to know for sure that &lt;code&gt;url_exists&lt;/code&gt; function really calls &lt;code&gt;requests.get&lt;/code&gt; 
+method.&lt;/p&gt;
+&lt;p&gt;Well, &lt;code&gt;mock&lt;/code&gt; makes it easy for us to test that. To test if &lt;code&gt;url_exits&lt;/code&gt; tries 
+to call &lt;code&gt;requests.get&lt;/code&gt; once with the given &lt;code&gt;url&lt;/code&gt;, we can use &lt;code&gt;assert_called_once_with&lt;/code&gt;
+attribute on the mocked object.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; From our small example, it is very obvious that &lt;code&gt;url_exists&lt;/code&gt; does call 
+&lt;code&gt;requests.get&lt;/code&gt; method. But in a large piece of code, with a lot of variables and 
+conditional statements, things don't remain so obvious any more - you will have 
+to write tests to make sure things work as expected.&lt;/p&gt;
+&lt;p&gt;Let's modify our test:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FetchTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_returns_true_if_url_found&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;requests.get&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://google.com&amp;#39;&lt;/span&gt;
+
+            &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
+            &lt;span class="c1"&gt;# with value 200&lt;/span&gt;
+            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
+
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+            &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
+            &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
+            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_returns_false_if_url_not_found&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;requests.get&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://google.com/nonexistingurl&amp;#39;&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
+                &lt;span class="c1"&gt;# with value 404&lt;/span&gt;
+                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
+
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
+                &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
+                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run it again and it should still work.&lt;/p&gt;
+&lt;h1 id="faking-the-response"&gt;Faking the response&lt;a class="headerlink" href="#faking-the-response" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;At certain times, just mocking requests isn't enough because you'd need to do some 
+operations on the response. For those purposes, you can make the mocked request 
+object return a &lt;em&gt;fake&lt;/em&gt; response for the purpose of testing.&lt;/p&gt;
+&lt;p&gt;Let's write another function in the &lt;em&gt;main.py&lt;/em&gt; file called &lt;code&gt;process_response&lt;/code&gt;. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;process_response&lt;/code&gt; function just requests a url and returns the content of 
+the response. It's a very simple example.&lt;/p&gt;
+&lt;p&gt;Since &lt;code&gt;mock&lt;/code&gt; allows you to set attributes on the mocked object on-the-fly while 
+testing, setting a fake response is pretty straight forward. We can even create 
+attributes of attributes. So, to mock the content, we'll need to set a &lt;code&gt;content&lt;/code&gt; 
+attribute on the the &lt;code&gt;return_value&lt;/code&gt; of the &lt;code&gt;mock_request&lt;/code&gt;, something like - 
+&lt;code&gt;mock_request.return_value.content = "Fake content"&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;It's very convenient that we can create attributes of attributes like this. In a 
+general Python class, you'll first need to create an attribute before you can 
+create it's sub-attribute.&lt;/p&gt;
+&lt;p&gt;Let's test our code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# tests.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;unittest&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TestCase&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;main&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;process_response&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ProcessResponseTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_response_content_is_not_empty&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;requests.get&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://google.com&amp;#39;&lt;/span&gt;
+
+            &lt;span class="c1"&gt;# set fake content&lt;/span&gt;
+            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Fake content&amp;quot;&lt;/span&gt;
+
+            &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;process_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertNotNone&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run the tests again and they should all pass.&lt;/p&gt;
+&lt;h1 id="conclusion"&gt;Conclusion&lt;a class="headerlink" href="#conclusion" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;In this post we saw how we can mock HTTP requests by mocking &lt;code&gt;requests.get&lt;/code&gt; or 
+(&lt;code&gt;urllib.urlopen&lt;/code&gt;). We also saw that we can mock  &lt;code&gt;requests.get&lt;/code&gt; directly or we 
+can mock the funciton/code that calls &lt;code&gt;requests.get&lt;/code&gt;. Both the ways work, so it 
+doesn't matter which way we choose.&lt;/p&gt;</summary><category term="python"></category><category term="mock"></category><category term="unittest"></category><category term="requests"></category><category term="urllib"></category></entry><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1 id="what-is-mocking"&gt;What is mocking?&lt;a class="headerlink" href="#what-is-mocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Let me try and explain what mocking is and when you need it, with an example &amp;mdash;&lt;/p&gt;
 &lt;p&gt;Suppose you have a web app where users can sign up. When a user signs up, 
 your app automatically sends them an email asking them to verify their email 
@@ -170,7 +341,7 @@ separate file and run them only when we have to. &lt;/p&gt;
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In this post, I covered what mocking is and when you need it. I've also shown a 
 very basic example of getting started with mocking.&lt;/p&gt;
-&lt;p&gt;In the next post, I'll write about how you can mock HTTP requests made using the 
+&lt;p&gt;In the &lt;a href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/"&gt;next post&lt;/a&gt;, I'll write about how you can mock HTTP requests made using the 
 &lt;code&gt;requests&lt;/code&gt; library.&lt;/p&gt;</summary><category term="python"></category><category term="mock"></category><category term="unittest"></category></entry><entry><title>How to integrate haystack search with Django admin</title><link href="https://bhch.github.io/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/" rel="alternate"></link><updated>2017-08-28T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-08-28:posts/2017/08/how-to-integrate-haystack-search-with-django-admin/</id><summary type="html">&lt;p&gt;Recently, I had to integrate Haystack with Django admin so as to be able to 
 perform a full text search just via the admin. Looking around for resources on the 
 internet, I came across &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/admin.html"&gt;this page&lt;/a&gt; in Haystack's docs. Turns out Haystack 
@@ -267,7 +438,7 @@ instead of from &lt;code&gt;haystack.admin&lt;/code&gt;.&lt;/p&gt;
 override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
 overriding is not possible. Well, it is possible, but, it would still be ugly. 
-Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-09-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
+Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
 explain certain things in depth. Being new to async programming model, I found many things 
 quite difficult to understand. The documentation also lacks a good tutorial, like 
 the Django's documnetation has an excellent Polls tutorial which explains almost 
@@ -280,7 +451,7 @@ made my life much easier.&lt;/p&gt;
 Tornado app and expect that Tornado will pause the code execution for one particular 
 client while serving other clients. Tornado is a single threaded server. And 
 &lt;code&gt;time.sleep&lt;/code&gt; blocks the thread. So, if you use &lt;code&gt;time.sleep&lt;/code&gt;, for example, to simulate 
-a slow network connection, the whole server will block.&lt;/p&gt;
+a slow network connection (or a database query), the whole server will block.&lt;/p&gt;
 &lt;p&gt;Consider this code: &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
 
@@ -376,11 +547,13 @@ get the result. &lt;/p&gt;
 might need to return a Future manually from functions/coroutines. But that's a 
 somewhat advanced usage. &lt;a href="https://github.com/tornadoweb/tornado/blob/master/demos/chat/chatdemo.py#L38-L54"&gt;This example code&lt;/a&gt; from Tornado's
 GitHub repo might be helpful for that. &lt;/p&gt;
-&lt;h4 id="summary"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;a class="headerlink" href="#summary" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;h6 id="summary"&gt;Summary:&lt;a class="headerlink" href="#summary" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h6&gt;
 &lt;ol&gt;
 &lt;li&gt;Yielding a Future returns it's result&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id="gencoroutine"&gt;&lt;code&gt;gen.coroutine&lt;/code&gt;&lt;a class="headerlink" href="#gencoroutine" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="how-gencoroutine-works"&gt;How &lt;code&gt;gen.coroutine&lt;/code&gt; works?&lt;a class="headerlink" href="#how-gencoroutine-works" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; is a decorator that you can use with your functions or coroutines 
 to avoid callback based programming. But its real use case is if you're calling a 
 function/coroutine that returns a Future, you should decorate the caller with 
@@ -401,8 +574,9 @@ function/coroutine that returns a Future, you should decorate the caller with
 
 &lt;p&gt;Code explanation:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; automatically calls &lt;code&gt;process_result&lt;/code&gt;'s &lt;code&gt;next()&lt;/code&gt;method 
- (to start the generator).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;process_result&lt;/code&gt; is a generator and we've decorated it wil &lt;code&gt;gen.coroutine&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; automatically calls &lt;code&gt;process_result&lt;/code&gt;'s &lt;code&gt;next()&lt;/code&gt;method to start 
+  the generator.&lt;/li&gt;
 &lt;li&gt;Then it puts this &lt;code&gt;process_result&lt;/code&gt; coroutine to a &lt;em&gt;"waiting list"&lt;/em&gt; until 
  &lt;code&gt;future&lt;/code&gt; has a result. There might be some other code that's
   responsible for setting the result on the &lt;code&gt;future&lt;/code&gt;, I've not shown that code. 
@@ -421,14 +595,13 @@ use callbacks and the code becomes a mess. Example:&lt;/p&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_future&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;return_future&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="c1"&gt;# do something with the result&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h4 id="gencoroutine-decorated-functions-will-return-a-future-automatically"&gt;&lt;strong&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will return a Future automatically&lt;/strong&gt;&lt;a class="headerlink" href="#gencoroutine-decorated-functions-will-return-a-future-automatically" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;h3 id="gencoroutine-decorated-functions-will-return-a-future-automatically"&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will return a Future automatically&lt;a class="headerlink" href="#gencoroutine-decorated-functions-will-return-a-future-automatically" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;If you decorate a function/coroutine using &lt;code&gt;gen.coroutine&lt;/code&gt;, a Future object 
 will be returned automatically.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
@@ -442,22 +615,26 @@ will be returned automatically.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;See? Even if you don't return anything, &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future.
-So, if you return a Future from a decorated function, &lt;code&gt;gen.coroutine&lt;/code&gt; will 
-wrap that Future object inside another Future object, which is not what you want.&lt;/p&gt;
-&lt;p&gt;Example:&lt;/p&gt;
+&lt;p&gt;See? Even if you don't return anything, &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future.&lt;/p&gt;
+&lt;p&gt;So, if you return a Future from a decorated function, &lt;code&gt;gen.coroutine&lt;/code&gt; will 
+wrap that Future object inside another Future object, which is not what you want.
+Example:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@gen.coroutine&lt;/span&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Future&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="c1"&gt;# never return a future from a gen.coroutine decorated function&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;In above code, you're returning a Future object, but that is not what you'll get. 
 You'll get this instead - &lt;code&gt;Future(f)&lt;/code&gt; - a Future within a Future. Because of this,
-you'll have to &lt;code&gt;yield&lt;/code&gt; twice to get the result.&lt;/p&gt;
+you'll have to &lt;code&gt;yield&lt;/code&gt; twice to get the result. If you're returning a Future 
+manually, you don't need to decorate the function.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;h6 id="important"&gt;Important:&lt;a class="headerlink" href="#important" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h6&gt;
 &lt;p&gt;If you're returning a Future manually, you don't need to decorate the function.&lt;/p&gt;
-&lt;h4 id="calling-a-gencoroutine-decorated-function"&gt;&lt;strong&gt;Calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function&lt;/strong&gt;&lt;a class="headerlink" href="#calling-a-gencoroutine-decorated-function" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="calling-a-gencoroutine-decorated-function"&gt;Calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function&lt;a class="headerlink" href="#calling-a-gencoroutine-decorated-function" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;If you're calling a &lt;code&gt;gen.coroutine&lt;/code&gt; decorated function/coroutine, you must decorate 
 the caller with &lt;code&gt;gen.coroutine&lt;/code&gt; too. And you must use the &lt;code&gt;yield&lt;/code&gt; keyword in the caller.&lt;/p&gt;
 &lt;p&gt;Example:&lt;/p&gt;
@@ -476,18 +653,21 @@ the caller with &lt;code&gt;gen.coroutine&lt;/code&gt; too. And you must use the
 &lt;p&gt;It makes perfect sense to use &lt;code&gt;yield&lt;/code&gt; keyword in the caller (above, &lt;code&gt;do_something&lt;/code&gt;)
 because &lt;code&gt;gen.coroutine&lt;/code&gt; will return a Future. And to get it's result, you need to 
 yield it. &lt;/p&gt;
-&lt;h4 id="summary_1"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;a class="headerlink" href="#summary_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;h6 id="summary_1"&gt;Summary:&lt;a class="headerlink" href="#summary_1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h6&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; decorated functions will automatically retrurn a Future&lt;/li&gt;
 &lt;li&gt;You don't need to use callbacks if you're using coroutines&lt;/li&gt;
 &lt;li&gt;If a function/coroutine is calling another coroutine decorated with &lt;code&gt;gen.coroutine&lt;/code&gt;,
- it must also be decorated with &lt;code&gt;gen.coroutine&lt;/code&gt; and must use the &lt;code&gt;yield&lt;/code&gt; keyword&lt;/li&gt;
+it must also be decorated with &lt;code&gt;gen.coroutine&lt;/code&gt; and must use the &lt;code&gt;yield&lt;/code&gt; keyword&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id="webasynchronous"&gt;&lt;code&gt;web.asynchronous&lt;/code&gt;&lt;a class="headerlink" href="#webasynchronous" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;/blockquote&gt;
+&lt;h1 id="what-is-webasynchronous-and-when-to-use-it"&gt;What is &lt;code&gt;web.asynchronous&lt;/code&gt; and when to use it?&lt;a class="headerlink" href="#what-is-webasynchronous-and-when-to-use-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;This decorator is meant to be used on methods of Tornado's &lt;code&gt;web.RequestHandler&lt;/code&gt;, namely: &lt;code&gt;get&lt;/code&gt;, 
-&lt;code&gt;post&lt;/code&gt; etc. Since all Tornado handlers are synchronous, you can't perform any async 
-operations inside them. As soon as the method ends or returns, the request is considered 
-finished.&lt;/p&gt;
+&lt;code&gt;post&lt;/code&gt; etc. &lt;/p&gt;
+&lt;p&gt;Since all Tornado handlers are &lt;strong&gt;synchronous&lt;/strong&gt;, you can't perform any async 
+operations inside them. What that means is as soon as the method ends or returns, 
+the request is considered finished.&lt;/p&gt;
 &lt;p&gt;Look at the following code example:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MainHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -531,14 +711,16 @@ with this decorator and Tornado won't terminate the request when &lt;code&gt;get
 &lt;code&gt;self.finish()&lt;/code&gt;. It means you are telling Tornado to terminate the request. If 
 you don't write this line, Tornado will keep the request open. You only need to 
 use &lt;code&gt;self.finish()&lt;/code&gt; when you're using &lt;code&gt;web.asynchronous&lt;/code&gt; decorator.&lt;/p&gt;
-&lt;h4 id="summary_2"&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;a class="headerlink" href="#summary_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;h6 id="summary_2"&gt;Summary:&lt;a class="headerlink" href="#summary_2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h6&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;web.asynchronous&lt;/code&gt; is used with handler methods (eg. &lt;code&gt;get&lt;/code&gt;, &lt;code&gt;post&lt;/code&gt;, etc.)&lt;/li&gt;
 &lt;li&gt;It's used to make handler methods wait and not terminate the request on exit&lt;/li&gt;
 &lt;li&gt;You need to manually terminate the request using &lt;code&gt;self.finish()&lt;/code&gt; when using 
- this decorator&lt;/li&gt;
+this decorator&lt;/li&gt;
 &lt;li&gt;This is useful when using callbacks&lt;/li&gt;
 &lt;/ol&gt;
+&lt;/blockquote&gt;
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
