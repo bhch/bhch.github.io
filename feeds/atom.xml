@@ -96,10 +96,10 @@ to write tests to make sure things work as expected.&lt;/p&gt;
 
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
-            &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
-            &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
-            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
+&lt;span class="hll"&gt;            &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_returns_false_if_url_not_found&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;requests.get&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -111,10 +111,10 @@ to write tests to make sure things work as expected.&lt;/p&gt;
 
                 &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
-                &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
-                &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
-                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;span class="hll"&gt;                &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;                &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assert_called_once_with&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Run it again and it should still work.&lt;/p&gt;
