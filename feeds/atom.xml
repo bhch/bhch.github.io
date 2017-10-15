@@ -1,5 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>blog of bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-09-30T00:00:00+05:30</updated><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-10-15T00:00:00+05:30</updated><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
+multiple HTTP requests and process them asynchronously, I do.&lt;/p&gt;
+&lt;p&gt;The advantage of using callbacks in this case over coroutines is that 
+as soon as Tornado gets a response, it calls the callback function to handle the 
+response. So, for example, if you're making 5 HTTP requests, and Tornado gets a 
+response for 3rd request before other requests, it will call the callback 
+function so that the response can be handled right away. You don't have to wait 
+for all the requests to finish.&lt;/p&gt;
+&lt;p&gt;But with coroutines, this can't be done. Since, you have to use &lt;code&gt;yield&lt;/code&gt; statement 
+in a coroutine to get the result of a request future, the coroutine won't move 
+forward until that request has been fetched (&lt;em&gt;i.e.&lt;/em&gt; until the future gets a result).&lt;/p&gt;
+&lt;p&gt;Although, you can yield a list of futures, but then again, the coroutine won't move 
+forward until all the futures in the list get resolved.&lt;/p&gt;
+&lt;p&gt;Since Tornado 4.1, there's a class called &lt;a href="http://www.tornadoweb.org/en/stable/gen.html#tornado.gen.WaitIterator"&gt;&lt;code&gt;gen.WaitIterator&lt;/code&gt;&lt;/a&gt; which can be 
+used to circumvent this issue. You can give it a few futures to hold and it allows 
+you to yield them as any of them get resolved. This way, you don't have to wait 
+for all the futures to resolve.&lt;/p&gt;
+&lt;h1 id="example-using-callbacks"&gt;Example using callbacks&lt;a class="headerlink" href="#example-using-callbacks" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ioloop&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.httpclient&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncHTTPClient&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_urls&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Fetches urls&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="n"&gt;urls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 1&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 4&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="n"&gt;http_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHTTPClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Fetching &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;
+        &lt;span class="n"&gt;http_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;handle_response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Handles response&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# do something with the response&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;error&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;fetch_urls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;ioloop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IOLoop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;current&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id="but-how-to-stop-the-loop"&gt;But how to stop the loop?&lt;a class="headerlink" href="#but-how-to-stop-the-loop" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Although, the above solution is pretty good, but there's a catch - you'd have to 
+stop the loop manually. But how would you know if you've fetched and processed 
+all the urls?&lt;/p&gt;
+&lt;p&gt;One solution that I can think of is you can have a global variable to store the 
+number of urls to fetch, and another variable to store the number of responses 
+handled. Then you can check if you've gotten the responses for all the urls by 
+checking if number of responses handled is equal to number of urls to fetch. If yes,
+that means all the requests have been finished and processed and now
+you can stop the loop by calling &lt;code&gt;ioloop.IOLoop.current().stop()&lt;/code&gt;.&lt;/p&gt;
+&lt;h1 id="example-using-coroutines"&gt;Example using coroutines&lt;a class="headerlink" href="#example-using-coroutines" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Since version 4.1, Tornado provides a [&lt;code&gt;gen.WaitIterator&lt;/code&gt;] class to which allows 
+you to make all the requests at once and process them as they come, without 
+having to wait for others.&lt;/p&gt;
+&lt;p&gt;To use &lt;a href="http://www.tornadoweb.org/en/stable/gen.html#tornado.gen.WaitIterator"&gt;&lt;code&gt;gen.WaitIterator&lt;/code&gt;&lt;/a&gt;, you need to create an instance of it. It takes 
+an arbitrary number of futures as arguments. It doesn't take a list as argument, 
+but you can use &lt;code&gt;*&lt;/code&gt; to unpack the list. See the example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ioloop&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.httpclient&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncHTTPClient&lt;/span&gt;
+
+&lt;span class="nd"&gt;@gen.couroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_and_handle&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Fetches the urls and handles/processes the response&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="n"&gt;urls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 1&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;url 4&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="n"&gt;http_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncHTTPClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;waiter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WaitIterator&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;http_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;waiter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;done&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;waiter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;next&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;
+            &lt;span class="k"&gt;continue&lt;/span&gt;
+
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;body&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;loop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ioloop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IOLoop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;current&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run_sync&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fetch_and_handle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The limitation of &lt;code&gt;gen.WaitIterator&lt;/code&gt; is that you can't add more futures&lt;/p&gt;
+&lt;h3 id="no-need-to-worry-about-stopping-the-loop"&gt;No need to worry about stopping the loop&lt;a class="headerlink" href="#no-need-to-worry-about-stopping-the-loop" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;We can't run a coroutine like we run a normal function. 
+To run a coroutine, we have used IOLoop's &lt;code&gt;run_sync&lt;/code&gt; method. This also 
+gives us an advantage of not worrying about stopping the loop. Tornado will 
+automatically stop the loop when all the requests are finished and processed.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category></entry><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
 mocking tests in Python. You can find it here: 
 &lt;a href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/"&gt;Python testing - Introduction to mocking&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In this post, I'll discuss how you can mock HTTP requests made using &lt;code&gt;urllib&lt;/code&gt; 
@@ -574,7 +683,7 @@ function/coroutine that returns a Future, you should decorate the caller with
 
 &lt;p&gt;Code explanation:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;code&gt;process_result&lt;/code&gt; is a generator and we've decorated it wil &lt;code&gt;gen.coroutine&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;process_result&lt;/code&gt; is a generator and we've decorated it will &lt;code&gt;gen.coroutine&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;gen.coroutine&lt;/code&gt; automatically calls &lt;code&gt;process_result&lt;/code&gt;'s &lt;code&gt;next()&lt;/code&gt;method to start 
   the generator.&lt;/li&gt;
 &lt;li&gt;Then it puts this &lt;code&gt;process_result&lt;/code&gt; coroutine to a &lt;em&gt;"waiting list"&lt;/em&gt; until 

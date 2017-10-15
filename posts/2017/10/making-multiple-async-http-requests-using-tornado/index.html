@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making multiple async HTTP requests using Tornado - bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">Making multiple async HTTP requests using Tornado</h1>
+<p class="post-meta">
+    Sun 15 October 2017
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/tornado/" class="tag">tornado</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <p>Although I don't like using callbacks for writing async code, but to make 
+multiple HTTP requests and process them asynchronously, I do.</p>
+<p>The advantage of using callbacks in this case over coroutines is that 
+as soon as Tornado gets a response, it calls the callback function to handle the 
+response. So, for example, if you're making 5 HTTP requests, and Tornado gets a 
+response for 3rd request before other requests, it will call the callback 
+function so that the response can be handled right away. You don't have to wait 
+for all the requests to finish.</p>
+<p>But with coroutines, this can't be done. Since, you have to use <code>yield</code> statement 
+in a coroutine to get the result of a request future, the coroutine won't move 
+forward until that request has been fetched (<em>i.e.</em> until the future gets a result).</p>
+<p>Although, you can yield a list of futures, but then again, the coroutine won't move 
+forward until all the futures in the list get resolved.</p>
+<p>Since Tornado 4.1, there's a class called <a href="http://www.tornadoweb.org/en/stable/gen.html#tornado.gen.WaitIterator"><code>gen.WaitIterator</code></a> which can be 
+used to circumvent this issue. You can give it a few futures to hold and it allows 
+you to yield them as any of them get resolved. This way, you don't have to wait 
+for all the futures to resolve.</p>
+<h1 id="example-using-callbacks">Example using callbacks<a class="headerlink" href="#example-using-callbacks" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">ioloop</span>
+<span class="kn">from</span> <span class="nn">tornado.httpclient</span> <span class="kn">import</span> <span class="n">AsyncHTTPClient</span>
+
+<span class="k">def</span> <span class="nf">fetch_urls</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Fetches urls&quot;&quot;&quot;</span>
+
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;url 1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url 2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url 3&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url 4&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">http_client</span> <span class="o">=</span> <span class="n">AsyncHTTPClient</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Fetching </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span>
+        <span class="n">http_client</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">handle_response</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handles response&quot;&quot;&quot;</span>
+
+    <span class="c1"># do something with the response</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">error</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">response</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">fetch_urls</span><span class="p">()</span>
+    <span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+
+<h3 id="but-how-to-stop-the-loop">But how to stop the loop?<a class="headerlink" href="#but-how-to-stop-the-loop" title="Permanent link">&para;</a></h3>
+<p>Although, the above solution is pretty good, but there's a catch - you'd have to 
+stop the loop manually. But how would you know if you've fetched and processed 
+all the urls?</p>
+<p>One solution that I can think of is you can have a global variable to store the 
+number of urls to fetch, and another variable to store the number of responses 
+handled. Then you can check if you've gotten the responses for all the urls by 
+checking if number of responses handled is equal to number of urls to fetch. If yes,
+that means all the requests have been finished and processed and now
+you can stop the loop by calling <code>ioloop.IOLoop.current().stop()</code>.</p>
+<h1 id="example-using-coroutines">Example using coroutines<a class="headerlink" href="#example-using-coroutines" title="Permanent link">&para;</a></h1>
+<p>Since version 4.1, Tornado provides a [<code>gen.WaitIterator</code>] class to which allows 
+you to make all the requests at once and process them as they come, without 
+having to wait for others.</p>
+<p>To use <a href="http://www.tornadoweb.org/en/stable/gen.html#tornado.gen.WaitIterator"><code>gen.WaitIterator</code></a>, you need to create an instance of it. It takes 
+an arbitrary number of futures as arguments. It doesn't take a list as argument, 
+but you can use <code>*</code> to unpack the list. See the example:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">ioloop</span>
+<span class="kn">from</span> <span class="nn">tornado.httpclient</span> <span class="kn">import</span> <span class="n">AsyncHTTPClient</span>
+
+<span class="nd">@gen.couroutine</span>
+<span class="k">def</span> <span class="nf">fetch_and_handle</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Fetches the urls and handles/processes the response&quot;&quot;&quot;</span>
+
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;url 1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url 2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url 3&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url 4&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">http_client</span> <span class="o">=</span> <span class="n">AsyncHTTPClient</span><span class="p">()</span>
+
+    <span class="n">waiter</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">WaitIterator</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">http_client</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">])</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">waiter</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">waiter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">e</span>
+            <span class="k">continue</span>
+
+        <span class="k">print</span> <span class="n">response</span><span class="o">.</span><span class="n">body</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_sync</span><span class="p">(</span><span class="n">fetch_and_handle</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The limitation of <code>gen.WaitIterator</code> is that you can't add more futures</p>
+<h3 id="no-need-to-worry-about-stopping-the-loop">No need to worry about stopping the loop<a class="headerlink" href="#no-need-to-worry-about-stopping-the-loop" title="Permanent link">&para;</a></h3>
+<p>We can't run a coroutine like we run a normal function. 
+To run a coroutine, we have used IOLoop's <code>run_sync</code> method. This also 
+gives us an advantage of not worrying about stopping the loop. Tornado will 
+automatically stop the loop when all the requests are finished and processed.</p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2017/10/making-multiple-async-http-requests-using-tornado/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script>
+
+                <!-- plain text -->
+                bhch
+
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
+
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

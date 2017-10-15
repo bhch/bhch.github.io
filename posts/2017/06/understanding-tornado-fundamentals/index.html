@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Understanding Tornado fundamentals - blog of bhch</title>
+    <title>Understanding Tornado fundamentals - bhch</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -209,7 +209,7 @@ function/coroutine that returns a Future, you should decorate the caller with
 
 <p>Code explanation:</p>
 <ol>
-<li><code>process_result</code> is a generator and we've decorated it wil <code>gen.coroutine</code>.</li>
+<li><code>process_result</code> is a generator and we've decorated it will <code>gen.coroutine</code>.</li>
 <li><code>gen.coroutine</code> automatically calls <code>process_result</code>'s <code>next()</code>method to start 
   the generator.</li>
 <li>Then it puts this <code>process_result</code> coroutine to a <em>"waiting list"</em> until 
