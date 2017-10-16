@@ -58,6 +58,8 @@
         <h1 class="post-title">Fix the pip error: Couldn't find a version that satisfies the requirement</h1>
 <p class="post-meta">
     Thu 13 April 2017
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        updated Mon 16 October 2017
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
@@ -70,7 +72,13 @@
     </header>
 
     <div class="post-description">
-        <p>To skip the background and go to the solution, <a href="#solution">click here</a>.</p>
+        <h1 id="tldr">tl;dr<a class="headerlink" href="#tldr" title="Permanent link">&para;</a></h1>
+<p>Most probable reason for this error is because PyPI server isn't responding to 
+your requests because it has blacklisted your IP address.</p>
+<p>To fix it, just use a proxy with pip. See <a href="#solution">the solution</a> at 
+the end of this post.</p>
+<p>This might also happen because the PyPI server is down. So, in that case there's
+nothing that can be done.</p>
 <h1 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h1>
 <p>I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using <code>pip</code>. So, I wrote 
@@ -106,7 +114,7 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 <p>The output above shows that my server's IP was blacklisted by <a href="https://python.org">https://python.org</a>. 
 Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. </p>
-<h1 id="solution">Solution<a name="solution"></a><a class="headerlink" href="#solution" title="Permanent link">&para;</a></h1>
+<h1 id="what-didnt-help">What didn't help<a class="headerlink" href="#what-didnt-help" title="Permanent link">&para;</a></h1>
 <p>First let's see the solutions that I tried and <strong>didn't work</strong> for me:</p>
 <ol>
 <li>Changing DNS resolver of my server</li>
@@ -114,6 +122,7 @@ Well, obviously, because my hosting provider was running many servers
 <li>Downloading packages using <code>wget</code>. (Got 403 Forbidden error)</li>
 <li>Downloading packages using <code>curl</code>. (It just created invalid tarball files, instead of actually downloading them)</li>
 </ol>
+<h1 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h1>
 <p>Since, all this was happening because <a href="https://python.org">https://python.org</a> has blacklisted the IP 
 of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy. </p>
 <p>Supplying a proxy address to <code>pip</code> is easy:</p>
@@ -121,6 +130,7 @@ of my hosting provider, the obvious solution was to make <code>pip</code> instal
 </pre></div>
 
 
+<p>Above, <code>address</code> and <code>port</code> are IP address and port of the proxy.</p>
 <p>To find proxies, just <a href="https://www.google.com/search?q=proxy+list">search Google for proxy list</a>.</p>
     </div>
 </section>

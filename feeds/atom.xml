@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-10-15T00:00:00+05:30</updated><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-10-16T00:00:00+05:30</updated><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
 multiple HTTP requests and process them asynchronously, I do.&lt;/p&gt;
 &lt;p&gt;The advantage of using callbacks in this case over coroutines is that 
 as soon as Tornado gets a response, it calls the callback function to handle the 
@@ -834,7 +834,13 @@ this decorator&lt;/li&gt;
 &lt;p&gt;The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
 documentation covers them nicely.&lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-04-13T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;To skip the background and go to the solution, &lt;a href="#solution"&gt;click here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-10-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;h1 id="tldr"&gt;tl;dr&lt;a class="headerlink" href="#tldr" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Most probable reason for this error is because PyPI server isn't responding to 
+your requests because it has blacklisted your IP address.&lt;/p&gt;
+&lt;p&gt;To fix it, just use a proxy with pip. See &lt;a href="#solution"&gt;the solution&lt;/a&gt; at 
+the end of this post.&lt;/p&gt;
+&lt;p&gt;This might also happen because the PyPI server is down. So, in that case there's
+nothing that can be done.&lt;/p&gt;
 &lt;h1 id="background"&gt;Background&lt;a class="headerlink" href="#background" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;I was working on a server recently and I had to install some Python packages. 
 What better way to install Python packages other than by using &lt;code&gt;pip&lt;/code&gt;. So, I wrote 
@@ -870,7 +876,7 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 &lt;p&gt;The output above shows that my server's IP was blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. 
 Well, obviously, because my hosting provider was running many servers 
 (virtual servers) behind a single IP. This explains the reason for getting blacklisted. &lt;/p&gt;
-&lt;h1 id="solution"&gt;Solution&lt;a name="solution"&gt;&lt;/a&gt;&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id="what-didnt-help"&gt;What didn't help&lt;a class="headerlink" href="#what-didnt-help" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;First let's see the solutions that I tried and &lt;strong&gt;didn't work&lt;/strong&gt; for me:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Changing DNS resolver of my server&lt;/li&gt;
@@ -878,6 +884,7 @@ Well, obviously, because my hosting provider was running many servers
 &lt;li&gt;Downloading packages using &lt;code&gt;wget&lt;/code&gt;. (Got 403 Forbidden error)&lt;/li&gt;
 &lt;li&gt;Downloading packages using &lt;code&gt;curl&lt;/code&gt;. (It just created invalid tarball files, instead of actually downloading them)&lt;/li&gt;
 &lt;/ol&gt;
+&lt;h1 id="solution"&gt;Solution&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Since, all this was happening because &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt; has blacklisted the IP 
 of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/code&gt; install via a proxy. &lt;/p&gt;
 &lt;p&gt;Supplying a proxy address to &lt;code&gt;pip&lt;/code&gt; is easy:&lt;/p&gt;
@@ -885,6 +892,7 @@ of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/cod
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Above, &lt;code&gt;address&lt;/code&gt; and &lt;code&gt;port&lt;/code&gt; are IP address and port of the proxy.&lt;/p&gt;
 &lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;</summary><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
 &lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
 sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
