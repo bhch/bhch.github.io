@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing an HTTP server from scratch - bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">Writing an HTTP server from scratch</h1>
+<p class="post-meta">
+    Mon 16 October 2017
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/http/" class="tag">http</a>
+                <a href="https://bhch.github.io/tag/server/" class="tag">server</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <h1 id="prelude">Prelude<a class="headerlink" href="#prelude" title="Permanent link">&para;</a></h1>
+<p>This is supposed to be an introductory article that shows you how you can write 
+a simple, basic HTTP server. If you're interested in building your own HTTP server, 
+or just curious about how an HTTP server works, this article is a good starting 
+point for that.</p>
+<p>It goes without saying that one blog post can't be taken as a guide for building
+a production level HTTP server like Nginx or Apache. Those projects are results 
+of years of development with hundreds of developers involved and thousands of 
+man-hours devoted.</p>
+<p>Having said that, in the end of this article I have provided a few pointers 
+about how you can turn this basic server into a production level server. Read 
+about it in the <a href="#taking-our-server-to-the-next-level">"Taking our server to the next level"</a> 
+section.</p>
+<p>Let's get started, then.</p>
+<h1 id="steps-to-create-an-http-server">Steps to create an HTTP server<a class="headerlink" href="#steps-to-create-an-http-server" title="Permanent link">&para;</a></h1>
+<ol>
+<li><strong>Create a TCP server.</strong><br />
+ HTTP is built on top of TCP (Transmission Control Protocol), so we will need to
+ create a program capable of sending and receiving data through a TCP socket. 
+ Knowledge about the TCP protocol is not required but familiarity with Python's 
+ <code>socket</code> library is. Go through <code>socket</code> library's <a href="https://docs.python.org/3/howto/sockets.html">docs</a>, or 
+ read the <a href="https://pymotw.com/3/socket/">PyMOTW</a> page for good examples.</li>
+<li><strong>Teach our TCP server the HTTP protocol.</strong><br />
+ At this point our TCP server doesn't understand HTTP. To convert it from a TCP 
+ server to an HTTP server all we need to do is <em>teach</em> it the HTTP protocol.
+ You need to have some basic knowledge about the HTTP protocol, 
+ for example, the structure of HTTP requests and responses. A good starting 
+ point to learn about the HTTP protocol is <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">Mozilla's docs on HTTP</a>.</li>
+<li><strong>Viola! We have built an HTTP server.</strong></li>
+</ol>
+<p>That's it. That's all it takes to write an HTTP server.</p>
+<h1 id="step-1-creating-a-tcp-server">Step 1:  Creating a TCP server<a class="headerlink" href="#step-1-creating-a-tcp-server" title="Permanent link">&para;</a></h1>
+<p><img alt="HTTP is built on top of TCP" src="/images/tcp-socket.png" /></p>
+<p>Since HTTP works through a TCP socket, we'll start by writing a simple TCP server.
+We will use Python's <code>socket</code> library for this.</p>
+<h2 id="12-a-simple-echo-server">1.2 A simple Echo server<a class="headerlink" href="#12-a-simple-echo-server" title="Permanent link">&para;</a></h2>
+<p>Firstly, let's create a simple version of our TCP server - an Echo server. An 
+Echo server is a program that returns the data that it receives, nothing less, 
+nothing more.</p>
+<p>Start by creating a file called <code>main.py</code> for our code:</p>
+<div class="highlight"><pre><span></span><span class="c1"># main.py </span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="k">class</span> <span class="nc">TCPServer</span><span class="p">:</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span> <span class="c1"># address for our server</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># port for our server</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># create a socket object</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+
+        <span class="c1"># bind the socket object to the address and port</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+        <span class="c1"># start listening for connections</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Listening at&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="c1"># accept any new connection</span>
+            <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Connected by&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+
+            <span class="c1"># read the data sent by the client (1024 bytes)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+
+            <span class="c1"># send back the data to client</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="c1"># close the connection</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">TCPServer</span><span class="p">()</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Read the comments in the code for explanation.</p>
+<p>To test this server, we can create a TCP client but that won't be necessary. We 
+can just use our web browser.</p>
+<p>First, run the server like this:</p>
+<div class="highlight"><pre><span></span>$ python main.py
+</pre></div>
+
+
+<p>Now, visit <code>127.0.0.1:8888</code> from your browser. Your browser will send an HTTP request 
+to our TCP server. Since our server is an Echo server, it will return the data 
+that our browser sends it back to the browser. </p>
+<p>You'll see a response from our server something like this:</p>
+<div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">127.0.0.1:8888</span>
+<span class="na">Connection</span><span class="o">:</span> <span class="l">keep-alive</span>
+<span class="na">Cache-Control</span><span class="o">:</span> <span class="l">max-age=0</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="o">:</span> <span class="l">1</span>
+<span class="na">User-Agent</span><span class="o">:</span> <span class="l">Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 &lt;...long string...&gt;</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Encoding</span><span class="o">:</span> <span class="l">gzip, deflate, sdch</span>
+<span class="na">Accept-Language</span><span class="o">:</span> <span class="l">en-GB,en-US;q=0.8,en;q=0.6</span>
+<span class="na">Cookie</span><span class="o">:</span> <span class="l">__utma=889955431.966891923.1514504807.15045637810 &lt;...long string...&gt;</span>
+</pre></div>
+
+
+<h2 id="13-modifying-the-echo-server">1.3 Modifying the Echo server<a class="headerlink" href="#13-modifying-the-echo-server" title="Permanent link">&para;</a></h2>
+<p>Our Echo server is very primitive and not very helpful. We'll now modify it such 
+that it can be used as a base for our HTTP server.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TCPServer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8888</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Listening at&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Connected by&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_request</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="n">conn</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles incoming data and returns a response.</span>
+<span class="sd">        Override this in subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+
+<p>The modifications we've done are:</p>
+<ol>
+<li>We've created an <code>__init__</code> function that takes to arguments - <code>host</code> and <code>port</code>. 
+  We've set the default values for them as they were in the previous example. The 
+  reason we did this is now we can bind our server to different addresses and ports
+  if we so desired.</li>
+<li>We've also created a new method called <code>handle_request</code> which will come in handy 
+ when we subclass the <code>TCPServer</code> class. You might have noticed the code inside the 
+ <code>while</code> loop has also changed. The new code sends the data to <code>handle_request</code> method 
+ which will then returns a response. Currently, te <code>handle_request</code> method does nothing 
+ but we'll create a subclass and override this method to add some actual functionality.</li>
+</ol>
+<h1 id="step-2-teaching-the-http-protocol-to-our-tcp-server">Step 2: Teaching the HTTP protocol to our TCP server<a class="headerlink" href="#step-2-teaching-the-http-protocol-to-our-tcp-server" title="Permanent link">&para;</a></h1>
+<p><img alt="HTTP protocol" src="/images/http-speak.png" /></p>
+<p>Instead of implementing the HTTP protocol in the <code>TCPServer</code> class, we'll subclass it 
+and implement the protocol in the subclass. Add the following code to <code>main.py</code>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># main.py</span>
+
+<span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Request received!&quot;</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">()</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+
+<p>If you run the above program and visit <code>127.0.0.1:8888</code> from your browser, 
+you should see <code>Request received!</code> message on the screen.</p>
+<p>Although, it's not a valid HTTP response yet. An HTTP response is made up of 
+the following parts:</p>
+<ol>
+<li>The response line (it's the first line)</li>
+<li>Response headers (optional)</li>
+<li>A blank line</li>
+<li>Response body (optional)</li>
+</ol>
+<p>An example:</p>
+<div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Server</span><span class="o">:</span> <span class="l">Tornado/4.3</span>
+<span class="na">Date</span><span class="o">:</span> <span class="l">Wed, 18 Oct 2017 14:19:11 GMT</span>
+<span class="na">Content-type</span><span class="o">:</span> <span class="l">text/html; charset=UTF-8</span>
+<span class="na">Content-Length</span><span class="o">:</span> <span class="l">13</span>
+
+Hello, world!
+</pre></div>
+
+
+<p>For a better understanding of HTTP responses, <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages">read the docs</a>.</p>
+<p>Let's make our server return a valid response this time:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="c1"># response line</span>
+            <span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="c1"># blank line</span>
+            <span class="s1">&#39;Request received!&#39;</span> <span class="c1"># response body</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This time our server will return a valid HTTP response.</p>
+<h2 id="21-headers">2.1 Headers<a class="headerlink" href="#21-headers" title="Permanent link">&para;</a></h2>
+<p>Our server doesn't return any headers yet. Let's return some, then.</p>
+<p>Headers contain some general information, like name of the server, or the 
+content type of the response, or any other information that might be useful for 
+the browser but not so much for the user.</p>
+<p>First, let's give our server a name. I'll call it <code>Crude Server</code> because it's 
+crude and raw and still at a very early stage.</p>
+<p>Second, instead of return plain text, we'll return HTML in the response. For that, 
+we'll also have to send a <code>Content-Type</code> header to let the browser know that this 
+is an HTML response.</p>
+<p>Now, let's make our server return this information in headers:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="c1"># response line</span>
+            <span class="s1">&#39;Server: Crude Server</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="c1"># header</span>
+            <span class="s1">&#39;Content-Type: text/html</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="c1"># header</span>
+            <span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="c1"># blank line</span>
+            <span class="sd">&quot;&quot;&quot;&lt;html&gt;</span>
+<span class="sd">            &lt;body&gt;</span>
+<span class="sd">            &lt;h1&gt;Request received!&lt;/h1&gt;</span>
+<span class="sd">            &lt;/body&gt;</span>
+<span class="sd">            &lt;/html&gt;&quot;&quot;&quot;</span> <span class="c1"># response body</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="22-refining-our-http-server">2.2 Refining our HTTP server<a class="headerlink" href="#22-refining-our-http-server" title="Permanent link">&para;</a></h2>
+<p>We are returning the HTTP response by manually writing it. It's not 
+very convenient. </p>
+<p>Let's create a few methods to compile response line, headers and response:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Server&#39;</span><span class="p">:</span> <span class="s1">&#39;CrudeServer&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;text/html&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">status_codes</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">200</span><span class="p">:</span> <span class="s1">&#39;OK&#39;</span><span class="p">,</span>
+        <span class="mi">404</span><span class="p">:</span> <span class="s1">&#39;Not Found&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the incoming request.</span>
+<span class="sd">        Compiles and returns the response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+        <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">()</span>
+
+        <span class="n">blank_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+        <span class="n">response_body</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            &lt;html&gt;</span>
+<span class="s2">                &lt;body&gt;</span>
+<span class="s2">                    &lt;h1&gt;Request received!&lt;/h1&gt;</span>
+<span class="s2">                &lt;/body&gt;</span>
+<span class="s2">            &lt;/html&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s%s%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">response_line</span><span class="p">,</span> 
+                <span class="n">response_headers</span><span class="p">,</span> 
+                <span class="n">blank_line</span><span class="p">,</span> 
+                <span class="n">response_body</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">response_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns response line&quot;&quot;&quot;</span>
+        <span class="n">reason</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_codes</span><span class="p">[</span><span class="n">status_code</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;HTTP/1.1 </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">status_code</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">response_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra_headers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns headers</span>
+<span class="sd">        The `extra_headers` can be a dict for sending </span>
+<span class="sd">        extra headers for the current response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">headers_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">cop</span><span class="p">()</span> <span class="c1"># make a local copy of headers</span>
+
+        <span class="k">if</span> <span class="n">extra_headers</span><span class="p">:</span>
+            <span class="n">headers_copy</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extra_headers</span><span class="p">)</span>
+
+        <span class="n">headers</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="n">h</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">headers</span>
+</pre></div>
+
+
+<p>I don't think the above code needs any explanation. If you read it, it will be all 
+clear to you.</p>
+<h2 id="23-status-codes">2.3 Status codes<a class="headerlink" href="#23-status-codes" title="Permanent link">&para;</a></h2>
+<p>As you can see in the code above, we've created a dictionary of status codes in 
+<code>HTTPServer</code> class. But there are only 2 status codes in our dictionary. I've done that 
+intentionally to keep the code shorter. You can implement all the status codes 
+in your local version of the code. See <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status">Mozilla's docs</a> for a list of all 
+the HTTP statuses.</p>
+<p>Alternatively, you can use Python's <code>httplib</code> from standard library. It has a dictionary 
+of all HTTP statuses which can be accessed from <code>httplib.responses</code>. Example:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">httplib</span>
+
+<span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="n">status_codes</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">responses</span>
+</pre></div>
+
+
+<h2 id="24-http-requests">2.4 HTTP requests<a class="headerlink" href="#24-http-requests" title="Permanent link">&para;</a></h2>
+<p>An HTTP request is made up of the following parts:</p>
+<ol>
+<li>The request line (it's the first line)</li>
+<li>Request headers (optional)</li>
+<li>A blank line</li>
+<li>Request body (optional)</li>
+</ol>
+<p>An example of typical HTTP request:</p>
+<div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/index.html</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Connection</span><span class="o">:</span> <span class="l">keep-alive</span>
+<span class="na">User-Agent</span><span class="o">:</span> <span class="l">Mozilla/5.0</span>
+</pre></div>
+
+
+<p>In case you haven't noticed, in the example above, the request doesn't have a body, 
+just a Request line, headers and a blank line at the end (although, it's not visible here).</p>
+<p>The most important part of an HTTP request is the Request line. Let's discuss this 
+further below.</p>
+<h3 id="241-request-line">2.4.1 Request line<a class="headerlink" href="#241-request-line" title="Permanent link">&para;</a></h3>
+<p>The first line of an HTTP request is called the Request line. It consists of 4 parts:</p>
+<div class="highlight"><pre><span></span>    GET    /index.html      HTTP/1.1           \r\n
+    \_/    \_________/      \______/          \____/
+     |          |               |                |
+  Method       URI        HTTP version       Line break
+</pre></div>
+
+
+<ol>
+<li><code>Method</code> tells the server what action the client wants to perform on the <code>URI</code>.
+  For example, <code>GET</code> method means the client wants the server to send him the page at 
+  the given <code>URI</code>. The <code>POST</code> method means the client wants to send some data to the 
+  server at the given <code>URI</code>.</li>
+<li><code>URI</code> stands for Uniform Resource Identifier. This tells the server on which 
+ resource or page or anything else the client wants to perform the request.</li>
+<li><code>HTTP version</code> is the version of HTTP the client supports or wants the server to use 
+ for the response. The most widely used version of HTTP is 1.1.</li>
+<li><code>Line break</code> - this tells the server that the request line has ended and the 
+ request headers follow after this line.</li>
+</ol>
+<p>I've covered basics about the HTTP requests. You can read more about it <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages">here</a>.</p>
+<h2 id="25-parsing-requests">2.5 Parsing requests<a class="headerlink" href="#25-parsing-requests" title="Permanent link">&para;</a></h2>
+<p>So far, we've rendered a response without actually <em>reading</em> the requests, which 
+means our server is no good yet. We'll have to write some more code to parse the 
+incoming requests to know what HTTP method is used, to know what URI is requested, 
+etc.</p>
+<p>Let's write a simple request parser. We'll create a class called <code>HTTPRequest</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPRequest</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http_version</span> <span class="o">=</span> <span class="s1">&#39;1.1&#39;</span> <span class="c1"># default to HTTP/1.1 if request doesn&#39;t provide a version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># a dictionary for headers</span>
+
+        <span class="c1"># call self.parse method to parse the request data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">request_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_request_line</span><span class="p">(</span><span class="n">request_line</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse_request_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_line</span><span class="p">):</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">request_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">http_version</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+
+<p>The above code only parses the Request line. We don't have to worry about request headers, 
+or request body for now.</p>
+<h2 id="26-implementing-http-request-methods">2.6 Implementing HTTP request methods<a class="headerlink" href="#26-implementing-http-request-methods" title="Permanent link">&para;</a></h2>
+<p>Our server can't distinguish between different request methods. We are serving 
+the same response for <code>GET</code> or <code>POST</code> or <code>OPTIONS</code> or any other request method. </p>
+<p>Let's modify our <code>HTTPServer</code> class to identify between <code>GET</code> and <code>OPTIONS</code> requests.</p>
+<p><code>OPTIONS</code> is the easiest method to implement, followed by <code>GET</code>. 
+We'll create two methods on <code>HTTPServer</code> 
+class - <code>handle_GET</code> to handle <code>GET</code> requests, and <code>handle_OPTIONS</code> to handle <code>OPTIONS</code> 
+requests.</p>
+<p>For a <code>GET</code> request, a server returns the requested resource. Say, if a request 
+comes in like <code>GET /index.html</code>, the server will send the contents of <em>index.html</em> 
+file in the response body.</p>
+<p>For an <code>OPTIONS</code> request, a server returns a response that lets the client know which 
+request methods this server supports. So, if a request comes in like <code>OPTIONS /index.html</code>, 
+the server sends back a response with the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow"><code>Allow</code></a> header like this - 
+<code>Allow: OPTIONS, GET, POST</code>. Since, we are only implementing <code>GET</code> and <code>OPTIONS</code> methods, 
+we'll send a header like <code>Allow: OPTIONS, GET</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="c1"># ... other code ...</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># create an instance of `HTTPRequest`</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">HTTPRequest</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># now, look at the request method and call the </span>
+        <span class="c1"># appropriate handler</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;handle_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">handle_OPTIONS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+
+        <span class="n">extra_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Allow&#39;</span><span class="p">:</span> <span class="s1">&#39;OPTIONS, GET&#39;</span><span class="p">}</span>
+        <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">(</span><span class="n">extra_headers</span><span class="p">)</span>
+
+        <span class="n">blank_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">response_line</span><span class="p">,</span> 
+                <span class="n">response_headers</span><span class="p">,</span>
+                <span class="n">blank_line</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># We&#39;ll write this method a little later</span>
+        <span class="k">pass</span>
+</pre></div>
+
+
+<p>Okay, we've created two handlers to handle <code>GET</code> and <code>OPTIONS</code> requests. But you might 
+have noticed those handlers don't return anything yet. We'll fix that in the next 
+section, and serve the content directly from files.</p>
+<p>But before that, we can still improve our server a little bit. Suppose a <code>POST</code> 
+request comes in. But we haven't implemented the <code>handle_POST</code>, so our server will 
+crash because this line <code>handler = getattr(self, 'handle_%s' % request.method)</code> will 
+raise an <code>AttributeError</code>, since <code>handle_POST</code> doesn't exist. We can 
+write some <code>try...except</code> code to handle this exception. At the same time, it would 
+be nice to let the client know that we don't support this requests method. HTTP 
+has a status code <code>501 Not Implemented</code> just for this purpose. A server must send 
+a <code>501</code> response if it doesn't understand the incoming request method.</p>
+<p>So, let's modify our server to send a <code>501</code> response:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="n">status_codes</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">200</span><span class="p">:</span> <span class="s1">&#39;OK&#39;</span><span class="p">,</span>
+        <span class="mi">404</span><span class="p">:</span> <span class="s1">&#39;Not Found&#39;</span><span class="p">,</span>
+        <span class="mi">501</span><span class="p">:</span> <span class="s1">&#39;Not Implemented&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">HTTPRequest</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;handle_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HTTP_501_handler</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">HTTP_501_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rquest</span><span class="p">):</span>
+        <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">501</span><span class="p">)</span>
+
+        <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">()</span>
+
+        <span class="n">blank_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+        <span class="n">response_body</span> <span class="o">=</span> <span class="s2">&quot;&lt;h1&gt;501 Not Implemented&lt;/h1&gt;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s%s%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">response_line</span><span class="p">,</span> 
+                <span class="n">response_headers</span><span class="p">,</span> 
+                <span class="n">blank_line</span><span class="p">,</span> 
+                <span class="n">response_body</span>
+            <span class="p">)</span>
+
+    <span class="c1"># ... other code ...</span>
+</pre></div>
+
+
+<p>Now, if a rquest comes in with any method other than <code>GET</code> or <code>HEAD</code>, our server 
+will appropriately return a <code>501</code> response.</p>
+<h2 id="27-serving-content-from-files">2.7 Serving content from files<a class="headerlink" href="#27-serving-content-from-files" title="Permanent link">&para;</a></h2>
+<p>Let's now render some content from files instead of from strings as we're doing. </p>
+<p>First, let's create a couple of files - <em>"index.html"</em> and <em>"hello.html"</em>. So, if a 
+request comes in like <code>GET /index.html</code>, we'll serve the <em>index.html</em> file. If 
+a request comes in like <code>GET /hello.html</code>, we'll serve the <em>hello.html</em> file. </p>
+<p>Keep both these files in the same directory as `main.py.</p>
+<p><em>index.html</em>:</p>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Index page<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Index page<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This is the index page.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<p><em>hello.html</em>: </p>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Hello page<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Hello page<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This is the hello page.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<p>Now, let's modify our handlers to render content according to the request URI. </p>
+<p>But, suppose, a request comes in at <code>/something.html</code>. This file doesn't exist. 
+So, our server should send a <code>404 Not Found</code> response if it can't find a file 
+for the URI. So, we'll have to write code for that as well.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="c1"># ... other code ...</span>
+
+    <span class="k">def</span> <span class="nf">handle_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="c1"># remove the slash from URI</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+
+            <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">response_body</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+            <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">()</span>
+            <span class="n">response_body</span> <span class="o">=</span> <span class="s2">&quot;&lt;h1&gt;404 Not Found&lt;/h1&gt;&quot;</span>
+
+        <span class="n">blank_line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s%s%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">response_line</span><span class="p">,</span> 
+                <span class="n">response_headers</span><span class="p">,</span> 
+                <span class="n">blank_line</span><span class="p">,</span> 
+                <span class="n">response_body</span>
+            <span class="p">)</span>
+</pre></div>
+
+
+<p>Now, run the server, and visit <code>127.0.0.1:8888/index.html</code> and you should 
+see the response containing the contents of <em>index.html</em> file. </p>
+<p>Also, try and visit a random url like <code>127.0.0.1:8888/blahblah.html</code> and you should 
+get the <code>404 Not Found</code> response.</p>
+<p>Now, more importantly, our server should also be able to respond to <code>OPTIONS</code> requests. 
+From our browsers, we can't make an <code>OPTIONS</code> request. But you can install extentions 
+for that. Just do a Google search for <code>Rest client extension for &lt;browser-name&gt;</code>. 
+A REST client extension will allow you to make requests using different request methods.</p>
+<p>You can also use <code>curl</code>, if you have that installed on your system. Example: </p>
+<div class="highlight"><pre><span></span>$ curl -X OPTIONS http://127.0.0.1:8888 -i
+</pre></div>
+
+
+<p>Anyway, if you make an <code>OPTIONS</code> request to the server, you should see the <code>Allow</code> 
+header in the response headers but no response body.</p>
+<h2 id="28-serving-images-and-other-media">2.8 Serving images and other media<a class="headerlink" href="#28-serving-images-and-other-media" title="Permanent link">&para;</a></h2>
+<p>To serve images, or videos, or any other media a server must send a proper 
+<code>Content-Type</code> header to the browser, so that the browser can render the content 
+appropriately.</p>
+<p>Our server, as it is right now, can serve images, or videos. You can even try it - 
+put an image file next to the previously created HTML files and make a request for 
+that image from the browser - <code>127.0.0.1:8888/picture.png</code> and you should see some 
+random gibberish text on your screen. This is happening because our server is sending 
+the image with <code>Content-Type: text/html</code> header. That is why the  browser is not rendering 
+it as an image.</p>
+<p>The <code>Content-Type</code> of a file is also called <a href="https://en.wikipedia.org/wiki/Media_type">MIME Type</a>. We'll be using Python's 
+<code>mimetypes</code> library to know a file's MIME type from it's extension. We can do it 
+manually, but there are hundreds of different file types - <em>"jpg, png, mp4, mp3, svg ..."</em>, 
+so, why not use a library to make it easier.</p>
+<p><code>mimetypes</code> library is included in Python's standard library, so no need to install 
+anything.</p>
+<p>Let's modify our server to send proper <code>Content-Type</code> header for different files. </p>
+<p>The highlighted lines contain the newly added code:</p>
+<div class="highlight"><pre><span></span><span class="hll"><span class="kn">import</span> <span class="nn">mimetypes</span>
+</span>
+<span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">TCPServer</span><span class="p">):</span>
+    <span class="c1"># ... other code ...</span>
+
+    <span class="k">def</span> <span class="nf">handle_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="hll">            <span class="c1"># find out a file&#39;s MIME type</span>
+</span><span class="hll">            <span class="c1"># if nothing is found, just send `text/html`</span>
+</span><span class="hll">            <span class="n">content_type</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;text/html&#39;</span>
+</span><span class="hll">
+</span><span class="hll">            <span class="n">extra_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="n">content_type</span><span class="p">}</span>
+</span><span class="hll">            <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">(</span><span class="n">extra_headers</span><span class="p">)</span>
+</span>
+           <span class="c1"># ... rest of the code ...</span>
+</pre></div>
+
+
+<p>Now, put an image next to <em>index.html</em> and make a request for it from your browser. 
+You should see the image rendered properly. You can also try and embed the image 
+in <em>index.html</em> file using <code>&lt;img src="image-name.png"&gt;</code> and then request the <code>/index.html</code>
+page. You should see the image there, too.</p>
+<h1 id="step-3-there-aint-no-step-3">Step 3: There ain't no step 3<a class="headerlink" href="#step-3-there-aint-no-step-3" title="Permanent link">&para;</a></h1>
+<p>We've built our server! Well, at least a minimal server for learning purpose. Now you 
+can just play around with it - try and implement more request methods, or more headers. </p>
+<p>Hopefully, the way HTTP and HTTP servers work is pretty obvious to you now. But 
+we've only scratched the surface of the HTTP protocol and it's workings. So if you're 
+really serious about making a server that's production ready, read the next section 
+for some pointers.</p>
+<h1 id="taking-our-server-to-the-next-level">Taking our server to the next level<a class="headerlink" href="#taking-our-server-to-the-next-level" title="Permanent link">&para;</a></h1>
+<p>Below are a few checkpoints that almost every production level server implements:</p>
+<ol>
+<li><strong>Implement full HTTP</strong>:<br />
+ Our server only supports two methods - <code>GET</code> and <code>OPTIONS</code> and a few headers. It 
+ has no support for Cookies, or caching. A good starting point towards a production 
+ ready server would be to implement the full HTTP protocol. You can start by reading 
+ <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP">Mozilla's web docs</a> and implementing all the HTTP features one by one.</li>
+<li><strong>Serving multiple clients</strong>:<br />
+ Currently, our server only serves one client at a time. You can make it serve 
+ more than one client at a time by multi-threading. But not all servers use 
+ multi-threading. There are event driven servers which use a different approach. 
+ Read about the Tornado web server.</li>
+<li><strong>WSGI support</strong>:<br />
+ Currently, Python frameworks like Django and Flask won't work with our 
+ server. The only way to make our server work with them is by implementing WSGI. 
+ What is WSGI? Here's a <a href="http://lucumr.pocoo.org/2007/5/21/getting-started-with-wsgi/">tutorial by Armin Ronacher</a>.</li>
+<li><strong>Daemon mode</strong>:<br />
+ Running a server in daemon mode means that running it as a background process. 
+ Currently, our server doesn't run in background. So, if we run it and then 
+ close the terminal, our server process will also stop. You can use tools like 
+ <a href="http://supervisord.org/">supervisord</a> to make the server run in daemon mode. </li>
+<li><strong>Logging</strong>:<br />
+ Logging is a very import feature of servers. It means writing logs to a file 
+ in the event of say, an error occurs, like a <code>404</code> error, or a <code>500</code> server error. 
+ Servers also write access logs for every request which contain information about the
+ IP Address of the the client, the page requested and the time.</li>
+<li><strong>Configuration support</strong>:<br />
+ Our server doesn't support configuration, for example we can't tell our server 
+ which files or directories to server, where to find files, etc. This way, we can 
+ map a file to a different URL, which means we can serve <code>hello.html</code> file from a 
+ URL like <code>/goodbye</code>.</li>
+<li><strong>Serving large files</strong>:<br />
+ Our server is capable of serving videos. But not very large videos. The reason 
+ is before serving files to the client we read the whole file in the memory by using 
+ <code>open()</code> (see the code in <code>handle_GET</code> method). So, if you try to serve large video 
+ file, say about 3 GB, and you only have 2 GB of RAM, our server will crash.<br />
+ The way servers safely serve large files is by sending a small part of the file, 
+ say 100 MB, at a time to the client with a <code>206 Partial Response</code> status code. 
+ This technique is called chunking.</li>
+<li><strong>Security</strong>:<br />
+ In this blog post, we've talked about almost everything HTTP related, except for 
+ security. This is a very delicate topic and it's never permanent - you'll have to 
+ constantly keep working to keep your code secure. A good starting point to read 
+ about server security would be <a href="https://wiki.mozilla.org/Security/Guidelines/Web_Security">this page by Mozilla</a>. But the best way to 
+ keep a software secure is by making it open source. That way if someone finds a 
+ security issue, they might notify you or even write a patch themselves. Why do you 
+ think almost every web server is open source? This is why.</li>
+</ol>
+<h1 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h1>
+<p>I got none more fo you, brah. In case there are errors in the code, or any other 
+mistakes, please let me know. </p>
+<p>Until next time.</p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2017/10/writing-an-http-server-from-scratch/';
+        var disqus_url = 'https://bhch.github.io/posts/2017/10/writing-an-http-server-from-scratch/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script>
+
+                <!-- plain text -->
+                bhch
+
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
+
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
