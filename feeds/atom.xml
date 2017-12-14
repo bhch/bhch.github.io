@@ -1,5 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-11-16T00:00:00+05:30</updated><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-12-15T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-15:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tronado:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;It should not eat up our RAM&lt;/li&gt;
+&lt;li&gt;It should not block the server&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To do that, we'll have to read and send the files in chunks. What that means is we'll 
+read a few megabytes and send them, then read the next few megabytes and send them
+and we'll keep doing that until we've read and sent the whole file.&lt;/p&gt;
+&lt;p&gt;Before moving on, I think it should go without saying that Tornado isn't recommended to serve large 
+data. A specialized server, like Nginx, for this purpose should be always be preferred 
+when possible. &lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The code in this post is written for Python &amp;gt;= 3.5 and I've used the new 
+&lt;code&gt;async&lt;/code&gt; and &lt;code&gt;await&lt;/code&gt; syntax. For older Python version, you can adapt the code 
+like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Change this ...&lt;/span&gt;
+&lt;span class="n"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt;
+
+&lt;span class="c1"&gt;# To this...&lt;/span&gt;
+&lt;span class="nd"&gt;@tornado.gen.coroutine&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;hr /&gt;
+&lt;h1 id="serving-the-files-safely-so-it-doesnt-eat-up-our-ram"&gt;Serving the files safely so it doesn't eat up our RAM&lt;a class="headerlink" href="#serving-the-files-safely-so-it-doesnt-eat-up-our-ram" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;We'll read the files in chunks, then write the cunk to the response, and flush 
+it to the network socket.&lt;/p&gt;
+&lt;p&gt;Reading in chunks and flushing the data to network will ensure that we don't run 
+out of RAM.&lt;/p&gt;
+&lt;p&gt;Here's a code example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;iostream&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;DownloadHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;# chunk size to read&lt;/span&gt;
+        &lt;span class="n"&gt;chunk_size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1024&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1024&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="c1"&gt;# 1 MiB&lt;/span&gt;
+
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;rb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;chunk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk_size&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="k"&gt;break&lt;/span&gt;
+                &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# write the cunk to response&lt;/span&gt;
+                    &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# flush the current chunk to socket&lt;/span&gt;
+                &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;iostream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StreamClosedError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="c1"&gt;# this means the client has closed the connection&lt;/span&gt;
+                    &lt;span class="c1"&gt;# so break the loop&lt;/span&gt;
+                    &lt;span class="k"&gt;break&lt;/span&gt;
+                &lt;span class="k"&gt;finally&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="c1"&gt;# deleting the chunk is very important because &lt;/span&gt;
+                    &lt;span class="c1"&gt;# if many clients are downloading files at the &lt;/span&gt;
+                    &lt;span class="c1"&gt;# same time, the chunks in memory will keep &lt;/span&gt;
+                    &lt;span class="c1"&gt;# increasing and will eat up the RAM&lt;/span&gt;
+                    &lt;span class="k"&gt;del&lt;/span&gt; &lt;span class="n"&gt;chunk&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1 id="preventing-our-server-from-blocking"&gt;Preventing our server from blocking&lt;a class="headerlink" href="#preventing-our-server-from-blocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;When we &lt;code&gt;await self.flush()&lt;/code&gt;, 
+Tornado writes the current data to the network socket. 
+Theoretically, that means at the &lt;code&gt;await self.flush()&lt;/code&gt; statement, our coroutine should pause 
+because writing to socket takes some time. This little pause should allow the ioloop to
+run other handlers asynchronously. This means that our server shouldn't block.&lt;/p&gt;
+&lt;p&gt;But that is not the case. &lt;code&gt;self.flush()&lt;/code&gt; is very fast for small data and thus, the 
+delay is so small that our coroutine will keep running without pausing and so, it 
+will block the server.&lt;/p&gt;
+&lt;p&gt;You can increase the &lt;code&gt;chunk_size&lt;/code&gt; to &lt;code&gt;15 MiB&lt;/code&gt; or &lt;code&gt;20 MiB&lt;/code&gt; and it may pause the 
+coroutine while it's flushing the data because the data is larger this time. 
+But I've observed that there's still no guarantee of that especially if you have a 
+faster computer (or more RAM?) because then delay will be small.&lt;/p&gt;
+&lt;p&gt;A fool-proof way to make our code non-blocking is by putting it to sleep for a 
+nanosecond just after &lt;code&gt;flush()&lt;/code&gt;. That delay should be enough for the ioloop to 
+run other handlers. In fact, it doesn't have to be a nanosecond. It can be an even 
+smaller value. But for this example, I'll go with a nanosecond's pause.&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;DownloadHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RequestHandler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+        &lt;span class="o"&gt;...&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;break&lt;/span&gt;
+        &lt;span class="k"&gt;finally&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;del&lt;/span&gt; &lt;span class="n"&gt;chunk&lt;/span&gt;
+            &lt;span class="c1"&gt;# pause the coroutine so other handlers can run&lt;/span&gt;
+            &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.000000001&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 1 nanosecond&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This approach is pretty effective because the speed of a connection is still far 
+slower than the speed of Tornado sending data to the socket. So, pausing for a nanosecond, 
+and also serving other clients at the same time, doesn't really matter much.&lt;/p&gt;
+&lt;p&gt;Now that we've made the &lt;code&gt;DownloadHandler&lt;/code&gt; asynchronous, we can serve multiple clients 
+in a &lt;em&gt;non-blocking&lt;/em&gt; way. Even if a few different users want to download different 
+files, at the same time, our server won't block.&lt;/p&gt;
+&lt;h1 id="benchmarks"&gt;Benchmarks&lt;a class="headerlink" href="#benchmarks" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Tornado isn't meant for serving large data. You should, when you have the option, 
+use Nginx to serve large files. The benchmarks clearly show that. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;----------------------------+------------+---------------+---------------
+Server                      | 1 request  | 10 concurrent | 100 concurrent 
+                            |            | requests      | requests
+----------------------------+------------+---------------+---------------
+Nginx (with sendfile)       | 0.130 sec  | 0.978 sec     | 15.790 sec
+Nginx (without sendfile)    | 0.155 sec  | 1.472 sec     | 22.424 sec
+Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It's quite apparent that Tornado can't keep up with Nginx.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What's &lt;code&gt;sendfile&lt;/code&gt;?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sendfile&lt;/code&gt; is a function available on Linux (and Unix) which allows copying 
+file to a socket at kernel level. This is far more faster than what we're doing 
+- reading the file and writing to socket. While Python supports this using 
+&lt;a href="https://docs.python.org/3/library/os.html#os.sendfile"&gt;&lt;code&gt;os.sendfile&lt;/code&gt;&lt;/a&gt;, Tornado doesn't.&lt;/p&gt;
+&lt;h1 id="some-notes-on-performance"&gt;Some notes on performance&lt;a class="headerlink" href="#some-notes-on-performance" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Nginx is so fast because it's optimized for serving files. While I don't know the 
+inner workings of Nginx but I can safely say that part of the reason for its speed 
+is the fact that it's written in C.&lt;/p&gt;
+&lt;p&gt;On the other hand, there's still room for optimizations in Tornado, 
+for example we can use &lt;code&gt;sendfile&lt;/code&gt; to write a file to socket. It should make 
+Tornado a little faster. &lt;/p&gt;
+&lt;p&gt;Nginx also uses some sort of caching mechanism, about which 
+I don't know anything yet. But if used that on Tornado, we should see some 
+performance improvement.&lt;/p&gt;
+&lt;p&gt;Surely, I'll keep investigating this further, but for this article, that's it.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;This is supposed to be an introductory article that shows you how you can write 
 a simple, basic HTTP server. If you're interested in building your own HTTP server, 
 or just curious about how an HTTP server works, this article is a good starting 
