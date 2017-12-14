@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-12-15T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-15:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tronado:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-12-14T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tronado:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It should not eat up our RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
@@ -121,7 +121,8 @@ Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
 &lt;p&gt;&lt;code&gt;sendfile&lt;/code&gt; is a function available on Linux (and Unix) which allows copying 
 file to a socket at kernel level. This is far more faster than what we're doing 
 - reading the file and writing to socket. While Python supports this using 
-&lt;a href="https://docs.python.org/3/library/os.html#os.sendfile"&gt;&lt;code&gt;os.sendfile&lt;/code&gt;&lt;/a&gt;, Tornado doesn't.&lt;/p&gt;
+&lt;a href="https://docs.python.org/3/library/os.html#os.sendfile"&gt;&lt;code&gt;os.sendfile&lt;/code&gt;&lt;/a&gt;, Tornado doesn't. But there's an &lt;a href="https://github.com/tornadoweb/tornado/issues/1448"&gt;issue on Github&lt;/a&gt; about 
+adding this support to Tornado.&lt;/p&gt;
 &lt;h1 id="some-notes-on-performance"&gt;Some notes on performance&lt;a class="headerlink" href="#some-notes-on-performance" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Nginx is so fast because it's optimized for serving files. While I don't know the 
 inner workings of Nginx but I can safely say that part of the reason for its speed 

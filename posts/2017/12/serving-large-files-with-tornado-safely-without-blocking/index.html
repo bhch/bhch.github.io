@@ -57,7 +57,7 @@
 
         <h1 class="post-title">Serving large files with Tornado safely without blocking</h1>
 <p class="post-meta">
-    Fri 15 December 2017
+    Thu 14 December 2017
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
@@ -192,7 +192,8 @@ Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
 <p><code>sendfile</code> is a function available on Linux (and Unix) which allows copying 
 file to a socket at kernel level. This is far more faster than what we're doing 
 - reading the file and writing to socket. While Python supports this using 
-<a href="https://docs.python.org/3/library/os.html#os.sendfile"><code>os.sendfile</code></a>, Tornado doesn't.</p>
+<a href="https://docs.python.org/3/library/os.html#os.sendfile"><code>os.sendfile</code></a>, Tornado doesn't. But there's an <a href="https://github.com/tornadoweb/tornado/issues/1448">issue on Github</a> about 
+adding this support to Tornado.</p>
 <h1 id="some-notes-on-performance">Some notes on performance<a class="headerlink" href="#some-notes-on-performance" title="Permanent link">&para;</a></h1>
 <p>Nginx is so fast because it's optimized for serving files. While I don't know the 
 inner workings of Nginx but I can safely say that part of the reason for its speed 
