@@ -150,7 +150,7 @@ nanosecond just after <code>flush()</code>. That delay should be enough for the 
 run other handlers. In fact, it doesn't have to be a nanosecond. It can be an even 
 smaller value. But for this example, I'll go with a nanosecond's pause.</p>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">gen</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">iostream</span><span class="p">,</span> <span class="n">gen</span>
 
 <span class="k">class</span> <span class="nc">DownloadHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
     <span class="n">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -159,7 +159,7 @@ smaller value. But for this example, I'll go with a nanosecond's pause.</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
             <span class="n">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">iostream</span><span class="o">.</span><span class="n">StreamClosedError</span><span class="p">:</span>
             <span class="k">break</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">chunk</span>
