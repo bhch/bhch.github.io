@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-12-14T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tronado:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-12-14T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It should not eat up our RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
@@ -112,8 +112,8 @@ Server                      | 1 request  | 10 concurrent | 100 concurrent
 ----------------------------+------------+---------------+---------------
 Nginx (with sendfile)       | 0.130 sec  | 0.978 sec     | 15.790 sec
 Nginx (without sendfile)    | 0.155 sec  | 1.472 sec     | 22.424 sec
-Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
-&lt;/pre&gt;&lt;/div&gt;
+&lt;span class="hll"&gt;Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
+&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;It's quite apparent that Tornado can't keep up with Nginx.&lt;/p&gt;

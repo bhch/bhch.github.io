@@ -70,7 +70,7 @@
     </header>
 
     <div class="post-description">
-        <p>We need to take care of two things while serving large files using Tronado:</p>
+        <p>We need to take care of two things while serving large files using Tornado:</p>
 <ol>
 <li>It should not eat up our RAM</li>
 <li>It should not block the server</li>
@@ -183,8 +183,8 @@ Server                      | 1 request  | 10 concurrent | 100 concurrent
 ----------------------------+------------+---------------+---------------
 Nginx (with sendfile)       | 0.130 sec  | 0.978 sec     | 15.790 sec
 Nginx (without sendfile)    | 0.155 sec  | 1.472 sec     | 22.424 sec
-Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
-</pre></div>
+<span class="hll">Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
+</span></pre></div>
 
 
 <p>It's quite apparent that Tornado can't keep up with Nginx.</p>
