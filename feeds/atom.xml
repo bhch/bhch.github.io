@@ -789,12 +789,13 @@ for some pointers.&lt;/p&gt;
  URL like &lt;code&gt;/goodbye&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Serving large files&lt;/strong&gt;:&lt;br /&gt;
  Our server is capable of serving videos. But not very large videos. The reason 
- is before serving files to the client we read the whole file in the memory by using 
- &lt;code&gt;open()&lt;/code&gt; (see the code in &lt;code&gt;handle_GET&lt;/code&gt; method). So, if you try to serve large video 
- file, say about 3 GB, and you only have 2 GB of RAM, our server will crash.&lt;br /&gt;
- The way servers safely serve large files is by sending a small part of the file, 
- say 100 MB, at a time to the client with a &lt;code&gt;206 Partial Response&lt;/code&gt; status code. 
- This technique is called chunking.&lt;/li&gt;
+ is before serving files to the client we read the whole file in the memory by 
+ using &lt;code&gt;f.read()&lt;/code&gt; (see the code in &lt;code&gt;handle_GET&lt;/code&gt; method above). So, if you try to 
+ serve large video file, say about 3 GB, and you only have 2 GB of RAM, your server 
+ will crash. The way servers safely serve large files is by reading and writing 
+ only a smart part (around 10 - 20 MB) of the file at a time. This is done in a 
+ loop which will run until the whole file is read and written to the response.
+ This technique is called &lt;em&gt;chunking&lt;/em&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Security&lt;/strong&gt;:&lt;br /&gt;
  In this blog post, we've talked about almost everything HTTP related, except for 
  security. This is a very delicate topic and it's never permanent - you'll have to 
