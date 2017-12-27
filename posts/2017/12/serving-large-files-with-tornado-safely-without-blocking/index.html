@@ -149,6 +149,12 @@ faster computer (or more RAM?) because then delay will be small.</p>
 nanosecond just after <code>flush()</code>. That delay should be enough for the ioloop to 
 run other handlers. In fact, it doesn't have to be a nanosecond. It can be an even 
 smaller value. But for this example, I'll go with a nanosecond's pause.</p>
+<blockquote>
+<p><strong>UPDATE:</strong> I asked about this issue on Tornado's mailing list and Ben Darnell 
+(Tornado's maintainer) gave out some pretty good tips. You can find the 
+<a href="https://groups.google.com/forum/#!topic/python-tornado/vHaRvzCSnYs">thread here</a>. Do read it, he also posted a code example about "metered usage"
+which you can use to serve your clients fairly.</p>
+</blockquote>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">iostream</span><span class="p">,</span> <span class="n">gen</span>
 
@@ -177,13 +183,16 @@ files, at the same time, our server won't block.</p>
 <h1 id="benchmarks">Benchmarks<a class="headerlink" href="#benchmarks" title="Permanent link">&para;</a></h1>
 <p>Tornado isn't meant for serving large data. You should, when you have the option, 
 use Nginx to serve large files. The benchmarks clearly show that. </p>
+<p><strong>UPDATE</strong>: I've tested the above code with Tornado v5.0 (yet unreleased) and the 
+it is much faster than the current v4.5.</p>
 <div class="highlight"><pre><span></span>----------------------------+------------+---------------+---------------
 Server                      | 1 request  | 10 concurrent | 100 concurrent 
                             |            | requests      | requests
 ----------------------------+------------+---------------+---------------
-Nginx (with sendfile)       | 0.130 sec  | 0.978 sec     | 15.790 sec
-Nginx (without sendfile)    | 0.155 sec  | 1.472 sec     | 22.424 sec
-<span class="hll">Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
+Nginx (w/ sendfile)         | 0.130 sec  | 0.978 sec     | 15.790 sec
+Nginx (w/o sendfile)        | 0.155 sec  | 1.472 sec     | 22.424 sec
+<span class="hll">Tornado 5.0 (w/o sendfile)  | 0.419 sec  | 3.782 sec     | 44.289 sec
+</span><span class="hll">Tornado 4.5 (w/o sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
 </span></pre></div>
 
 

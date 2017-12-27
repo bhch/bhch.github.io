@@ -78,6 +78,12 @@ faster computer (or more RAM?) because then delay will be small.&lt;/p&gt;
 nanosecond just after &lt;code&gt;flush()&lt;/code&gt;. That delay should be enough for the ioloop to 
 run other handlers. In fact, it doesn't have to be a nanosecond. It can be an even 
 smaller value. But for this example, I'll go with a nanosecond's pause.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt; I asked about this issue on Tornado's mailing list and Ben Darnell 
+(Tornado's maintainer) gave out some pretty good tips. You can find the 
+&lt;a href="https://groups.google.com/forum/#!topic/python-tornado/vHaRvzCSnYs"&gt;thread here&lt;/a&gt;. Do read it, he also posted a code example about "metered usage"
+which you can use to serve your clients fairly.&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;Example:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;iostream&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;gen&lt;/span&gt;
 
@@ -106,13 +112,16 @@ files, at the same time, our server won't block.&lt;/p&gt;
 &lt;h1 id="benchmarks"&gt;Benchmarks&lt;a class="headerlink" href="#benchmarks" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Tornado isn't meant for serving large data. You should, when you have the option, 
 use Nginx to serve large files. The benchmarks clearly show that. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt;: I've tested the above code with Tornado v5.0 (yet unreleased) and the 
+it is much faster than the current v4.5.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;----------------------------+------------+---------------+---------------
 Server                      | 1 request  | 10 concurrent | 100 concurrent 
                             |            | requests      | requests
 ----------------------------+------------+---------------+---------------
-Nginx (with sendfile)       | 0.130 sec  | 0.978 sec     | 15.790 sec
-Nginx (without sendfile)    | 0.155 sec  | 1.472 sec     | 22.424 sec
-&lt;span class="hll"&gt;Tornado (without sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
+Nginx (w/ sendfile)         | 0.130 sec  | 0.978 sec     | 15.790 sec
+Nginx (w/o sendfile)        | 0.155 sec  | 1.472 sec     | 22.424 sec
+&lt;span class="hll"&gt;Tornado 5.0 (w/o sendfile)  | 0.419 sec  | 3.782 sec     | 44.289 sec
+&lt;/span&gt;&lt;span class="hll"&gt;Tornado 4.5 (w/o sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
 &lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
