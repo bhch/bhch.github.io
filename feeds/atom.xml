@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2017-12-14T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-01-08T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It should not eat up our RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
@@ -926,7 +926,7 @@ but you can use &lt;code&gt;*&lt;/code&gt; to unpack the list. See the example:&
 &lt;p&gt;We can't run a coroutine like we run a normal function. 
 To run a coroutine, we have used IOLoop's &lt;code&gt;run_sync&lt;/code&gt; method. This also 
 gives us an advantage of not worrying about stopping the loop. Tornado will 
-automatically stop the loop when all the requests are finished and processed.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category></entry><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
+automatically stop the loop when all the requests are finished and processed.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category></entry><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><updated>2018-01-08T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
 mocking tests in Python. You can find it here: 
 &lt;a href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/"&gt;Python testing - Introduction to mocking&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In this post, I'll discuss how you can mock HTTP requests made using &lt;code&gt;urllib&lt;/code&gt; 
@@ -968,7 +968,7 @@ object manually.&lt;/p&gt;
 
             &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
             &lt;span class="c1"&gt;# with value 200&lt;/span&gt;
-            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
+            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
 
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
@@ -978,12 +978,23 @@ object manually.&lt;/p&gt;
 
                 &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
                 &lt;span class="c1"&gt;# with value 404&lt;/span&gt;
-                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
+                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
 
-                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertFalse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;We can control the returned value of a mocked object using &lt;code&gt;return_value&lt;/code&gt; 
+attribute. Above, we're setting status codes on &lt;code&gt;mock_request.return_value&lt;/code&gt;, 
+which means that &lt;code&gt;mock_request.return_value&lt;/code&gt; returns a &lt;em&gt;"blank"&lt;/em&gt; object which 
+we can modify in any way we want, just like we've done above by setting a 
+&lt;code&gt;status_code&lt;/code&gt; attribute on it. &lt;/p&gt;
+&lt;p&gt;The reason we've done it is because &lt;code&gt;requests.get&lt;/code&gt; returns a &lt;em&gt;response&lt;/em&gt; object, 
+if we mock it, &lt;code&gt;mock_request&lt;/code&gt; should also return a &lt;em&gt;response&lt;/em&gt; object. But, as 
+mentioned above, it returns a &lt;em&gt;"blank"&lt;/em&gt; object, not an actual &lt;em&gt;response&lt;/em&gt; object. 
+So, we set a &lt;code&gt;status_code&lt;/code&gt; attribute on it to mimic a &lt;em&gt;response&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;If all this is confusing, you can create a separate class for a fake response. 
+&lt;a href="#creating-a-dedicated-class-for-fake-response"&gt;See below&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Let's run the tests:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -m unittest tests
 
@@ -1019,7 +1030,7 @@ to write tests to make sure things work as expected.&lt;/p&gt;
 
             &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
             &lt;span class="c1"&gt;# with value 200&lt;/span&gt;
-            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
+            &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
 
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
@@ -1034,9 +1045,9 @@ to write tests to make sure things work as expected.&lt;/p&gt;
 
                 &lt;span class="c1"&gt;# set a `status_code` attribute on the mock object&lt;/span&gt;
                 &lt;span class="c1"&gt;# with value 404&lt;/span&gt;
-                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
+                &lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
 
-                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertTrue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;assertFalse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="hll"&gt;                &lt;span class="c1"&gt;# test if requests.get was called &lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;                &lt;span class="c1"&gt;# with the given url or not&lt;/span&gt;
@@ -1093,6 +1104,29 @@ create it's sub-attribute.&lt;/p&gt;
 
 
 &lt;p&gt;Run the tests again and they should all pass.&lt;/p&gt;
+&lt;h1 id="creating-a-dedicated-class-for-fake-response"&gt;Creating a dedicated class for fake response&lt;a class="headerlink" href="#creating-a-dedicated-class-for-fake-response" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;In this post, I've used &lt;code&gt;mock_request.return_value&lt;/code&gt; to set status code, content, 
+etc on the &lt;em&gt;fake&lt;/em&gt; response. This can get repetitive and there's a better way to 
+deal with fake responses.&lt;/p&gt;
+&lt;p&gt;You can create a separate class for the fake response where you'd set default values 
+for the response. That should reduce some of the repetitive code. It would work like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FakeResponse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# default response attributes&lt;/span&gt;
+    &lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;
+    &lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Some content&amp;quot;&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# then use it like this:&lt;/span&gt;
+&lt;span class="n"&gt;fake_response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FakeResponse&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;mock_request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;return_value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fake_response&lt;/span&gt;
+
+&lt;span class="c1"&gt;# change the default values if you want&lt;/span&gt;
+&lt;span class="n"&gt;fake_response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt;
+&lt;span class="n"&gt;fake_response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello, world&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h1 id="conclusion"&gt;Conclusion&lt;a class="headerlink" href="#conclusion" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;In this post we saw how we can mock HTTP requests by mocking &lt;code&gt;requests.get&lt;/code&gt; or 
 (&lt;code&gt;urllib.urlopen&lt;/code&gt;). We also saw that we can mock  &lt;code&gt;requests.get&lt;/code&gt; directly or we 

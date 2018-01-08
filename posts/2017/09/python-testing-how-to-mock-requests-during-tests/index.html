@@ -58,6 +58,8 @@
         <h1 class="post-title">Python testing - How to mock requests during tests</h1>
 <p class="post-meta">
     Sat 30 September 2017
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        updated Mon 08 January 2018
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
@@ -115,7 +117,7 @@ object manually.</p>
 
             <span class="c1"># set a `status_code` attribute on the mock object</span>
             <span class="c1"># with value 200</span>
-            <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+            <span class="n">mock_request</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 
@@ -125,12 +127,23 @@ object manually.</p>
 
                 <span class="c1"># set a `status_code` attribute on the mock object</span>
                 <span class="c1"># with value 404</span>
-                <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
+                <span class="n">mock_request</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 </pre></div>
 
 
+<p>We can control the returned value of a mocked object using <code>return_value</code> 
+attribute. Above, we're setting status codes on <code>mock_request.return_value</code>, 
+which means that <code>mock_request.return_value</code> returns a <em>"blank"</em> object which 
+we can modify in any way we want, just like we've done above by setting a 
+<code>status_code</code> attribute on it. </p>
+<p>The reason we've done it is because <code>requests.get</code> returns a <em>response</em> object, 
+if we mock it, <code>mock_request</code> should also return a <em>response</em> object. But, as 
+mentioned above, it returns a <em>"blank"</em> object, not an actual <em>response</em> object. 
+So, we set a <code>status_code</code> attribute on it to mimic a <em>response</em>.</p>
+<p>If all this is confusing, you can create a separate class for a fake response. 
+<a href="#creating-a-dedicated-class-for-fake-response">See below</a>.</p>
 <p>Let's run the tests:</p>
 <div class="highlight"><pre><span></span>$ python -m unittest tests
 
@@ -166,7 +179,7 @@ to write tests to make sure things work as expected.</p>
 
             <span class="c1"># set a `status_code` attribute on the mock object</span>
             <span class="c1"># with value 200</span>
-            <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+            <span class="n">mock_request</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 
@@ -181,9 +194,9 @@ to write tests to make sure things work as expected.</p>
 
                 <span class="c1"># set a `status_code` attribute on the mock object</span>
                 <span class="c1"># with value 404</span>
-                <span class="n">mock_request</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
+                <span class="n">mock_request</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
 
 <span class="hll">                <span class="c1"># test if requests.get was called </span>
 </span><span class="hll">                <span class="c1"># with the given url or not</span>
@@ -240,6 +253,29 @@ create it's sub-attribute.</p>
 
 
 <p>Run the tests again and they should all pass.</p>
+<h1 id="creating-a-dedicated-class-for-fake-response">Creating a dedicated class for fake response<a class="headerlink" href="#creating-a-dedicated-class-for-fake-response" title="Permanent link">&para;</a></h1>
+<p>In this post, I've used <code>mock_request.return_value</code> to set status code, content, 
+etc on the <em>fake</em> response. This can get repetitive and there's a better way to 
+deal with fake responses.</p>
+<p>You can create a separate class for the fake response where you'd set default values 
+for the response. That should reduce some of the repetitive code. It would work like this:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FakeResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># default response attributes</span>
+    <span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;Some content&quot;</span>
+
+
+<span class="c1"># then use it like this:</span>
+<span class="n">fake_response</span> <span class="o">=</span> <span class="n">FakeResponse</span><span class="p">()</span>
+
+<span class="n">mock_request</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">fake_response</span>
+
+<span class="c1"># change the default values if you want</span>
+<span class="n">fake_response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
+<span class="n">fake_response</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;Hello, world&quot;</span>
+</pre></div>
+
+
 <h1 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h1>
 <p>In this post we saw how we can mock HTTP requests by mocking <code>requests.get</code> or 
 (<code>urllib.urlopen</code>). We also saw that we can mock  <code>requests.get</code> directly or we 
