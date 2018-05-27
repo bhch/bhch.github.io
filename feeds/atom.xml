@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-01-08T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-05-27T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It should not eat up our RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
@@ -1686,37 +1686,32 @@ this decorator&lt;/li&gt;
 &lt;p&gt;The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
 documentation covers them nicely.&lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2017-10-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;h1 id="tldr"&gt;tl;dr&lt;a class="headerlink" href="#tldr" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;Most probable reason for this error is because PyPI server isn't responding to 
-your requests because it has blacklisted your IP address.&lt;/p&gt;
-&lt;p&gt;To fix it, just use a proxy with pip. See &lt;a href="#solution"&gt;the solution&lt;/a&gt; at 
-the end of this post.&lt;/p&gt;
-&lt;p&gt;This might also happen because the PyPI server is down. So, in that case there's
-nothing that can be done.&lt;/p&gt;
-&lt;h1 id="background"&gt;Background&lt;a class="headerlink" href="#background" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;I was working on a server recently and I had to install some Python packages. 
-What better way to install Python packages other than by using &lt;code&gt;pip&lt;/code&gt;. So, I wrote 
-this command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install -r requirements.txt
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;But, it spat out the following error:&lt;/p&gt;
+&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2018-05-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;Sometimes you get an error when you're trying to install a Python package 
+using pip. It looks like this:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Could not find a version that satisfies the requirement &lt;package-name&gt; (from versions:)
 No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;I tried again, didn't work. Then I searched Google for some help. I found a 
-couple of similar questions asked on Stack Overflow. I followed advice there, but 
-that didn't help me.&lt;/p&gt;
-&lt;p&gt;I kept &lt;em&gt;searching the internet&lt;/em&gt; for almost 2 hours, when I finally gave up. &lt;/p&gt;
-&lt;p&gt;Next day, I had to get the server running. So, I decided to install the packages 
-from source. I intended to use &lt;code&gt;wget&lt;/code&gt; to download the packages from PyPi. But, 
-it gave me a &lt;code&gt;403 Forbidden&lt;/code&gt; error. &lt;/p&gt;
-&lt;p&gt;I tried downloading with &lt;code&gt;curl&lt;/code&gt;, but the files it &lt;em&gt;saved&lt;/em&gt; were invalid. It just 
-created empty &lt;code&gt;tar.gz&lt;/code&gt; files without actually downloading them.&lt;/p&gt;
-&lt;p&gt;I also tried changing my server's DNS. Nothing worked.&lt;/p&gt;
-&lt;p&gt;Finally, I though &lt;em&gt;"Let's just see if I can even visit PyPi webpage from this server"&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;Most probable reasons for this error are:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;because PyPI server isn't responding to 
+your requests because it has blacklisted your IP address.&lt;br /&gt;
+This can be fixed by using a proxy with pip. See &lt;a href="#solution"&gt;the solution&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;or because you're running an older pip (especially on Mac).&lt;br /&gt;
+This can be fixed by upgrading your pip. 
+See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br /&gt;
+&lt;em&gt;Thanks to Anupam Jain who pointed this in the comments&lt;/em&gt;.  &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This might also happen because the PyPI server is down. So, in that case there's
+nothing that can be done.&lt;/p&gt;
+&lt;h1 id="solution"&gt;Solution&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I had this issue because &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt; had blacklisted the IP 
+of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/code&gt; install via a proxy.&lt;/p&gt;
+&lt;p&gt;But to see if that's also the case with you, you can test it like this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl https://pypi.python.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
@@ -1725,27 +1720,39 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;The output above shows that my server's IP was blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. 
-Well, obviously, because my hosting provider was running many servers 
-(virtual servers) behind a single IP. This explains the reason for getting blacklisted. &lt;/p&gt;
-&lt;h1 id="what-didnt-help"&gt;What didn't help&lt;a class="headerlink" href="#what-didnt-help" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;First let's see the solutions that I tried and &lt;strong&gt;didn't work&lt;/strong&gt; for me:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Changing DNS resolver of my server&lt;/li&gt;
-&lt;li&gt;Reconfiguring SSL, reinstalling CA certificates&lt;/li&gt;
-&lt;li&gt;Downloading packages using &lt;code&gt;wget&lt;/code&gt;. (Got 403 Forbidden error)&lt;/li&gt;
-&lt;li&gt;Downloading packages using &lt;code&gt;curl&lt;/code&gt;. (It just created invalid tarball files, instead of actually downloading them)&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h1 id="solution"&gt;Solution&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;Since, all this was happening because &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt; has blacklisted the IP 
-of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/code&gt; install via a proxy. &lt;/p&gt;
+&lt;p&gt;If you see the message similar to above, that means your IP has also been 
+blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;If you don't see this message then the reason for the pip error could be that you're using
+an older version. See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt; 
+for a solution.&lt;/p&gt;
+&lt;p&gt;Anyways, this can be fixed by using a proxy with pip.&lt;/p&gt;
 &lt;p&gt;Supplying a proxy address to &lt;code&gt;pip&lt;/code&gt; is easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install -r requirements.txt --proxy address:port
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Above, &lt;code&gt;address&lt;/code&gt; and &lt;code&gt;port&lt;/code&gt; are IP address and port of the proxy.&lt;/p&gt;
-&lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;</summary><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
+&lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id="other-things-that-i-tried"&gt;Other things that I tried&lt;a class="headerlink" href="#other-things-that-i-tried" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;These are some other things that I tried to get rid of this issue. 
+Altough they didn't work for me, but they might work for you.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Changing DNS resolver of my server.&lt;/strong&gt;&lt;br /&gt;
+ This makes sense if your server's DNS resolver can't find PyPI servers. &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reconfiguring SSL, reinstalling CA certificates.&lt;/strong&gt;&lt;br /&gt;
+ This makes sense if you don't have updated CA certificates which are used by 
+ PyPI servers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;wget&lt;/code&gt;.&lt;/strong&gt;&lt;br /&gt;
+ This is an alternative way to install Python packages. Download them via &lt;code&gt;wget&lt;/code&gt; 
+ and then install them using &lt;code&gt;python setup.py install&lt;/code&gt;. In my case, the server was 
+ blacklisted by PyPI so I was getting a 403 Forbidden error.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;curl&lt;/code&gt;.&lt;/strong&gt;&lt;br /&gt;
+ Alternative to &lt;code&gt;wget&lt;/code&gt;. In my case I didn't get a 403 error but rather it just 
+ created invalid tarball files, instead of actually downloading them.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;git&lt;/code&gt; or &lt;code&gt;hg&lt;/code&gt;.&lt;/strong&gt;
+ If your desired packages have &lt;code&gt;git&lt;/code&gt; or &lt;code&gt;hg&lt;/code&gt; repositories that you can clone, this 
+ might work for you.&lt;/li&gt;
+&lt;/ol&gt;</summary><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
 &lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
 sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
 my first programming language came when I was watching the film 
