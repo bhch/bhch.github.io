@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-05-27T00:00:00+05:30</updated><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-06-06T00:00:00+05:30</updated><entry><title>Why looking for answers directly on Stack Overflow can be a bad idea</title><link href="https://bhch.github.io/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/" rel="alternate"></link><updated>2018-06-06T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-06-06:posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/</id><summary type="html">&lt;p&gt;I love Stack Overflow. It has helped me a lot through the years. Saved me time 
+and money as I have no formal education in computer science. &lt;/p&gt;
+&lt;p&gt;Alright, enough ass-kissing. Let me get to the point. If you ever find yourself 
+stuck at something, your first instinct is to search on Google for the 
+answer. And I'm sure the top results are from Stack Overflow.&lt;/p&gt;
+&lt;p&gt;But if you ever wanted to become a better programmer, skip this ritual of searching
+on Google for an answer. Go to the official documentation and read. &lt;/p&gt;
+&lt;p&gt;The documentations are divided into multiple chapters. Look for the topic you 
+think your problem is related to and read. &lt;/p&gt;
+&lt;h1 id="docs-will-make-you-a-better-programmer"&gt;Docs will make you a better programmer&lt;a class="headerlink" href="#docs-will-make-you-a-better-programmer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Reading the docs and crafting a solution to a problem is more creative. It will 
+force you to think for a solution.&lt;/p&gt;
+&lt;p&gt;Another advantage of this approach is while you're looking for a solution in the docs, 
+you will pick up other great things along the way. It has happened to me a lot of times. 
+The docs are full of priceless tips and gems and you'll only find them when you 
+read them. &lt;/p&gt;
+&lt;p&gt;Looking for an answer straight on Stack Overflow will help you solve the problem, 
+but it won't teach you anything new. You are getting a solution all cooked up. All 
+you have to do is modify the code a little and you're done. You don't have to think 
+about the code, you don't have to do jacksh*t. That won't make you a better programmer.&lt;/p&gt;
+&lt;h1 id="when-is-it-okay-to-stack-overflow"&gt;When is it okay to &lt;em&gt;Stack Overflow&lt;/em&gt;&lt;a class="headerlink" href="#when-is-it-okay-to-stack-overflow" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Once you've managed to come up with a solution strictly from the docs and your wits,
+it's time to go to Stack Overflow to see if there are better ways to solve your 
+problem. If yes, take that solution. Now you know two ways of solving your problem. 
+You also know what's &lt;em&gt;good practice&lt;/em&gt; and what's &lt;em&gt;not-so-good practice&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;If the solutions on SO are long and slow and are just bad, post an answer with your solution.&lt;/p&gt;
+&lt;p&gt;Other cases when going to Stack Overflow directly is better 
+than &lt;em&gt;"wasting"&lt;/em&gt; your time reading the docs:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;If you're on a deadline. &lt;/li&gt;
+&lt;li&gt;If you're working with a programming language or a framework on which you don't 
+ want to invest much time to learn it. Whenever I have to write JavaScript, I don't 
+ bother reading the docs.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="conclusion"&gt;Conclusion&lt;a class="headerlink" href="#conclusion" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;If you're on a deadline, or don't really care, just &lt;em&gt;Stack Overflow&lt;/em&gt; it. &lt;/p&gt;
+&lt;p&gt;If you want to be a better programmer, &lt;em&gt;read them docs&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;If you want to take it even further, &lt;em&gt;read them source codes&lt;/em&gt;. &lt;/p&gt;</summary><category term="thoughts"></category><category term="rant"></category></entry><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It should not eat up our RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
