@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-06-06T00:00:00+05:30</updated><entry><title>Why looking for answers directly on Stack Overflow can be a bad idea</title><link href="https://bhch.github.io/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/" rel="alternate"></link><updated>2018-06-06T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-06-06:posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/</id><summary type="html">&lt;p&gt;I love Stack Overflow. It has helped me a lot through the years. Saved me time 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-07-02T00:00:00+05:30</updated><entry><title>How to call the model class from an abstract base class</title><link href="https://bhch.github.io/posts/2018/07/how-to-call-the-model-class-from-an-abstract-base-class/" rel="alternate"></link><updated>2018-07-02T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-07-02:posts/2018/07/how-to-call-the-model-class-from-an-abstract-base-class/</id><summary type="html">&lt;p&gt;This is going to be a short post. I recently had to write an abstract base class 
+for a couple of models. The problem I encountered was that I needed to call 
+the actual model class from a method that I defined in the abstract base class. 
+And I was stuck.&lt;/p&gt;
+&lt;h1 id="solution"&gt;Solution&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The solution is to use the &lt;a href="https://docs.djangoproject.com/en/2.0/ref/models/meta/"&gt;&lt;code&gt;_meta&lt;/code&gt; API&lt;/a&gt;. If you're thinking that the name 
+&lt;code&gt;_meta&lt;/code&gt; is private and therefore unsafe to use. It's not private. The leading 
+underscore is there to avoid confusion with the the name &lt;code&gt;Meta&lt;/code&gt; class of the 
+models. So, it is safe to use.&lt;/p&gt;
+&lt;p&gt;To access the actual model class in a method in your abstract base class, you can 
+use &lt;code&gt;self._meta.model&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;Here's a code example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MyBase&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;save&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pk&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;instance&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_meta&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pk&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="o"&gt;...&lt;/span&gt;
+
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;abstract&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I created this post because I couldn't find any resources online about this. &lt;/p&gt;
+&lt;p&gt;Hope it helps you, too.&lt;/p&gt;</summary><category term="python"></category><category term="django"></category></entry><entry><title>Why looking for answers directly on Stack Overflow can be a bad idea</title><link href="https://bhch.github.io/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/" rel="alternate"></link><updated>2018-06-06T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-06-06:posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/</id><summary type="html">&lt;p&gt;I love Stack Overflow. It has helped me a lot through the years. Saved me time 
 and money as I have no formal education in computer science. &lt;/p&gt;
 &lt;p&gt;Alright, enough ass-kissing. Let me get to the point. If you ever find yourself 
 stuck at something, your first instinct is to search on Google for the 

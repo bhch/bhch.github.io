@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive - bhch</title>
+    <title>How to call the model class from an abstract base class - bhch</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -51,37 +51,70 @@
         <div class="pure-u-1 pure-u-md-5-6 post-container">
             <!-- A wrapper for all the blog posts -->
             <div class="posts">
+
 <section class="post">
     <header class="post-header">
-        <h1 class="post-title">Archive</h1>
+
+        <h1 class="post-title">How to call the model class from an abstract base class</h1>
+<p class="post-meta">
+    Mon 02 July 2018
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/django/" class="tag">django</a>
+        </span>
+</p>
     </header>
 
     <div class="post-description">
-        <p class="post-meta"><small>Mon 02 July 2018</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2018/07/how-to-call-the-model-class-from-an-abstract-base-class/">How to call the model class from an abstract base class</a></p>
-        <p class="post-meta"><small>Wed 06 June 2018</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/">Why looking for answers directly on Stack Overflow can be a bad idea</a></p>
-        <p class="post-meta"><small>Thu 14 December 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/">Serving large files with Tornado safely without blocking</a></p>
-        <p class="post-meta"><small>Thu 16 November 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/">Writing an HTTP server from scratch</a></p>
-        <p class="post-meta"><small>Sun 15 October 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/">Making multiple async HTTP requests using Tornado</a></p>
-        <p class="post-meta"><small>Sat 30 September 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/">Python testing - How to mock requests during tests</a></p>
-        <p class="post-meta"><small>Sun 10 September 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/">Python testing - Introduction to mocking</a></p>
-        <p class="post-meta"><small>Mon 28 August 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/">How to integrate haystack search with Django admin</a></p>
-        <p class="post-meta"><small>Fri 23 June 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/">Understanding Tornado fundamentals</a></p>
-        <p class="post-meta"><small>Thu 13 April 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/">Fix the pip error: Couldn't find a version that satisfies the requirement</a></p>
-        <p class="post-meta"><small>Mon 20 March 2017</small></p>
-        <p class="post-title-archive"><a href="https://bhch.github.io/posts/2017/03/hello-world/">Hello, World!</a></p>
+        <p>This is going to be a short post. I recently had to write an abstract base class 
+for a couple of models. The problem I encountered was that I needed to call 
+the actual model class from a method that I defined in the abstract base class. 
+And I was stuck.</p>
+<h1 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h1>
+<p>The solution is to use the <a href="https://docs.djangoproject.com/en/2.0/ref/models/meta/"><code>_meta</code> API</a>. If you're thinking that the name 
+<code>_meta</code> is private and therefore unsafe to use. It's not private. The leading 
+underscore is there to avoid confusion with the the name <code>Meta</code> class of the 
+models. So, it is safe to use.</p>
+<p>To access the actual model class in a method in your abstract base class, you can 
+use <code>self._meta.model</code>. </p>
+<p>Here's a code example:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyBase</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+
+        <span class="o">...</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">abstract</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+
+
+<h1 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h1>
+<p>I created this post because I couldn't find any resources online about this. </p>
+<p>Hope it helps you, too.</p>
     </div>
 </section>
 
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2018/07/how-to-call-the-model-class-from-an-abstract-base-class/';
+        var disqus_url = 'https://bhch.github.io/posts/2018/07/how-to-call-the-model-class-from-an-abstract-base-class/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
             </div>
 
 <div class="footer">
