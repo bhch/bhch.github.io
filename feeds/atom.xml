@@ -1,5 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-07-02T00:00:00+05:30</updated><entry><title>django - How to call the model class from an abstract base class</title><link href="https://bhch.github.io/posts/2018/07/django-how-to-call-the-model-class-from-an-abstract-base-class/" rel="alternate"></link><updated>2018-07-02T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-07-02:posts/2018/07/django-how-to-call-the-model-class-from-an-abstract-base-class/</id><summary type="html">&lt;p&gt;This is going to be a short post. I recently had to write an abstract base class 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-10-24T00:00:00+05:30</updated><entry><title>django - How to clean up images and temporary files created during testing</title><link href="https://bhch.github.io/posts/2018/10/django-how-to-clean-up-images-and-temporary-files-created-during-testing/" rel="alternate"></link><published>2018-10-24T00:00:00+05:30</published><updated>2018-10-24T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-10-24:/posts/2018/10/django-how-to-clean-up-images-and-temporary-files-created-during-testing/</id><summary type="html">&lt;p&gt;How to clean up images and temporary files created during testing in django&lt;/p&gt;</summary><content type="html">&lt;p&gt;Are you stuck figuring out a sane way to clean up images and other temporary 
+files created during testing your django app? Well, it's your lucky day! &lt;/p&gt;
+&lt;h1 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;When testing a django app, we may need to create temporary files for testing 
+upload process, or format conversion, or thumbnail generation, etc. &lt;/p&gt;
+&lt;p&gt;But when the tests finish running, the uploaded files stay on the disk. Django 
+doesn't provide any API to remove files uploaded/created during testing. &lt;/p&gt;
+&lt;h1 id="the-bad-solution"&gt;The (bad) solution&lt;a class="headerlink" href="#the-bad-solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The simple solution is to call &lt;code&gt;os.remove&lt;/code&gt; to delete temporary files when you're 
+done testing from &lt;code&gt;tearDown&lt;/code&gt; or &lt;code&gt;tearDownClass&lt;/code&gt; method.&lt;/p&gt;
+&lt;p&gt;But this is not an efficient solution. &lt;/p&gt;
+&lt;p&gt;Why? Suppose you want to test a piece of code which generates multiple thumbnails in 
+various sizes for an uploaded image. Obviously, you'll keep the different size 
+thumbnails in different folders, for example, 100 x 100 thubnails in &lt;code&gt;100x100&lt;/code&gt; folder, 
+50X50 thumbnails in &lt;code&gt;50x50&lt;/code&gt; folder, and the original, full size images in a separate 
+&lt;code&gt;original&lt;/code&gt; folder. &lt;/p&gt;
+&lt;p&gt;Now, if you want to delete all these files, you'll need to call &lt;code&gt;os.remove&lt;/code&gt; multiple 
+times, with multiple file paths. And that sucks. &lt;/p&gt;
+&lt;h1 id="the-better-solution"&gt;The better solution&lt;a class="headerlink" href="#the-better-solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Django allows overriding the settings during testing. That means, you can override 
+the &lt;code&gt;MEDIA_ROOT&lt;/code&gt; settings to provide a separate folder where Django will keep the 
+uploaded files during testing. And when you're done testing, just delete the 
+whole folder. BOOM!&lt;/p&gt;
+&lt;p&gt;Code example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.test&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;override_settings&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;shutil&lt;/span&gt;
+
+&lt;span class="n"&gt;TEST_DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;test_data&amp;#39;&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SomeTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TestCase&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# use the `override_settings` decorator on &lt;/span&gt;
+    &lt;span class="c1"&gt;# those methods where you&amp;#39;re uploading images&lt;/span&gt;
+
+    &lt;span class="nd"&gt;@override_settings&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MEDIA_ROOT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TEST_DIR&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/media&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_file_upload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="o"&gt;...&lt;/span&gt;
+        &lt;span class="c1"&gt;# your code&lt;/span&gt;
+        &lt;span class="o"&gt;...&lt;/span&gt;
+
+&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# then create a tearDownModule function&lt;/span&gt;
+&lt;span class="c1"&gt;# to remove the `TEST_DIR` folder at the &lt;/span&gt;
+&lt;span class="c1"&gt;# end of tests&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;tearDownModule&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;Deleting temporary files...&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;shutil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rmtree&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TEST_DIR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;OSError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>django - How to call the model class from an abstract base class</title><link href="https://bhch.github.io/posts/2018/07/django-how-to-call-the-model-class-from-an-abstract-base-class/" rel="alternate"></link><published>2018-07-02T00:00:00+05:30</published><updated>2018-07-02T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-07-02:/posts/2018/07/django-how-to-call-the-model-class-from-an-abstract-base-class/</id><summary type="html">&lt;p&gt;How to call the model class from an abstract base class&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is going to be a short post. I recently had to write an abstract base class 
 for a couple of models. The problem I encountered was that I needed to call 
 the actual model class from a method that I defined in the abstract base class. 
 And I was stuck.&lt;/p&gt;
@@ -26,7 +80,7 @@ use &lt;code&gt;self._meta.model&lt;/code&gt;. &lt;/p&gt;
 
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;I created this post because I couldn't find any resources online about this. &lt;/p&gt;
-&lt;p&gt;Hope it helps you, too.&lt;/p&gt;</summary><category term="python"></category><category term="django"></category></entry><entry><title>Why looking for answers directly on Stack Overflow can be a bad idea</title><link href="https://bhch.github.io/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/" rel="alternate"></link><updated>2018-06-06T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-06-06:posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/</id><summary type="html">&lt;p&gt;I love Stack Overflow. It has helped me a lot through the years. Saved me time 
+&lt;p&gt;Hope it helps you, too.&lt;/p&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>Why looking for answers directly on Stack Overflow can be a bad idea</title><link href="https://bhch.github.io/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/" rel="alternate"></link><published>2018-06-06T00:00:00+05:30</published><updated>2018-06-06T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-06-06:/posts/2018/06/why-looking-for-answers-directly-on-stack-overflow-can-be-a-bad-idea/</id><summary type="html">&lt;p&gt;Why looking for answers directly on Stack Overflow can be a bad idea.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I love Stack Overflow. It has helped me a lot through the years. Saved me time 
 and money as I have no formal education in computer science. &lt;/p&gt;
 &lt;p&gt;Alright, enough ass-kissing. Let me get to the point. If you ever find yourself 
 stuck at something, your first instinct is to search on Google for the 
@@ -63,7 +117,7 @@ than &lt;em&gt;"wasting"&lt;/em&gt; your time reading the docs:&lt;/p&gt;
 &lt;h1 id="conclusion"&gt;Conclusion&lt;a class="headerlink" href="#conclusion" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;If you're on a deadline, or don't really care, just &lt;em&gt;Stack Overflow&lt;/em&gt; it. &lt;/p&gt;
 &lt;p&gt;If you want to be a better programmer, &lt;em&gt;read them docs&lt;/em&gt;. &lt;/p&gt;
-&lt;p&gt;If you want to take it even further, &lt;em&gt;read them source codes&lt;/em&gt;. &lt;/p&gt;</summary><category term="thoughts"></category><category term="rant"></category></entry><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
+&lt;p&gt;If you want to take it even further, &lt;em&gt;read them source codes&lt;/em&gt;. &lt;/p&gt;</content><category term="thoughts"></category><category term="rant"></category></entry><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><published>2017-12-14T00:00:00+05:30</published><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;How to safely serve large files using Tornado in a non-blocking manner.&lt;/p&gt;</summary><content type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;It should not eat up our RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
@@ -74,7 +128,7 @@ and we'll keep doing that until we've read and sent the whole file.&lt;/p&gt;
 &lt;p&gt;Before moving on, I think it should go without saying that Tornado isn't recommended to serve large 
 data. A specialized server, like Nginx, for this purpose should be always be preferred 
 when possible. &lt;/p&gt;
-&lt;hr /&gt;
+&lt;hr&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The code in this post is written for Python &amp;gt;= 3.5 and I've used the new 
 &lt;code&gt;async&lt;/code&gt; and &lt;code&gt;await&lt;/code&gt; syntax. For older Python version, you can adapt the code 
@@ -90,7 +144,7 @@ like this:&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;hr /&gt;
+&lt;hr&gt;
 &lt;h1 id="serving-the-files-safely-so-it-doesnt-eat-up-our-ram"&gt;Serving the files safely so it doesn't eat up our RAM&lt;a class="headerlink" href="#serving-the-files-safely-so-it-doesnt-eat-up-our-ram" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;We'll read the files in chunks, then write the cunk to the response, and flush 
 it to the network socket.&lt;/p&gt;
@@ -206,7 +260,7 @@ Tornado a little faster. &lt;/p&gt;
 &lt;p&gt;Nginx also uses some sort of caching mechanism, about which 
 I don't know anything yet. But if used that on Tornado, we should see some 
 performance improvement.&lt;/p&gt;
-&lt;p&gt;Surely, I'll keep investigating this further, but for this article, that's it.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Surely, I'll keep investigating this further, but for this article, that's it.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><published>2017-11-16T00:00:00+05:30</published><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:/posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;p&gt;&lt;img alt="Writing an HTTP server from scratch in Python" src="/images/http-speak.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;This is supposed to be an introductory article that shows you how you can write 
 a simple, basic HTTP server. If you're interested in building your own HTTP server, 
 or just curious about how an HTTP server works, this article is a good starting 
@@ -222,13 +276,13 @@ section.&lt;/p&gt;
 &lt;p&gt;Let's get started, then.&lt;/p&gt;
 &lt;h1 id="steps-to-create-an-http-server"&gt;Steps to create an HTTP server&lt;a class="headerlink" href="#steps-to-create-an-http-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Create a TCP server.&lt;/strong&gt;&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Create a TCP server.&lt;/strong&gt;&lt;br&gt;
  HTTP is built on top of TCP (Transmission Control Protocol), so we will need to
  create a program capable of sending and receiving data through a TCP socket. 
  Knowledge about the TCP protocol is not required but familiarity with Python's 
  &lt;code&gt;socket&lt;/code&gt; library is. Go through &lt;code&gt;socket&lt;/code&gt; library's &lt;a href="https://docs.python.org/3/howto/sockets.html"&gt;docs&lt;/a&gt;, or 
  read the &lt;a href="https://pymotw.com/3/socket/"&gt;PyMOTW&lt;/a&gt; page for good examples.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Teach our TCP server the HTTP protocol.&lt;/strong&gt;&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Teach our TCP server the HTTP protocol.&lt;/strong&gt;&lt;br&gt;
  At this point our TCP server doesn't understand HTTP. To convert it from a TCP 
  server to an HTTP server all we need to do is &lt;em&gt;teach&lt;/em&gt; it the HTTP protocol.
  You need to have some basic knowledge about the HTTP protocol, 
@@ -238,7 +292,7 @@ section.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;That's it. That's all it takes to write an HTTP server.&lt;/p&gt;
 &lt;h1 id="step-1-creating-a-tcp-server"&gt;Step 1:  Creating a TCP server&lt;a class="headerlink" href="#step-1-creating-a-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;&lt;img alt="HTTP is built on top of TCP" src="/images/tcp-socket.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="HTTP is built on top of TCP" src="/images/tcp-socket.png"&gt;&lt;/p&gt;
 &lt;p&gt;Since HTTP works through a TCP socket, we'll start by writing a simple TCP server.
 We will use Python's &lt;code&gt;socket&lt;/code&gt; library for this.&lt;/p&gt;
 &lt;h2 id="12-a-simple-echo-server"&gt;1.2 A simple Echo server&lt;a class="headerlink" href="#12-a-simple-echo-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
@@ -357,7 +411,7 @@ that it can be used as a base for our HTTP server.&lt;/p&gt;
  but we'll create a subclass and override this method to add some actual functionality.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id="step-2-teaching-the-http-protocol-to-our-tcp-server"&gt;Step 2: Teaching the HTTP protocol to our TCP server&lt;a class="headerlink" href="#step-2-teaching-the-http-protocol-to-our-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;&lt;img alt="HTTP protocol" src="/images/http-speak.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="HTTP protocol" src="/images/http-speak.png"&gt;&lt;/p&gt;
 &lt;p&gt;Instead of implementing the HTTP protocol in the &lt;code&gt;TCPServer&lt;/code&gt; class, we'll subclass it 
 and implement the protocol in the subclass. Add the following code to &lt;code&gt;main.py&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
@@ -831,36 +885,36 @@ for some pointers.&lt;/p&gt;
 &lt;h1 id="taking-our-server-to-the-next-level"&gt;Taking our server to the next level&lt;a class="headerlink" href="#taking-our-server-to-the-next-level" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Below are a few checkpoints that almost every production level server implements:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Implement full HTTP&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Implement full HTTP&lt;/strong&gt;:&lt;br&gt;
  Our server only supports two methods - &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;OPTIONS&lt;/code&gt; and a few headers. It 
  has no support for Cookies, or caching. A good starting point towards a production 
  ready server would be to implement the full HTTP protocol. You can start by reading 
  &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP"&gt;Mozilla's web docs&lt;/a&gt; and implementing all the HTTP features one by one.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Serving multiple clients&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Serving multiple clients&lt;/strong&gt;:&lt;br&gt;
  Currently, our server only serves one client at a time. You can make it serve 
  more than one client at a time by multi-threading. But not all servers use 
  multi-threading. There are event driven servers which use a different approach. 
  Read about the Tornado web server.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;WSGI support&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;WSGI support&lt;/strong&gt;:&lt;br&gt;
  Currently, Python frameworks like Django and Flask won't work with our 
  server. The only way to make our server work with them is by implementing WSGI. 
  What is WSGI? Here's a &lt;a href="http://lucumr.pocoo.org/2007/5/21/getting-started-with-wsgi/"&gt;tutorial by Armin Ronacher&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Daemon mode&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Daemon mode&lt;/strong&gt;:&lt;br&gt;
  Running a server in daemon mode means that running it as a background process. 
  Currently, our server doesn't run in background. So, if we run it and then 
  close the terminal, our server process will also stop. You can use tools like 
  &lt;a href="http://supervisord.org/"&gt;supervisord&lt;/a&gt; to make the server run in daemon mode. &lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Logging&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Logging&lt;/strong&gt;:&lt;br&gt;
  Logging is a very import feature of servers. It means writing logs to a file 
  in the event of say, an error occurs, like a &lt;code&gt;404&lt;/code&gt; error, or a &lt;code&gt;500&lt;/code&gt; server error. 
  Servers also write access logs for every request which contain information about the
  IP Address of the the client, the page requested and the time.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Configuration support&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Configuration support&lt;/strong&gt;:&lt;br&gt;
  Our server doesn't support configuration, for example we can't tell our server 
  which files or directories to server, where to find files, etc. This way, we can 
  map a file to a different URL, which means we can serve &lt;code&gt;hello.html&lt;/code&gt; file from a 
  URL like &lt;code&gt;/goodbye&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Serving large files&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Serving large files&lt;/strong&gt;:&lt;br&gt;
  Our server is capable of serving videos. But not very large videos. The reason 
  is before serving files to the client we read the whole file in the memory by 
  using &lt;code&gt;f.read()&lt;/code&gt; (see the code in &lt;code&gt;handle_GET&lt;/code&gt; method above). So, if you try to 
@@ -869,7 +923,7 @@ for some pointers.&lt;/p&gt;
  only a smart part (around 10 - 20 MB) of the file at a time. This is done in a 
  loop which will run until the whole file is read and written to the response.
  This technique is called &lt;em&gt;chunking&lt;/em&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Security&lt;/strong&gt;:&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Security&lt;/strong&gt;:&lt;br&gt;
  In this blog post, we've talked about almost everything HTTP related, except for 
  security. This is a very delicate topic and it's never permanent - you'll have to 
  constantly keep working to keep your code secure. A good starting point to read 
@@ -881,7 +935,10 @@ for some pointers.&lt;/p&gt;
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;I got none more fo you, brah. In case there are errors in the code, or any other 
 mistakes, please let me know. &lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="http"></category><category term="server"></category></entry><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
+&lt;p&gt;Until next time.&lt;/p&gt;</content><category term="python"></category><category term="http"></category><category term="server"></category></entry><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><published>2017-10-15T00:00:00+05:30</published><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:/posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
+multiple HTTP requests and process them asynchronously, I do.&lt;/p&gt;
+&lt;p&gt;The advantage of using callbacks in this case over coroutines is that 
+as soon as Tornado …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
 multiple HTTP requests and process them asynchronously, I do.&lt;/p&gt;
 &lt;p&gt;The advantage of using callbacks in this case over coroutines is that 
 as soon as Tornado gets a response, it calls the callback function to handle the 
@@ -990,7 +1047,7 @@ but you can use &lt;code&gt;*&lt;/code&gt; to unpack the list. See the example:&
 &lt;p&gt;We can't run a coroutine like we run a normal function. 
 To run a coroutine, we have used IOLoop's &lt;code&gt;run_sync&lt;/code&gt; method. This also 
 gives us an advantage of not worrying about stopping the loop. Tornado will 
-automatically stop the loop when all the requests are finished and processed.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category></entry><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><updated>2018-01-08T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
+automatically stop the loop when all the requests are finished and processed.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>Python testing - How to mock requests during tests</title><link href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/" rel="alternate"></link><published>2017-09-30T00:00:00+05:30</published><updated>2018-01-08T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-30:/posts/2017/09/python-testing-how-to-mock-requests-during-tests/</id><summary type="html">&lt;p&gt;A Python tutorial for mocking requests during tests.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the previous post, I wrote an introductory post about getting started with 
 mocking tests in Python. You can find it here: 
 &lt;a href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/"&gt;Python testing - Introduction to mocking&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In this post, I'll discuss how you can mock HTTP requests made using &lt;code&gt;urllib&lt;/code&gt; 
@@ -1195,7 +1252,7 @@ for the response. That should reduce some of the repetitive code. It would work 
 &lt;p&gt;In this post we saw how we can mock HTTP requests by mocking &lt;code&gt;requests.get&lt;/code&gt; or 
 (&lt;code&gt;urllib.urlopen&lt;/code&gt;). We also saw that we can mock  &lt;code&gt;requests.get&lt;/code&gt; directly or we 
 can mock the funciton/code that calls &lt;code&gt;requests.get&lt;/code&gt;. Both the ways work, so it 
-doesn't matter which way we choose.&lt;/p&gt;</summary><category term="python"></category><category term="mock"></category><category term="unittest"></category><category term="requests"></category><category term="urllib"></category></entry><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;h1 id="what-is-mocking"&gt;What is mocking?&lt;a class="headerlink" href="#what-is-mocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+doesn't matter which way we choose.&lt;/p&gt;</content><category term="python"></category><category term="mock"></category><category term="unittest"></category><category term="requests"></category><category term="urllib"></category></entry><entry><title>Python testing - Introduction to mocking</title><link href="https://bhch.github.io/posts/2017/09/python-testing-introduction-to-mocking/" rel="alternate"></link><published>2017-09-10T00:00:00+05:30</published><updated>2017-09-10T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-09-10:/posts/2017/09/python-testing-introduction-to-mocking/</id><summary type="html">&lt;p&gt;An introduction to mocking in Python.&lt;/p&gt;</summary><content type="html">&lt;h1 id="what-is-mocking"&gt;What is mocking?&lt;a class="headerlink" href="#what-is-mocking" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Let me try and explain what mocking is and when you need it, with an example &amp;mdash;&lt;/p&gt;
 &lt;p&gt;Suppose you have a web app where users can sign up. When a user signs up, 
 your app automatically sends them an email asking them to verify their email 
@@ -1242,7 +1299,7 @@ calling &lt;code&gt;send_verification_mail&lt;/code&gt; function? &lt;/p&gt;
 &lt;p&gt;This is where mocking comes in. Mocking means you can create a &lt;em&gt;fake&lt;/em&gt; function 
 to replace &lt;code&gt;send_verifiation_mail&lt;/code&gt; in your tests. That's it.&lt;/p&gt;
 &lt;h1 id="a-simple-example"&gt;A Simple example&lt;a class="headerlink" href="#a-simple-example" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;hr /&gt;
+&lt;hr&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;If you're using Python 2.7 or any version &amp;lt; 3.3, you'll need to install the 
 &lt;code&gt;mock&lt;/code&gt; package:&lt;/p&gt;
@@ -1252,7 +1309,7 @@ to replace &lt;code&gt;send_verifiation_mail&lt;/code&gt; in your tests. That's 
 
 &lt;p&gt;For Python &amp;gt;= 3.3, the &lt;code&gt;mock&lt;/code&gt; is included in the standard library and 
 can be imported as &lt;code&gt;unittest.mock&lt;/code&gt;. &lt;/p&gt;
-&lt;hr /&gt;
+&lt;hr&gt;
 &lt;p&gt;First create a file called &lt;code&gt;main.py&lt;/code&gt;. Our code will live in this.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
 
@@ -1367,7 +1424,9 @@ separate file and run them only when we have to. &lt;/p&gt;
 &lt;p&gt;In this post, I covered what mocking is and when you need it. I've also shown a 
 very basic example of getting started with mocking.&lt;/p&gt;
 &lt;p&gt;In the &lt;a href="https://bhch.github.io/posts/2017/09/python-testing-how-to-mock-requests-during-tests/"&gt;next post&lt;/a&gt;, I'll write about how you can mock HTTP requests made using the 
-&lt;code&gt;requests&lt;/code&gt; library.&lt;/p&gt;</summary><category term="python"></category><category term="mock"></category><category term="unittest"></category></entry><entry><title>How to integrate haystack search with Django admin</title><link href="https://bhch.github.io/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/" rel="alternate"></link><updated>2017-08-28T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-08-28:posts/2017/08/how-to-integrate-haystack-search-with-django-admin/</id><summary type="html">&lt;p&gt;Recently, I had to integrate Haystack with Django admin so as to be able to 
+&lt;code&gt;requests&lt;/code&gt; library.&lt;/p&gt;</content><category term="python"></category><category term="mock"></category><category term="unittest"></category></entry><entry><title>How to integrate haystack search with Django admin</title><link href="https://bhch.github.io/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/" rel="alternate"></link><published>2017-08-28T00:00:00+05:30</published><updated>2017-08-28T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-08-28:/posts/2017/08/how-to-integrate-haystack-search-with-django-admin/</id><summary type="html">&lt;p&gt;Recently, I had to integrate Haystack with Django admin so as to be able to 
+perform a full text search just via the admin. Looking around for resources on the 
+internet, I came across &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/admin.html"&gt;this page&lt;/a&gt; in Haystack's …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, I had to integrate Haystack with Django admin so as to be able to 
 perform a full text search just via the admin. Looking around for resources on the 
 internet, I came across &lt;a href="http://django-haystack.readthedocs.io/en/v2.4.1/admin.html"&gt;this page&lt;/a&gt; in Haystack's docs. Turns out Haystack 
 has provided a solution to ease the integration of Haystack with Django admin.&lt;/p&gt;
@@ -1463,7 +1522,9 @@ instead of from &lt;code&gt;haystack.admin&lt;/code&gt;.&lt;/p&gt;
 override the code, instead of copying  and changing it. Believe me, I tried that. 
 But if you go through the source code in &lt;code&gt;haystack/admin.py&lt;/code&gt; file, you'll see 
 overriding is not possible. Well, it is possible, but, it would still be ugly. 
-Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
+Just go through the code, you'll see. If you have a better workaround, I'd love to know. &lt;/p&gt;</content><category term="python"></category><category term="django"></category><category term="haystack"></category></entry><entry><title>Understanding Tornado fundamentals</title><link href="https://bhch.github.io/posts/2017/06/understanding-tornado-fundamentals/" rel="alternate"></link><published>2017-06-23T00:00:00+05:30</published><updated>2017-09-30T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-06-23:/posts/2017/06/understanding-tornado-fundamentals/</id><summary type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
+explain certain things in depth. Being new to async programming model, I found many things 
+quite difficult to understand. The documentation also lacks a …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Tornado's documentation is very feeble, or at least I found it so. It doesn't 
 explain certain things in depth. Being new to async programming model, I found many things 
 quite difficult to understand. The documentation also lacks a good tutorial, like 
 the Django's documnetation has an excellent Polls tutorial which explains almost 
@@ -1750,7 +1811,7 @@ this decorator&lt;/li&gt;
 &lt;p&gt;The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
 documentation covers them nicely.&lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</summary><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><updated>2018-05-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;Sometimes you get an error when you're trying to install a Python package 
+&lt;p&gt;Until next time.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><published>2017-04-13T00:00:00+05:30</published><updated>2018-05-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;How to fix the &lt;code&gt;pip&lt;/code&gt; &lt;em&gt;"Couldn't find a version that satisfies the requirement"&lt;/em&gt; error.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes you get an error when you're trying to install a Python package 
 using pip. It looks like this:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Could not find a version that satisfies the requirement &lt;package-name&gt; (from versions:)
@@ -1760,13 +1821,13 @@ No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;because PyPI server isn't responding to 
-your requests because it has blacklisted your IP address.&lt;br /&gt;
+your requests because it has blacklisted your IP address.&lt;br&gt;
 This can be fixed by using a proxy with pip. See &lt;a href="#solution"&gt;the solution&lt;/a&gt;.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;or because you're running an older pip (especially on Mac).&lt;br /&gt;
+&lt;p&gt;or because you're running an older pip (especially on Mac).&lt;br&gt;
 This can be fixed by upgrading your pip. 
-See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br /&gt;
+See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br&gt;
 &lt;em&gt;Thanks to Anupam Jain who pointed this in the comments&lt;/em&gt;.  &lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
@@ -1801,22 +1862,25 @@ for a solution.&lt;/p&gt;
 &lt;p&gt;These are some other things that I tried to get rid of this issue. 
 Altough they didn't work for me, but they might work for you.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Changing DNS resolver of my server.&lt;/strong&gt;&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Changing DNS resolver of my server.&lt;/strong&gt;&lt;br&gt;
  This makes sense if your server's DNS resolver can't find PyPI servers. &lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Reconfiguring SSL, reinstalling CA certificates.&lt;/strong&gt;&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Reconfiguring SSL, reinstalling CA certificates.&lt;/strong&gt;&lt;br&gt;
  This makes sense if you don't have updated CA certificates which are used by 
  PyPI servers.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;wget&lt;/code&gt;.&lt;/strong&gt;&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;wget&lt;/code&gt;.&lt;/strong&gt;&lt;br&gt;
  This is an alternative way to install Python packages. Download them via &lt;code&gt;wget&lt;/code&gt; 
  and then install them using &lt;code&gt;python setup.py install&lt;/code&gt;. In my case, the server was 
  blacklisted by PyPI so I was getting a 403 Forbidden error.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;curl&lt;/code&gt;.&lt;/strong&gt;&lt;br /&gt;
+&lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;curl&lt;/code&gt;.&lt;/strong&gt;&lt;br&gt;
  Alternative to &lt;code&gt;wget&lt;/code&gt;. In my case I didn't get a 403 error but rather it just 
  created invalid tarball files, instead of actually downloading them.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;git&lt;/code&gt; or &lt;code&gt;hg&lt;/code&gt;.&lt;/strong&gt;
  If your desired packages have &lt;code&gt;git&lt;/code&gt; or &lt;code&gt;hg&lt;/code&gt; repositories that you can clone, this 
  might work for you.&lt;/li&gt;
-&lt;/ol&gt;</summary><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
+&lt;/ol&gt;</content><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><published>2017-03-20T00:00:00+05:30</published><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:/posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
+&lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
+sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
+my first programming language came …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
 &lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
 sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
 my first programming language came when I was watching the film 
@@ -1827,4 +1891,4 @@ fascinated by the number of applications this language had. Plus, the name is co
  It bears an air of mystery about itself.&lt;/p&gt;
 &lt;p&gt;Here's the first line of code I ever wrote, and perhaps you did too:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello, World!&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary></entry></feed>
+&lt;/pre&gt;&lt;/div&gt;</content></entry></feed>

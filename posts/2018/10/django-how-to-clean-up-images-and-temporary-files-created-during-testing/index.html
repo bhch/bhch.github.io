@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fix the pip error: Couldn't find a version that satisfies the requirement - bhch</title>
+    <title>django - How to clean up images and temporary files created during testing - bhch</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -55,90 +55,76 @@
 <section class="post">
     <header class="post-header">
 
-        <h1 class="post-title">Fix the pip error: Couldn't find a version that satisfies the requirement</h1>
+        <h1 class="post-title">django - How to clean up images and temporary files created during testing</h1>
 <p class="post-meta">
-    Thu 13 April 2017
-        <strong>&nbsp; &middot; &nbsp;</strong> 
-        updated Sun 27 May 2018
+    Wed 24 October 2018
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
         <strong>&nbsp; &middot; &nbsp;</strong>
         <span class="tags">
                 <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
-                <a href="https://bhch.github.io/tag/pip/" class="tag">pip</a>
+                <a href="https://bhch.github.io/tag/django/" class="tag">django</a>
         </span>
 </p>
     </header>
 
     <div class="post-description">
-        <p>Sometimes you get an error when you're trying to install a Python package 
-using pip. It looks like this:</p>
-<blockquote>
-<p>Could not find a version that satisfies the requirement <package-name> (from versions:)
-No matching distribution found for <package-name></p>
-</blockquote>
-<p>Most probable reasons for this error are:</p>
-<ol>
-<li>
-<p>because PyPI server isn't responding to 
-your requests because it has blacklisted your IP address.<br>
-This can be fixed by using a proxy with pip. See <a href="#solution">the solution</a>.</p>
-</li>
-<li>
-<p>or because you're running an older pip (especially on Mac).<br>
-This can be fixed by upgrading your pip. 
-See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a>.<br>
-<em>Thanks to Anupam Jain who pointed this in the comments</em>.  </p>
-</li>
-</ol>
-<p>This might also happen because the PyPI server is down. So, in that case there's
-nothing that can be done.</p>
-<h1 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h1>
-<p>I had this issue because <a href="https://python.org">https://python.org</a> had blacklisted the IP 
-of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy.</p>
-<p>But to see if that's also the case with you, you can test it like this:</p>
-<div class="highlight"><pre><span></span>$ curl https://pypi.python.org
+        <p>Are you stuck figuring out a sane way to clean up images and other temporary 
+files created during testing your django app? Well, it's your lucky day! </p>
+<h1 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h1>
+<p>When testing a django app, we may need to create temporary files for testing 
+upload process, or format conversion, or thumbnail generation, etc. </p>
+<p>But when the tests finish running, the uploaded files stay on the disk. Django 
+doesn't provide any API to remove files uploaded/created during testing. </p>
+<h1 id="the-bad-solution">The (bad) solution<a class="headerlink" href="#the-bad-solution" title="Permanent link">&para;</a></h1>
+<p>The simple solution is to call <code>os.remove</code> to delete temporary files when you're 
+done testing from <code>tearDown</code> or <code>tearDownClass</code> method.</p>
+<p>But this is not an efficient solution. </p>
+<p>Why? Suppose you want to test a piece of code which generates multiple thumbnails in 
+various sizes for an uploaded image. Obviously, you'll keep the different size 
+thumbnails in different folders, for example, 100 x 100 thubnails in <code>100x100</code> folder, 
+50X50 thumbnails in <code>50x50</code> folder, and the original, full size images in a separate 
+<code>original</code> folder. </p>
+<p>Now, if you want to delete all these files, you'll need to call <code>os.remove</code> multiple 
+times, with multiple file paths. And that sucks. </p>
+<h1 id="the-better-solution">The better solution<a class="headerlink" href="#the-better-solution" title="Permanent link">&para;</a></h1>
+<p>Django allows overriding the settings during testing. That means, you can override 
+the <code>MEDIA_ROOT</code> settings to provide a separate folder where Django will keep the 
+uploaded files during testing. And when you're done testing, just delete the 
+whole folder. BOOM!</p>
+<p>Code example:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.test</span> <span class="kn">import</span> <span class="n">override_settings</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 
-The requestors Network has been blacklisted due to excessive request volume. 
-If you are a hosting customer, please contact your hosting company<span class="err">&#39;</span>s support. 
-If you are the hosting company, please contact infrastructure-staff@python.org to resolve
+<span class="n">TEST_DIR</span> <span class="o">=</span> <span class="s1">&#39;test_data&#39;</span>
+
+<span class="k">class</span> <span class="nc">SomeTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="o">...</span>
+
+    <span class="c1"># use the `override_settings` decorator on </span>
+    <span class="c1"># those methods where you&#39;re uploading images</span>
+
+    <span class="nd">@override_settings</span><span class="p">(</span><span class="n">MEDIA_ROOT</span><span class="o">=</span><span class="p">(</span><span class="n">TEST_DIR</span> <span class="o">+</span> <span class="s1">&#39;/media&#39;</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_file_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># your code</span>
+        <span class="o">...</span>
+
+<span class="o">...</span>
+
+
+<span class="c1"># then create a tearDownModule function</span>
+<span class="c1"># to remove the `TEST_DIR` folder at the </span>
+<span class="c1"># end of tests</span>
+
+<span class="k">def</span> <span class="nf">tearDownModule</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Deleting temporary files...</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">TEST_DIR</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
 </pre></div>
-
-
-<p>If you see the message similar to above, that means your IP has also been 
-blacklisted by <a href="https://python.org">https://python.org</a>. </p>
-<p>If you don't see this message then the reason for the pip error could be that you're using
-an older version. See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a> 
-for a solution.</p>
-<p>Anyways, this can be fixed by using a proxy with pip.</p>
-<p>Supplying a proxy address to <code>pip</code> is easy:</p>
-<div class="highlight"><pre><span></span>$ pip install -r requirements.txt --proxy address:port
-</pre></div>
-
-
-<p>Above, <code>address</code> and <code>port</code> are IP address and port of the proxy.</p>
-<p>To find proxies, just <a href="https://www.google.com/search?q=proxy+list">search Google for proxy list</a>.</p>
-<h1 id="other-things-that-i-tried">Other things that I tried<a class="headerlink" href="#other-things-that-i-tried" title="Permanent link">&para;</a></h1>
-<p>These are some other things that I tried to get rid of this issue. 
-Altough they didn't work for me, but they might work for you.</p>
-<ol>
-<li><strong>Changing DNS resolver of my server.</strong><br>
- This makes sense if your server's DNS resolver can't find PyPI servers. </li>
-<li><strong>Reconfiguring SSL, reinstalling CA certificates.</strong><br>
- This makes sense if you don't have updated CA certificates which are used by 
- PyPI servers.</li>
-<li><strong>Downloading packages using <code>wget</code>.</strong><br>
- This is an alternative way to install Python packages. Download them via <code>wget</code> 
- and then install them using <code>python setup.py install</code>. In my case, the server was 
- blacklisted by PyPI so I was getting a 403 Forbidden error.</li>
-<li><strong>Downloading packages using <code>curl</code>.</strong><br>
- Alternative to <code>wget</code>. In my case I didn't get a 403 error but rather it just 
- created invalid tarball files, instead of actually downloading them.</li>
-<li><strong>Downloading packages using <code>git</code> or <code>hg</code>.</strong>
- If your desired packages have <code>git</code> or <code>hg</code> repositories that you can clone, this 
- might work for you.</li>
-</ol>
     </div>
 </section>
 
@@ -146,8 +132,8 @@ Altough they didn't work for me, but they might work for you.</p>
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'bhch-blog';
-        var disqus_identifier = 'posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/';
-        var disqus_url = 'https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/';
+        var disqus_identifier = 'posts/2018/10/django-how-to-clean-up-images-and-temporary-files-created-during-testing/';
+        var disqus_url = 'https://bhch.github.io/posts/2018/10/django-how-to-clean-up-images-and-temporary-files-created-during-testing/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//bhch-blog.disqus.com/embed.js';

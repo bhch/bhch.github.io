@@ -81,7 +81,7 @@ and we'll keep doing that until we've read and sent the whole file.</p>
 <p>Before moving on, I think it should go without saying that Tornado isn't recommended to serve large 
 data. A specialized server, like Nginx, for this purpose should be always be preferred 
 when possible. </p>
-<hr />
+<hr>
 <p><strong>Note:</strong></p>
 <p>The code in this post is written for Python &gt;= 3.5 and I've used the new 
 <code>async</code> and <code>await</code> syntax. For older Python version, you can adapt the code 
@@ -97,7 +97,7 @@ like this:</p>
 </pre></div>
 
 
-<hr />
+<hr>
 <h1 id="serving-the-files-safely-so-it-doesnt-eat-up-our-ram">Serving the files safely so it doesn't eat up our RAM<a class="headerlink" href="#serving-the-files-safely-so-it-doesnt-eat-up-our-ram" title="Permanent link">&para;</a></h1>
 <p>We'll read the files in chunks, then write the cunk to the response, and flush 
 it to the network socket.</p>
