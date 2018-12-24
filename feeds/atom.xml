@@ -1,5 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-12-09T00:00:00+05:30</updated><entry><title>django - How to clean up images and temporary files created during testing</title><link href="https://bhch.github.io/posts/2018/12/django-how-to-clean-up-images-and-temporary-files-created-during-testing/" rel="alternate"></link><published>2018-12-09T00:00:00+05:30</published><updated>2018-12-09T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-12-09:/posts/2018/12/django-how-to-clean-up-images-and-temporary-files-created-during-testing/</id><summary type="html">&lt;p&gt;How to clean up images and temporary files created during testing in django&lt;/p&gt;</summary><content type="html">&lt;p&gt;Are you stuck figuring out a sane way to clean up images and other temporary 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-12-24T00:00:00+05:30</updated><entry><title>django - How to edit/manipulate uploaded images on the fly before saving</title><link href="https://bhch.github.io/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/" rel="alternate"></link><published>2018-12-24T00:00:00+05:30</published><updated>2018-12-24T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-12-24:/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/</id><summary type="html">&lt;p&gt;How to edit and manipulate uploaded images on the fly before saving in Django&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes you need to perform certain operations on user uploaded images before 
+saving them in Django. These operations may include cropping images, rotating them, 
+generating thumbnails or compressing them. I'll show you how to do that. &lt;/p&gt;
+&lt;p&gt;You'll need to have &lt;a href="https://pillow.readthedocs.io/en/5.3.x/installation.html"&gt;Pillow&lt;/a&gt; installed for that. &lt;/p&gt;
+&lt;h1 id="sample-model"&gt;Sample model&lt;a class="headerlink" href="#sample-model" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Below is a sample model which has two fields - &lt;code&gt;image&lt;/code&gt; and &lt;code&gt;thumbnail&lt;/code&gt;. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# models.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.db&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MyModel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ImageField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;thumbnail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ImageField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's say we want to auto generate thumbnails from the image uploaded 
+by the user. &lt;/p&gt;
+&lt;h1 id="function-for-genrating-thumbnails"&gt;Function for genrating thumbnails&lt;a class="headerlink" href="#function-for-genrating-thumbnails" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;We'll create a new function called &lt;code&gt;make_thumbnail&lt;/code&gt; which will 
+create thumbnails for the given image. Keep this in code wherever you like. &lt;/p&gt;
+&lt;p&gt;This code works for Django &amp;gt;= 1.7.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;io&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BytesIO&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.core.files&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;PIL&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Image&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;make_thumbnail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Makes thumbnails of given size from given image&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="n"&gt;im&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Image&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;im&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;RGB&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# convert mode&lt;/span&gt;
+
+    &lt;span class="n"&gt;im&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;thumbnail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# resize image&lt;/span&gt;
+
+    &lt;span class="n"&gt;thumb_io&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BytesIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# create a BytesIO object&lt;/span&gt;
+
+    &lt;span class="n"&gt;im&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thumb_io&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;JPEG&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;quality&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;85&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# save image to BytesIO object&lt;/span&gt;
+
+    &lt;span class="n"&gt;thumbnail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;thumb_io&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# create a django friendly File object&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;thumbnail&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here's some explanation about the code:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;im.convert(RGB)&lt;/code&gt; is done to convert the image's mode to RGB. Because sometimes 
+ Pillow throws an error when we try to save an image in JPEG format if the image 
+ is a GIF with a limited pallette. &lt;/li&gt;
+&lt;li&gt;&lt;code&gt;im.thumbnail(size)&lt;/code&gt; is a method of Pillow's &lt;code&gt;Image&lt;/code&gt; class which scales the 
+ image to the given size while keeping the aspect ratio.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;thumbnail = File(thumb_io, name=image.name)&lt;/code&gt; creates a Django-friendly &lt;code&gt;File&lt;/code&gt; 
+ object which we can use as the value for a model's &lt;code&gt;ImageField&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Other than that, the code is fairly basic. This is just to give you an idea about 
+manipulating images on the fly. &lt;/p&gt;
+&lt;h1 id="calling-the-function-from-the-model"&gt;Calling the function from the model&lt;a class="headerlink" href="#calling-the-function-from-the-model" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;And here's how you'd call the function from the model:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# models.py&lt;/span&gt;
+
+&lt;span class="c1"&gt;# import the `make_thumbnail` function&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;some_file&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;make_thumbnail&lt;/span&gt;
+
+&lt;span class="n"&gt;clas&lt;/span&gt; &lt;span class="n"&gt;MyModel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ImageField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;thumbnail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ImageField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;save&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;thumbnail&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;make_thumbnail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1 id="that-is-it"&gt;That is it&lt;a class="headerlink" href="#that-is-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;You can adapt and mofify the code to perform any operations you like on the images,
+for example crop them, or even apply Instagram like fancy filters. &lt;/p&gt;
+&lt;p&gt;It's upto you. &lt;/p&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>django - How to clean up images and temporary files created during testing</title><link href="https://bhch.github.io/posts/2018/12/django-how-to-clean-up-images-and-temporary-files-created-during-testing/" rel="alternate"></link><published>2018-12-09T00:00:00+05:30</published><updated>2018-12-09T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-12-09:/posts/2018/12/django-how-to-clean-up-images-and-temporary-files-created-during-testing/</id><summary type="html">&lt;p&gt;How to clean up images and temporary files created during testing in django&lt;/p&gt;</summary><content type="html">&lt;p&gt;Are you stuck figuring out a sane way to clean up images and other temporary 
 files created during testing your django app? Well, it's your lucky day! &lt;/p&gt;
 &lt;h1 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;When testing a django app, we may need to create temporary files for testing 

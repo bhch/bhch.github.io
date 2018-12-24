@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>django - How to edit/manipulate uploaded images on the fly before saving - bhch</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    bhch
+                </a>
+            </h3>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://bitbucket.org/bhch/">bitbucket</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">django - How to edit/manipulate uploaded images on the fly before saving</h1>
+<p class="post-meta">
+    Mon 24 December 2018
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/django/" class="tag">django</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <p>Sometimes you need to perform certain operations on user uploaded images before 
+saving them in Django. These operations may include cropping images, rotating them, 
+generating thumbnails or compressing them. I'll show you how to do that. </p>
+<p>You'll need to have <a href="https://pillow.readthedocs.io/en/5.3.x/installation.html">Pillow</a> installed for that. </p>
+<h1 id="sample-model">Sample model<a class="headerlink" href="#sample-model" title="Permanent link">&para;</a></h1>
+<p>Below is a sample model which has two fields - <code>image</code> and <code>thumbnail</code>. </p>
+<div class="highlight"><pre><span></span><span class="c1"># models.py</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">()</span>
+    <span class="n">thumbnail</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Now let's say we want to auto generate thumbnails from the image uploaded 
+by the user. </p>
+<h1 id="function-for-genrating-thumbnails">Function for genrating thumbnails<a class="headerlink" href="#function-for-genrating-thumbnails" title="Permanent link">&para;</a></h1>
+<p>We'll create a new function called <code>make_thumbnail</code> which will 
+create thumbnails for the given image. Keep this in code wherever you like. </p>
+<p>This code works for Django &gt;= 1.7.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">django.core.files</span> <span class="kn">import</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+
+<span class="k">def</span> <span class="nf">make_thumbnail</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Makes thumbnails of given size from given image&quot;&quot;&quot;</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span> <span class="c1"># convert mode</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="c1"># resize image</span>
+
+    <span class="n">thumb_io</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span> <span class="c1"># create a BytesIO object</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">thumb_io</span><span class="p">,</span> <span class="s1">&#39;JPEG&#39;</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mi">85</span><span class="p">)</span> <span class="c1"># save image to BytesIO object</span>
+
+    <span class="n">thumbnail</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">thumb_io</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="c1"># create a django friendly File object</span>
+
+    <span class="k">return</span> <span class="n">thumbnail</span>
+</pre></div>
+
+
+<p>Here's some explanation about the code:</p>
+<ol>
+<li><code>im.convert(RGB)</code> is done to convert the image's mode to RGB. Because sometimes 
+ Pillow throws an error when we try to save an image in JPEG format if the image 
+ is a GIF with a limited pallette. </li>
+<li><code>im.thumbnail(size)</code> is a method of Pillow's <code>Image</code> class which scales the 
+ image to the given size while keeping the aspect ratio.</li>
+<li><code>thumbnail = File(thumb_io, name=image.name)</code> creates a Django-friendly <code>File</code> 
+ object which we can use as the value for a model's <code>ImageField</code>.</li>
+</ol>
+<p>Other than that, the code is fairly basic. This is just to give you an idea about 
+manipulating images on the fly. </p>
+<h1 id="calling-the-function-from-the-model">Calling the function from the model<a class="headerlink" href="#calling-the-function-from-the-model" title="Permanent link">&para;</a></h1>
+<p>And here's how you'd call the function from the model:</p>
+<div class="highlight"><pre><span></span><span class="c1"># models.py</span>
+
+<span class="c1"># import the `make_thumbnail` function</span>
+<span class="kn">from</span> <span class="nn">some_file</span> <span class="kn">import</span> <span class="n">make_thumbnail</span>
+
+<span class="n">clas</span> <span class="n">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">()</span>
+    <span class="n">thumbnail</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thumbnail</span> <span class="o">=</span> <span class="n">make_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+
+<h1 id="that-is-it">That is it<a class="headerlink" href="#that-is-it" title="Permanent link">&para;</a></h1>
+<p>You can adapt and mofify the code to perform any operations you like on the images,
+for example crop them, or even apply Instagram like fancy filters. </p>
+<p>It's upto you. </p>
+    </div>
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/';
+        var disqus_url = 'https://bhch.github.io/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script>
+
+                <!-- plain text -->
+                bhch
+
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
+
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
