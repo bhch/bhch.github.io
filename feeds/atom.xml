@@ -450,7 +450,7 @@ that it can be used as a base for our HTTP server.&lt;/p&gt;
 &lt;li&gt;We've also created a new method called &lt;code&gt;handle_request&lt;/code&gt; which will come in handy 
  when we subclass the &lt;code&gt;TCPServer&lt;/code&gt; class. You might have noticed the code inside the 
  &lt;code&gt;while&lt;/code&gt; loop has also changed. The new code sends the data to &lt;code&gt;handle_request&lt;/code&gt; method 
- which will then returns a response. Currently, te &lt;code&gt;handle_request&lt;/code&gt; method does nothing 
+ which will then returns a response. Currently, the &lt;code&gt;handle_request&lt;/code&gt; method does nothing 
  but we'll create a subclass and override this method to add some actual functionality.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id="step-2-teaching-the-http-protocol-to-our-tcp-server"&gt;Step 2: Teaching the HTTP protocol to our TCP server&lt;a class="headerlink" href="#step-2-teaching-the-http-protocol-to-our-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
@@ -582,7 +582,7 @@ very convenient. &lt;/p&gt;
 &lt;span class="sd"&gt;        The `extra_headers` can be a dict for sending &lt;/span&gt;
 &lt;span class="sd"&gt;        extra headers for the current response&lt;/span&gt;
 &lt;span class="sd"&gt;        &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
-        &lt;span class="n"&gt;headers_copy&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cop&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# make a local copy of headers&lt;/span&gt;
+        &lt;span class="n"&gt;headers_copy&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;copy&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# make a local copy of headers&lt;/span&gt;
 
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;extra_headers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="n"&gt;headers_copy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;extra_headers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -770,7 +770,7 @@ a &lt;code&gt;501&lt;/code&gt; response if it doesn't understand the incoming re
 
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;HTTP_501_handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;rquest&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;HTTP_501_handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
         &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
@@ -797,7 +797,7 @@ will appropriately return a &lt;code&gt;501&lt;/code&gt; response.&lt;/p&gt;
 &lt;p&gt;First, let's create a couple of files - &lt;em&gt;"index.html"&lt;/em&gt; and &lt;em&gt;"hello.html"&lt;/em&gt;. So, if a 
 request comes in like &lt;code&gt;GET /index.html&lt;/code&gt;, we'll serve the &lt;em&gt;index.html&lt;/em&gt; file. If 
 a request comes in like &lt;code&gt;GET /hello.html&lt;/code&gt;, we'll serve the &lt;em&gt;hello.html&lt;/em&gt; file. &lt;/p&gt;
-&lt;p&gt;Keep both these files in the same directory as `main.py.&lt;/p&gt;
+&lt;p&gt;Keep both these files in the same directory as &lt;code&gt;main.py&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;index.html&lt;/em&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
     &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
@@ -864,7 +864,7 @@ see the response containing the contents of &lt;em&gt;index.html&lt;/em&gt; file
 &lt;p&gt;Also, try and visit a random url like &lt;code&gt;127.0.0.1:8888/blahblah.html&lt;/code&gt; and you should 
 get the &lt;code&gt;404 Not Found&lt;/code&gt; response.&lt;/p&gt;
 &lt;p&gt;Now, more importantly, our server should also be able to respond to &lt;code&gt;OPTIONS&lt;/code&gt; requests. 
-From our browsers, we can't make an &lt;code&gt;OPTIONS&lt;/code&gt; request. But you can install extentions 
+From our browsers, we can't make an &lt;code&gt;OPTIONS&lt;/code&gt; request. But you can install extensions 
 for that. Just do a Google search for &lt;code&gt;Rest client extension for &amp;lt;browser-name&amp;gt;&lt;/code&gt;. 
 A REST client extension will allow you to make requests using different request methods.&lt;/p&gt;
 &lt;p&gt;You can also use &lt;code&gt;curl&lt;/code&gt;, if you have that installed on your system. Example: &lt;/p&gt;
@@ -976,8 +976,8 @@ for some pointers.&lt;/p&gt;
  think almost every web server is open source? This is why.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;I got none more fo you, brah. In case there are errors in the code, or any other 
-mistakes, please let me know. &lt;/p&gt;
+&lt;p&gt;You now know about the internal workings of an HTTP server. &lt;/p&gt;
+&lt;p&gt;In case there are errors in the code, or any other mistakes, please let me know. &lt;/p&gt;
 &lt;p&gt;Until next time.&lt;/p&gt;</content><category term="python"></category><category term="http"></category><category term="server"></category></entry><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><published>2017-10-15T00:00:00+05:30</published><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:/posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
 multiple HTTP requests and process them asynchronously, I do.&lt;/p&gt;
 &lt;p&gt;The advantage of using callbacks in this case over coroutines is that 

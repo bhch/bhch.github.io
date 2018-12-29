@@ -218,7 +218,7 @@ that it can be used as a base for our HTTP server.</p>
 <li>We've also created a new method called <code>handle_request</code> which will come in handy 
  when we subclass the <code>TCPServer</code> class. You might have noticed the code inside the 
  <code>while</code> loop has also changed. The new code sends the data to <code>handle_request</code> method 
- which will then returns a response. Currently, te <code>handle_request</code> method does nothing 
+ which will then returns a response. Currently, the <code>handle_request</code> method does nothing 
  but we'll create a subclass and override this method to add some actual functionality.</li>
 </ol>
 <h1 id="step-2-teaching-the-http-protocol-to-our-tcp-server">Step 2: Teaching the HTTP protocol to our TCP server<a class="headerlink" href="#step-2-teaching-the-http-protocol-to-our-tcp-server" title="Permanent link">&para;</a></h1>
@@ -350,7 +350,7 @@ very convenient. </p>
 <span class="sd">        The `extra_headers` can be a dict for sending </span>
 <span class="sd">        extra headers for the current response</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">headers_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">cop</span><span class="p">()</span> <span class="c1"># make a local copy of headers</span>
+        <span class="n">headers_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># make a local copy of headers</span>
 
         <span class="k">if</span> <span class="n">extra_headers</span><span class="p">:</span>
             <span class="n">headers_copy</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extra_headers</span><span class="p">)</span>
@@ -538,7 +538,7 @@ a <code>501</code> response if it doesn't understand the incoming request method
 
     <span class="k">return</span> <span class="n">response</span>
 
-    <span class="k">def</span> <span class="nf">HTTP_501_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rquest</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">HTTP_501_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
         <span class="n">response_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_line</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">501</span><span class="p">)</span>
 
         <span class="n">response_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_headers</span><span class="p">()</span>
@@ -565,7 +565,7 @@ will appropriately return a <code>501</code> response.</p>
 <p>First, let's create a couple of files - <em>"index.html"</em> and <em>"hello.html"</em>. So, if a 
 request comes in like <code>GET /index.html</code>, we'll serve the <em>index.html</em> file. If 
 a request comes in like <code>GET /hello.html</code>, we'll serve the <em>hello.html</em> file. </p>
-<p>Keep both these files in the same directory as `main.py.</p>
+<p>Keep both these files in the same directory as <code>main.py</code>.</p>
 <p><em>index.html</em>:</p>
 <div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
@@ -632,7 +632,7 @@ see the response containing the contents of <em>index.html</em> file. </p>
 <p>Also, try and visit a random url like <code>127.0.0.1:8888/blahblah.html</code> and you should 
 get the <code>404 Not Found</code> response.</p>
 <p>Now, more importantly, our server should also be able to respond to <code>OPTIONS</code> requests. 
-From our browsers, we can't make an <code>OPTIONS</code> request. But you can install extentions 
+From our browsers, we can't make an <code>OPTIONS</code> request. But you can install extensions 
 for that. Just do a Google search for <code>Rest client extension for &lt;browser-name&gt;</code>. 
 A REST client extension will allow you to make requests using different request methods.</p>
 <p>You can also use <code>curl</code>, if you have that installed on your system. Example: </p>
@@ -744,8 +744,8 @@ for some pointers.</p>
  think almost every web server is open source? This is why.</li>
 </ol>
 <h1 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h1>
-<p>I got none more fo you, brah. In case there are errors in the code, or any other 
-mistakes, please let me know. </p>
+<p>You now know about the internal workings of an HTTP server. </p>
+<p>In case there are errors in the code, or any other mistakes, please let me know. </p>
 <p>Until next time.</p>
     </div>
 </section>
