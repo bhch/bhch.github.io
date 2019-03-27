@@ -9,6 +9,14 @@ html {
 }
 body {
     margin-bottom: 50px;
+    font-family: 'Open Sans', sans-serif;
+    color: #180024;
+    font-size: 17px;
+    line-height: 1.4;
+}
+.pure-g, 
+.pure-g [class*="pure-u"] {
+    font-family: inherit;
 }
 .pure-img-responsive {
     max-width: 100%;
@@ -47,11 +55,15 @@ body {
 
 a {
     text-decoration: none;
-    color: rgb(61, 146, 201);
+    color: #2910d8;
 }
 a:hover,
 a:focus {
     text-decoration: underline;
+}
+
+.link-heading > a {
+    color: inherit;
 }
 
 @media (min-width: 48em) {
@@ -61,7 +73,7 @@ a:focus {
     }
 }
 .sidebar {
-    background-color: rgb(61, 79, 93);
+    background-color: #e4d9fe;
 }
 .sidebar .author-avatar {
     border-radius: 100%;
@@ -74,13 +86,11 @@ a:focus {
 }
 .brand-tagline {
     margin-bottom: 30px;
-    font-weight: 300;
-    color: #e5e5e5;
+    color: #010041;
     line-height: 1.35
 }
 .sidebar a {
-    color: #e5e5e5;
-    font-weight: bold;
+    color: #010041;
 }
 .sidebar-menu {
     visibility: hidden;
@@ -97,7 +107,8 @@ a:focus {
     transition: all 0.2s ease-in-out;
 }
 .sidebar-menu p {
-    margin: 10px 0;
+    margin: 2px 0;
+    font-weight: bold;
 }
 
 .hamburger {
@@ -135,7 +146,7 @@ a:focus {
 .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
     width: 40px;
     height: 4px;
-    background-color: #e5e5e5;
+    background-color: #3a1078;
     border-radius: 4px;
     position: absolute;
     transition-property: -webkit-transform;
@@ -180,9 +191,7 @@ a:focus {
 
 
 .post-description {
-    font-family: 'Droid Serif';
-    line-height: 1.8em;
-    color: #444;
+    line-height: 1.8;
 }
 .post-description p {
     display: table;
@@ -195,7 +204,7 @@ a:focus {
 }
 .rounded-button {
     font-size: small;
-    border: 1px solid #ddd;
+    border: 1px solid #2910d8;
     border-radius: 15px;
     padding: 5px 10px;
 }
@@ -232,7 +241,7 @@ span.rounded-button:hover {
     margin-bottom: 1em;
 }
 .post-title {
-    font-size: 2.2em;
+    font-size: 2.1em;
     margin-bottom: 15px;
     margin-top: 0px;
 }
@@ -244,14 +253,8 @@ span.rounded-button:hover {
 .post-meta {
     font-size: small;
     line-height: 1.8;
-    color: #999;
+    color: #7d7d7d;
     margin: 0;
-}
-a.faded-link {
-    color: #999;
-}
-a.faded-link:hover {
-    color: rgb(61, 146, 201);
 }
 span.tags {
     display: inline-block;
@@ -259,14 +262,13 @@ span.tags {
 .tag {
     padding: 2px 5px;
     border-radius: 15px;
-    color: #999;
-    border: 1px solid #ddd;
+    color: #2910d8;
+    border: 1px solid #2910d8;
     margin-right: 5px;
 }
 .tag:hover {
     text-decoration: none;
-    color: #3d92c9;
-    border-color: #3d92c9;
+    background-color: #efefef;
 }
 p.tags a, 
 p.categories a {
@@ -282,8 +284,8 @@ p.categories a {
 p.tags a:hover,
 p.categories a:hover {
     text-decoration: none;
-    color: rgb(61, 146, 201);
-    border-color: rgb(61, 146, 201);
+    color: #2910d8;
+    border-color: #2910d8;
     background-color: #f6f6f6;
 }
 p.tags a span,
@@ -297,7 +299,7 @@ p.categories a span {
 }
 p.tags a:hover span,
 p.categories a:hover span {
-    background-color: rgb(61, 146, 201);
+    background-color: #2910d8;
 }
 p.categories a {
     border-radius: 4px;
@@ -340,14 +342,13 @@ img {
     margin-top: 6px;
 }
 pre {
-    margin: 15px 0;
+    margin: 2rem 0;
     background-color: #f6f6f6;
-    border: 1px solid #e5e5e5;
     color: #444;
     overflow: auto;
     max-height: 500px;
     padding: 15px;
-    border-radius: 2px;
+    border-radius: 16px;
     font-size: .83em;
     line-height: 1.46;
 }
@@ -355,14 +356,13 @@ code {
     background-color: #f3f3f3;
     font-size: 90%;
     padding: 0px 3px;
-    color: #474754;
 }
 a code {
-    color: rgb(61, 146, 201);
+    color: #2910d8;
 }
 blockquote {
-    background-color: #ffffed;
-    border-left: 5px solid #bfad7a;
+    background-color: #f8edff;
+    border-left: 5px solid #a07abf;
     padding: 1px 15px;
     margin: 0;
 }
@@ -378,7 +378,7 @@ blockquote h6:first-child {
     margin-top: 0;
 }
 h1 {
-    font-size: 2em;
+    font-size: 1.9em;
 }
 h2 {
     font-size: 1.7em;
@@ -396,15 +396,17 @@ h6 {
     font-size: 1em;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-weight: normal;
+    font-weight: 800;
     margin-top: 40px;
     margin-bottom: 15px;
     padding: 10px 0;
-    font-family: sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.4;
+    color: #010041;
 }
 .headerlink {
     margin-left: 15px;
-    visibility: hidden;
+    color: #ddd;
 }
 h1:hover .headerlink, 
 h2:hover .headerlink,
@@ -412,7 +414,7 @@ h3:hover .headerlink,
 h4:hover .headerlink,
 h5:hover .headerlink,
 h6:hover .headerlink {
-    visibility: visible;
+    color: #2910d8;
 }
 :target {
     background: #fffdc7;
