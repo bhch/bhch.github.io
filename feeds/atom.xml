@@ -1920,7 +1920,7 @@ for a solution.&lt;/p&gt;
 &lt;p&gt;To find proxies, just &lt;a href="https://www.google.com/search?q=proxy+list"&gt;search Google for proxy list&lt;/a&gt;.&lt;/p&gt;
 &lt;h1 id="other-things-that-i-tried"&gt;Other things that I tried&lt;a class="headerlink" href="#other-things-that-i-tried" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;These are some other things that I tried to get rid of this issue. 
-Altough they didn't work for me, but they might work for you.&lt;/p&gt;
+Although they didn't work for me, but they might work for you.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;Changing DNS resolver of my server.&lt;/strong&gt;&lt;br&gt;
  This makes sense if your server's DNS resolver can't find PyPI servers. &lt;/li&gt;
