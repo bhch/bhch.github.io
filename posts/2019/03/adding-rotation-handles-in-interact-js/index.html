@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tags - bhch</title>
+    <title>Adding rotation handles in Interact JS - bhch</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -52,31 +52,60 @@
         <div class="pure-u-1 pure-u-md-5-6 post-container">
             <!-- A wrapper for all the blog posts -->
             <div class="posts">
+
 <section class="post">
     <header class="post-header">
-        <h1 class="post-title">Tags</h1>
+
+        <h1 class="post-title">Adding rotation handles in Interact JS</h1>
+<p class="post-meta">
+    Wed 27 March 2019
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/javascript/" class="tag">javascript</a>
+                <a href="https://bhch.github.io/tag/interactjs/" class="tag">interactjs</a>
+        </span>
+</p>
     </header>
 
     <div class="post-description">
-        <p class="tags">
-            <a href="https://bhch.github.io/tag/async/">async <span>1</span></a>
-            <a href="https://bhch.github.io/tag/django/">django <span>4</span></a>
-            <a href="https://bhch.github.io/tag/haystack/">haystack <span>1</span></a>
-            <a href="https://bhch.github.io/tag/http/">http <span>1</span></a>
-            <a href="https://bhch.github.io/tag/interactjs/">interactjs <span>1</span></a>
-            <a href="https://bhch.github.io/tag/javascript/">javascript <span>1</span></a>
-            <a href="https://bhch.github.io/tag/mock/">mock <span>2</span></a>
-            <a href="https://bhch.github.io/tag/pip/">pip <span>1</span></a>
-            <a href="https://bhch.github.io/tag/python/">python <span>11</span></a>
-            <a href="https://bhch.github.io/tag/requests/">requests <span>1</span></a>
-            <a href="https://bhch.github.io/tag/server/">server <span>1</span></a>
-            <a href="https://bhch.github.io/tag/tornado/">tornado <span>3</span></a>
-            <a href="https://bhch.github.io/tag/unittest/">unittest <span>2</span></a>
-            <a href="https://bhch.github.io/tag/urllib/">urllib <span>1</span></a>
-        </p>
+        <p>The documentation of Interact JS doesn't mention anything about rotating 
+<em>interactable</em> elements. I will show you how you can implement rotation handles 
+using Interact JS.</p>
+<h1 id="concept">Concept<a class="headerlink" href="#concept" title="Permanent link">&para;</a></h1>
+<p>Here's a general outline of how it works:</p>
+<ol>
+<li>Create a separate <em>interactable</em> object which we will use as rotation handle.</li>
+<li>When this rotation handle is dragged, instead of changing its position, we will 
+ change its parent's rotation angle.</li>
+</ol>
+<h1 id="demo">Demo<a class="headerlink" href="#demo" title="Permanent link">&para;</a></h1>
+<p>Here's a fiddle containing the demo:</p>
+<iframe width="100%" height="300" src="//jsfiddle.net/axnyfuj8/1/embedded/result,html,js,css/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+
+<p>Link to the fiddle: <a href="https://jsfiddle.net/axnyfuj8/1/">https://jsfiddle.net/axnyfuj8/1/</a>.</p>
+<h1 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">&para;</a></h1>
+<p>I didn't come up with this solution all on my own. Most of the important code which 
+does the trigonometric calculations to find the angle has been borrowed from <a href="https://codepen.io/taye/pen/wrrxKb">this Codepen</a>.</p>
     </div>
 </section>
 
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2019/03/adding-rotation-handles-in-interact-js/';
+        var disqus_url = 'https://bhch.github.io/posts/2019/03/adding-rotation-handles-in-interact-js/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
             </div>
 
 <div class="footer">

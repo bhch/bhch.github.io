@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2018-12-24T00:00:00+05:30</updated><entry><title>django - How to edit/manipulate uploaded images on the fly before saving</title><link href="https://bhch.github.io/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/" rel="alternate"></link><published>2018-12-24T00:00:00+05:30</published><updated>2018-12-24T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-12-24:/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/</id><summary type="html">&lt;p&gt;How to edit and manipulate uploaded images on the fly before saving in Django&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes you need to perform certain operations on user uploaded images before 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2019-03-27T00:00:00+05:30</updated><entry><title>Adding rotation handles in Interact JS</title><link href="https://bhch.github.io/posts/2019/03/adding-rotation-handles-in-interact-js/" rel="alternate"></link><published>2019-03-27T00:00:00+05:30</published><updated>2019-03-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-03-27:/posts/2019/03/adding-rotation-handles-in-interact-js/</id><summary type="html">&lt;p&gt;How to add rotation handles in Interact JS&lt;/p&gt;</summary><content type="html">&lt;p&gt;The documentation of Interact JS doesn't mention anything about rotating 
+&lt;em&gt;interactable&lt;/em&gt; elements. I will show you how you can implement rotation handles 
+using Interact JS.&lt;/p&gt;
+&lt;h1 id="concept"&gt;Concept&lt;a class="headerlink" href="#concept" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Here's a general outline of how it works:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a separate &lt;em&gt;interactable&lt;/em&gt; object which we will use as rotation handle.&lt;/li&gt;
+&lt;li&gt;When this rotation handle is dragged, instead of changing its position, we will 
+ change its parent's rotation angle.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="demo"&gt;Demo&lt;a class="headerlink" href="#demo" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Here's a fiddle containing the demo:&lt;/p&gt;
+&lt;iframe width="100%" height="300" src="//jsfiddle.net/axnyfuj8/1/embedded/result,html,js,css/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Link to the fiddle: &lt;a href="https://jsfiddle.net/axnyfuj8/1/"&gt;https://jsfiddle.net/axnyfuj8/1/&lt;/a&gt;.&lt;/p&gt;
+&lt;h1 id="credits"&gt;Credits&lt;a class="headerlink" href="#credits" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I didn't come up with this solution all on my own. Most of the important code which 
+does the trigonometric calculations to find the angle has been borrowed from &lt;a href="https://codepen.io/taye/pen/wrrxKb"&gt;this Codepen&lt;/a&gt;.&lt;/p&gt;</content><category term="javascript"></category><category term="interactjs"></category></entry><entry><title>django - How to edit/manipulate uploaded images on the fly before saving</title><link href="https://bhch.github.io/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/" rel="alternate"></link><published>2018-12-24T00:00:00+05:30</published><updated>2018-12-24T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2018-12-24:/posts/2018/12/django-how-to-editmanipulate-uploaded-images-on-the-fly-before-saving/</id><summary type="html">&lt;p&gt;How to edit and manipulate uploaded images on the fly before saving in Django&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes you need to perform certain operations on user uploaded images before 
 saving them in Django. These operations may include cropping images, rotating them, 
 generating thumbnails or compressing them. I'll show you how to do that. &lt;/p&gt;
 &lt;p&gt;You'll need to have &lt;a href="https://pillow.readthedocs.io/en/5.3.x/installation.html"&gt;Pillow&lt;/a&gt; installed for that. &lt;/p&gt;
