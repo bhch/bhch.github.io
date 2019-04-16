@@ -139,13 +139,9 @@ Tornado writes the current data to the network socket.
 Theoretically, that means at the <code>await self.flush()</code> statement, our coroutine should pause 
 because writing to socket takes some time. This little pause should allow the ioloop to
 run other handlers asynchronously. This means that our server shouldn't block.</p>
-<p>But that is not the case. <code>self.flush()</code> is very fast for small data and thus, the 
-delay is so small that our coroutine will keep running without pausing and so, it 
-will block the server.</p>
-<p>You can increase the <code>chunk_size</code> to <code>15 MiB</code> or <code>20 MiB</code> and it may pause the 
-coroutine while it's flushing the data because the data is larger this time. 
-But I've observed that there's still no guarantee of that especially if you have a 
-faster computer (or more RAM?) because then delay will be small.</p>
+<p>But that is not always the case. <code>self.flush()</code> can be very fast if your client's 
+network is also fast. Thus, the delay is so small that our coroutine will keep running 
+without pausig and so, it will block the server.</p>
 <p>A fool-proof way to make our code non-blocking is by putting it to sleep for a 
 nanosecond just after <code>flush()</code>. That delay should be enough for the ioloop to 
 run other handlers. In fact, it doesn't have to be a nanosecond. It can be an even 
