@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2019-03-27T00:00:00+05:30</updated><entry><title>Adding rotation handles in Interact JS</title><link href="https://bhch.github.io/posts/2019/03/adding-rotation-handles-in-interact-js/" rel="alternate"></link><published>2019-03-27T00:00:00+05:30</published><updated>2019-03-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-03-27:/posts/2019/03/adding-rotation-handles-in-interact-js/</id><summary type="html">&lt;p&gt;How to add rotation handles in Interact JS&lt;/p&gt;</summary><content type="html">&lt;p&gt;The documentation of Interact JS doesn't mention anything about rotating 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2019-04-17T00:00:00+05:30</updated><entry><title>How to fetch data or update state when a route changes in React Router</title><link href="https://bhch.github.io/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/" rel="alternate"></link><published>2019-04-17T00:00:00+05:30</published><updated>2019-04-17T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-04-17:/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/</id><summary type="html">&lt;p&gt;How to fetch data or update state when a route changes in React Router&lt;/p&gt;</summary><content type="html">&lt;h1 id="tldr"&gt;tl;dr&lt;a class="headerlink" href="#tldr" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Use React's &lt;a href="https://reactjs.org/docs/react-component.html#componentdidupdate"&gt;&lt;code&gt;componentDidUpdate&lt;/code&gt;&lt;/a&gt; method.&lt;/p&gt;
+&lt;h1 id="still-here"&gt;Still here?&lt;a class="headerlink" href="#still-here" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;componentDidUpdate&lt;/code&gt; is the right place to make some API requests, or update 
+the state of a component depending on the url route. &lt;/p&gt;
+&lt;p&gt;In this method, you can compare the previous location and the new location and 
+if they don't match, perform a certain operation.&lt;/p&gt;
+&lt;h1 id="code-example"&gt;Code example&lt;a class="headerlink" href="#code-example" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;class&lt;/span&gt; &lt;span class="nx"&gt;MyComponent&lt;/span&gt; &lt;span class="kr"&gt;extends&lt;/span&gt; &lt;span class="nx"&gt;React&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;Component&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="nx"&gt;componentDidUpdate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;prevProps&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;prevState&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;snapshot&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;props&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;location&lt;/span&gt; &lt;span class="o"&gt;!==&lt;/span&gt; &lt;span class="nx"&gt;prevProps&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;location&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="c1"&gt;// do something ...&lt;/span&gt;
+            &lt;span class="c1"&gt;// this.setState&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this example, the &lt;code&gt;if&lt;/code&gt; condition runs when either the path or the search paramter
+changes. &lt;/p&gt;
+&lt;p&gt;Compare &lt;code&gt;location.pathname&lt;/code&gt; if you want to do something only when the path changes.&lt;/p&gt;
+&lt;p&gt;And compare &lt;code&gt;location.search&lt;/code&gt; if you want to do something only when the search 
+(query string) changes.&lt;/p&gt;
+&lt;h1 id="coda"&gt;Coda&lt;a class="headerlink" href="#coda" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I was working on a side project when I encountered this problem. I couldn't 
+find a straight-forward solution even after searching for hours. Most of the solutions 
+were outdated.&lt;/p&gt;
+&lt;p&gt;This post is my effor to make it a little easier for people to find a working 
+solution.&lt;/p&gt;</content><category term="react"></category><category term="react-router"></category></entry><entry><title>Adding rotation handles in Interact JS</title><link href="https://bhch.github.io/posts/2019/03/adding-rotation-handles-in-interact-js/" rel="alternate"></link><published>2019-03-27T00:00:00+05:30</published><updated>2019-03-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-03-27:/posts/2019/03/adding-rotation-handles-in-interact-js/</id><summary type="html">&lt;p&gt;How to add rotation handles in Interact JS&lt;/p&gt;</summary><content type="html">&lt;p&gt;The documentation of Interact JS doesn't mention anything about rotating 
 &lt;em&gt;interactable&lt;/em&gt; elements. I will show you how you can implement rotation handles 
 using Interact JS.&lt;/p&gt;
 &lt;h1 id="concept"&gt;Concept&lt;a class="headerlink" href="#concept" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
