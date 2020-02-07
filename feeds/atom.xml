@@ -1910,7 +1910,13 @@ No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
 &lt;p&gt;PyPI server isn't responding to your requests. It can happen either because 
  the PyPI server is down or because it has blacklisted your IP address. This 
  happened to me once when I was trying installing packages on a server. 
- This can be fixed by using a proxy with pip. See &lt;a href="#solution"&gt;the solution below&lt;/a&gt;.&lt;/p&gt;
+ This can be fixed by using a proxy with pip. See &lt;a href="#solution"&gt;the solution below&lt;/a&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You're running an older pip (especially on Mac). This can be fixed by 
+ upgrading your pip. 
+ See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br&gt;
+&lt;em&gt;Thanks to Anupam Jain who pointed this in a comment&lt;/em&gt;. &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;The package you're trying to install is not available for your Python version.&lt;/p&gt;
@@ -1922,13 +1928,12 @@ No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
  every operating system (Windows/Mac/Linux) and architecture (32-bit/64-bit). 
  Suppose a package has only been compiled for Windows 64-bit, then you'll get 
  this error if you try to install it on Windows 32-bit, or any other 
- OS. &lt;/p&gt;
+ OS.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;You're running an older pip (especially on Mac). This can be fixed by 
- upgrading your pip. 
- See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br&gt;
-&lt;em&gt;Thanks to Anupam Jain who pointed this in a comment&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;The package is not present on PyPI server. In this case pip will not work. So 
+ you'll have to download and install the package manually from Github or wherever 
+ it is available. &lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id="solution"&gt;Solution&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;

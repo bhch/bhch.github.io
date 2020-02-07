@@ -85,7 +85,13 @@ No matching distribution found for <package-name></p>
 <p>PyPI server isn't responding to your requests. It can happen either because 
  the PyPI server is down or because it has blacklisted your IP address. This 
  happened to me once when I was trying installing packages on a server. 
- This can be fixed by using a proxy with pip. See <a href="#solution">the solution below</a>.</p>
+ This can be fixed by using a proxy with pip. See <a href="#solution">the solution below</a>. </p>
+</li>
+<li>
+<p>You're running an older pip (especially on Mac). This can be fixed by 
+ upgrading your pip. 
+ See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a>.<br>
+<em>Thanks to Anupam Jain who pointed this in a comment</em>. </p>
 </li>
 <li>
 <p>The package you're trying to install is not available for your Python version.</p>
@@ -97,13 +103,12 @@ No matching distribution found for <package-name></p>
  every operating system (Windows/Mac/Linux) and architecture (32-bit/64-bit). 
  Suppose a package has only been compiled for Windows 64-bit, then you'll get 
  this error if you try to install it on Windows 32-bit, or any other 
- OS. </p>
+ OS.</p>
 </li>
 <li>
-<p>You're running an older pip (especially on Mac). This can be fixed by 
- upgrading your pip. 
- See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a>.<br>
-<em>Thanks to Anupam Jain who pointed this in a comment</em>. </p>
+<p>The package is not present on PyPI server. In this case pip will not work. So 
+ you'll have to download and install the package manually from Github or wherever 
+ it is available. </p>
 </li>
 </ol>
 <h1 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h1>
