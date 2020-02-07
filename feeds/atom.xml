@@ -1917,11 +1917,11 @@ No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;The package is not available for your operating system. This is a rare case 
- and only happens in when the package is not pure-Python, i.e. it's been 
+ and only happens when the package is not pure-Python, i.e. it's been 
  partially written in C or Cython. Such a package needs to be compiled for 
  every operating system (Windows/Mac/Linux) and architecture (32-bit/64-bit). 
  Suppose a package has only been compiled for Windows 64-bit, then you'll get 
- this error if you try to install this package on Windows 32-bit, or any other 
+ this error if you try to install it on Windows 32-bit, or any other 
  OS. &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
