@@ -60,7 +60,7 @@
 <p class="post-meta">
     Thu 13 April 2017
         <strong>&nbsp; &middot; &nbsp;</strong> 
-        updated Sun 27 May 2018
+        updated Thu 07 February 2019
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
@@ -79,27 +79,38 @@ using pip. It looks like this:</p>
 <p>Could not find a version that satisfies the requirement <package-name> (from versions:)
 No matching distribution found for <package-name></p>
 </blockquote>
-<p>Most probable reasons for this error are:</p>
+<p>Some probable reasons for this error are:</p>
 <ol>
 <li>
-<p>because PyPI server isn't responding to 
-your requests because it has blacklisted your IP address.<br>
-This can be fixed by using a proxy with pip. See <a href="#solution">the solution</a>.</p>
+<p>PyPI server isn't responding to your requests. It can happen either because 
+ the PyPI server is down or because it has blacklisted your IP address. This 
+ happened to me once when I was trying installing packages on a server. 
+ This can be fixed by using a proxy with pip. See <a href="#solution">the solution below</a>.</p>
 </li>
 <li>
-<p>or because you're running an older pip (especially on Mac).<br>
-This can be fixed by upgrading your pip. 
-See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a>.<br>
-<em>Thanks to Anupam Jain who pointed this in the comments</em>.  </p>
+<p>The package you're trying to install is not available for your Python version.</p>
+</li>
+<li>
+<p>The package is not available for your operating system. This is a rare case 
+ and only happens in when the package is not pure-Python, i.e. it's been 
+ partially written in C or Cython. Such a package needs to be compiled for 
+ every operating system (Windows/Mac/Linux) and architecture (32-bit/64-bit). 
+ Suppose a package has only been compiled for Windows 64-bit, then you'll get 
+ this error if you try to install this package on Windows 32-bit, or any other 
+ OS. </p>
+</li>
+<li>
+<p>You're running an older pip (especially on Mac). This can be fixed by 
+ upgrading your pip. 
+ See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a>.<br>
+<em>Thanks to Anupam Jain who pointed this in a comment</em>. </p>
 </li>
 </ol>
-<p>This might also happen because the PyPI server is down. So, in that case there's
-nothing that can be done.</p>
 <h1 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h1>
-<p>I had this issue because <a href="https://python.org">https://python.org</a> had blacklisted the IP 
+<p>I had this issue because PyPI server had blacklisted the IP 
 of my hosting provider, the obvious solution was to make <code>pip</code> install via a proxy.</p>
 <p>But to see if that's also the case with you, you can test it like this:</p>
-<div class="highlight"><pre><span></span>$ curl https://pypi.python.org
+<div class="highlight"><pre><span></span>$ curl https://pypi.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
 If you are a hosting customer, please contact your hosting company<span class="err">&#39;</span>s support. 
@@ -108,7 +119,7 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 
 
 <p>If you see the message similar to above, that means your IP has also been 
-blacklisted by <a href="https://python.org">https://python.org</a>. </p>
+blacklisted by <a href="https://pypi.org">https://pypi.org</a>. </p>
 <p>If you don't see this message then the reason for the pip error could be that you're using
 an older version. See <a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494">this post on Stack Overflow</a> 
 for a solution.</p>
@@ -138,7 +149,7 @@ Although they didn't work for me, but they might work for you.</p>
  created invalid tarball files, instead of actually downloading them.</li>
 <li><strong>Downloading packages using <code>git</code> or <code>hg</code>.</strong>
  If your desired packages have <code>git</code> or <code>hg</code> repositories that you can clone, this 
- might work for you.</li>
+ is a good workaround.</li>
 </ol>
     </div>
 </section>

@@ -1898,33 +1898,44 @@ this decorator&lt;/li&gt;
 &lt;p&gt;The things that I've written about in this post were the only things that I found 
 most confusing. The other features of Tornado are straight-forward and 
 documentation covers them nicely.&lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><published>2017-04-13T00:00:00+05:30</published><updated>2018-05-27T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;How to fix the &lt;code&gt;pip&lt;/code&gt; &lt;em&gt;"Couldn't find a version that satisfies the requirement"&lt;/em&gt; error.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes you get an error when you're trying to install a Python package 
+&lt;p&gt;Until next time.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category><category term="async"></category></entry><entry><title>Fix the pip error: Couldn't find a version that satisfies the requirement</title><link href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" rel="alternate"></link><published>2017-04-13T00:00:00+05:30</published><updated>2019-02-07T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-04-13:/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/</id><summary type="html">&lt;p&gt;How to fix the &lt;code&gt;pip&lt;/code&gt; &lt;em&gt;"Couldn't find a version that satisfies the requirement"&lt;/em&gt; error.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes you get an error when you're trying to install a Python package 
 using pip. It looks like this:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Could not find a version that satisfies the requirement &lt;package-name&gt; (from versions:)
 No matching distribution found for &lt;package-name&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Most probable reasons for this error are:&lt;/p&gt;
+&lt;p&gt;Some probable reasons for this error are:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;because PyPI server isn't responding to 
-your requests because it has blacklisted your IP address.&lt;br&gt;
-This can be fixed by using a proxy with pip. See &lt;a href="#solution"&gt;the solution&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;PyPI server isn't responding to your requests. It can happen either because 
+ the PyPI server is down or because it has blacklisted your IP address. This 
+ happened to me once when I was trying installing packages on a server. 
+ This can be fixed by using a proxy with pip. See &lt;a href="#solution"&gt;the solution below&lt;/a&gt;.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;or because you're running an older pip (especially on Mac).&lt;br&gt;
-This can be fixed by upgrading your pip. 
-See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br&gt;
-&lt;em&gt;Thanks to Anupam Jain who pointed this in the comments&lt;/em&gt;.  &lt;/p&gt;
+&lt;p&gt;The package you're trying to install is not available for your Python version.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The package is not available for your operating system. This is a rare case 
+ and only happens in when the package is not pure-Python, i.e. it's been 
+ partially written in C or Cython. Such a package needs to be compiled for 
+ every operating system (Windows/Mac/Linux) and architecture (32-bit/64-bit). 
+ Suppose a package has only been compiled for Windows 64-bit, then you'll get 
+ this error if you try to install this package on Windows 32-bit, or any other 
+ OS. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You're running an older pip (especially on Mac). This can be fixed by 
+ upgrading your pip. 
+ See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt;.&lt;br&gt;
+&lt;em&gt;Thanks to Anupam Jain who pointed this in a comment&lt;/em&gt;. &lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;This might also happen because the PyPI server is down. So, in that case there's
-nothing that can be done.&lt;/p&gt;
 &lt;h1 id="solution"&gt;Solution&lt;a class="headerlink" href="#solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;I had this issue because &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt; had blacklisted the IP 
+&lt;p&gt;I had this issue because PyPI server had blacklisted the IP 
 of my hosting provider, the obvious solution was to make &lt;code&gt;pip&lt;/code&gt; install via a proxy.&lt;/p&gt;
 &lt;p&gt;But to see if that's also the case with you, you can test it like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl https://pypi.python.org
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl https://pypi.org
 
 The requestors Network has been blacklisted due to excessive request volume. 
 If you are a hosting customer, please contact your hosting company&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;s support. 
@@ -1933,7 +1944,7 @@ If you are the hosting company, please contact infrastructure-staff@python.org t
 
 
 &lt;p&gt;If you see the message similar to above, that means your IP has also been 
-blacklisted by &lt;a href="https://python.org"&gt;https://python.org&lt;/a&gt;. &lt;/p&gt;
+blacklisted by &lt;a href="https://pypi.org"&gt;https://pypi.org&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;If you don't see this message then the reason for the pip error could be that you're using
 an older version. See &lt;a href="https://stackoverflow.com/questions/49748063/pip-install-fails-for-every-package-could-not-find-a-version-that-satisfies/49748494#49748494"&gt;this post on Stack Overflow&lt;/a&gt; 
 for a solution.&lt;/p&gt;
@@ -1963,7 +1974,7 @@ Although they didn't work for me, but they might work for you.&lt;/p&gt;
  created invalid tarball files, instead of actually downloading them.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Downloading packages using &lt;code&gt;git&lt;/code&gt; or &lt;code&gt;hg&lt;/code&gt;.&lt;/strong&gt;
  If your desired packages have &lt;code&gt;git&lt;/code&gt; or &lt;code&gt;hg&lt;/code&gt; repositories that you can clone, this 
- might work for you.&lt;/li&gt;
+ is a good workaround.&lt;/li&gt;
 &lt;/ol&gt;</content><category term="python"></category><category term="pip"></category></entry><entry><title>Hello, World!</title><link href="https://bhch.github.io/posts/2017/03/hello-world/" rel="alternate"></link><published>2017-03-20T00:00:00+05:30</published><updated>2017-03-20T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-03-20:/posts/2017/03/hello-world/</id><summary type="html">&lt;p&gt;The mandatory first post.&lt;/p&gt;
 &lt;p&gt;I still remember the day when I first decided to learn programming. I was so 
 sure of which language I will be learning. The &lt;em&gt;inspiration&lt;/em&gt; to learn Python as 
