@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2020-02-07T00:00:00+05:30</updated><entry><title>How to fetch data or update state when a route changes in React Router</title><link href="https://bhch.github.io/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/" rel="alternate"></link><published>2019-04-17T00:00:00+05:30</published><updated>2019-04-17T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-04-17:/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/</id><summary type="html">&lt;p&gt;How to fetch data or update state when a route changes in React Router&lt;/p&gt;</summary><content type="html">&lt;h1 id="short-answer"&gt;Short answer&lt;a class="headerlink" href="#short-answer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2020-02-15T00:00:00+05:30</updated><entry><title>How to fetch data or update state when a route changes in React Router</title><link href="https://bhch.github.io/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/" rel="alternate"></link><published>2019-04-17T00:00:00+05:30</published><updated>2019-04-17T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-04-17:/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/</id><summary type="html">&lt;p&gt;How to fetch data or update state when a route changes in React Router&lt;/p&gt;</summary><content type="html">&lt;h1 id="short-answer"&gt;Short answer&lt;a class="headerlink" href="#short-answer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Use React's &lt;a href="https://reactjs.org/docs/react-component.html#componentdidupdate"&gt;&lt;code&gt;componentDidUpdate&lt;/code&gt;&lt;/a&gt; method.&lt;/p&gt;
 &lt;h1 id="long-answer"&gt;Long answer&lt;a class="headerlink" href="#long-answer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;componentDidUpdate&lt;/code&gt; is the right place to make some API requests, or update 
@@ -208,9 +208,9 @@ use &lt;code&gt;self._meta.model&lt;/code&gt;. &lt;/p&gt;
 
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;I created this post because I couldn't find any resources online about this. &lt;/p&gt;
-&lt;p&gt;Hope it helps you, too.&lt;/p&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><published>2017-12-14T00:00:00+05:30</published><updated>2017-12-14T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;How to safely serve large files using Tornado in a non-blocking manner.&lt;/p&gt;</summary><content type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
+&lt;p&gt;Hope it helps you, too.&lt;/p&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>Serving large files with Tornado safely without blocking</title><link href="https://bhch.github.io/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/" rel="alternate"></link><published>2017-12-14T00:00:00+05:30</published><updated>2020-02-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-12-14:/posts/2017/12/serving-large-files-with-tornado-safely-without-blocking/</id><summary type="html">&lt;p&gt;How to safely serve large files using Tornado in a non-blocking manner.&lt;/p&gt;</summary><content type="html">&lt;p&gt;We need to take care of two things while serving large files using Tornado:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;It should not eat up our RAM&lt;/li&gt;
+&lt;li&gt;It should not eat up the RAM&lt;/li&gt;
 &lt;li&gt;It should not block the server&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;To do that, we'll have to read and send the files in chunks. What that means is we'll 
@@ -219,25 +219,8 @@ and we'll keep doing that until we've read and sent the whole file.&lt;/p&gt;
 &lt;p&gt;Before moving on, I think it should go without saying that Tornado isn't recommended to serve large 
 data. A specialized server, like Nginx, for this purpose should always be preferred 
 when possible. &lt;/p&gt;
-&lt;hr&gt;
-&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The code in this post is written for Python &amp;gt;= 3.5 and I've used the new 
-&lt;code&gt;async&lt;/code&gt; and &lt;code&gt;await&lt;/code&gt; syntax. For older Python version, you can adapt the code 
-like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Change this ...&lt;/span&gt;
-&lt;span class="n"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt;
-
-&lt;span class="c1"&gt;# To this...&lt;/span&gt;
-&lt;span class="nd"&gt;@tornado.gen.coroutine&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;my_func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;hr&gt;
-&lt;h1 id="serving-the-files-safely-so-it-doesnt-eat-up-our-ram"&gt;Serving the files safely so it doesn't eat up our RAM&lt;a class="headerlink" href="#serving-the-files-safely-so-it-doesnt-eat-up-our-ram" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;We'll read the files in chunks, then write the cunk to the response, and flush 
+&lt;h1 id="serving-the-files-safely-so-it-doesnt-eat-up-the-ram"&gt;Serving the files safely so it doesn't eat up the RAM&lt;a class="headerlink" href="#serving-the-files-safely-so-it-doesnt-eat-up-the-ram" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;We'll read the files in chunks, then write the chunk to the response, and flush 
 it to the network socket.&lt;/p&gt;
 &lt;p&gt;Reading in chunks and flushing the data to network will ensure that we don't run 
 out of RAM.&lt;/p&gt;
@@ -251,12 +234,12 @@ out of RAM.&lt;/p&gt;
 
         &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;rb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-                &lt;span class="n"&gt;chunk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk_size&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;chunk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk_size&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
                 &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
                     &lt;span class="k"&gt;break&lt;/span&gt;
                 &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-                    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# write the cunk to response&lt;/span&gt;
-                    &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# flush the current chunk to socket&lt;/span&gt;
+                    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# write the chunk to response&lt;/span&gt;
+                    &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# send the chunk to client&lt;/span&gt;
                 &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;iostream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StreamClosedError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
                     &lt;span class="c1"&gt;# this means the client has closed the connection&lt;/span&gt;
                     &lt;span class="c1"&gt;# so break the loop&lt;/span&gt;
@@ -317,8 +300,6 @@ files, at the same time, our server won't block.&lt;/p&gt;
 &lt;h1 id="benchmarks"&gt;Benchmarks&lt;a class="headerlink" href="#benchmarks" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Tornado isn't meant for serving large data. You should, when you have the option, 
 use Nginx to serve large files. The benchmarks clearly show that. &lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt;: I've tested the above code with Tornado v5.0 (yet unreleased) and the 
-it is much faster than the current v4.5.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;----------------------------+------------+---------------+---------------
 Server                      | 1 request  | 10 concurrent | 100 concurrent 
                             |            | requests      | requests
@@ -326,7 +307,6 @@ Server                      | 1 request  | 10 concurrent | 100 concurrent
 Nginx (w/ sendfile)         | 0.130 sec  | 0.978 sec     | 15.790 sec
 Nginx (w/o sendfile)        | 0.155 sec  | 1.472 sec     | 22.424 sec
 &lt;span class="hll"&gt;Tornado 5.0 (w/o sendfile)  | 0.419 sec  | 3.782 sec     | 44.289 sec
-&lt;/span&gt;&lt;span class="hll"&gt;Tornado 4.5 (w/o sendfile)  | 0.560 sec  | 5.483 sec     | 57.212 sec
 &lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
@@ -341,13 +321,10 @@ adding this support to Tornado.&lt;/p&gt;
 &lt;p&gt;Nginx is so fast because it's optimized for serving files. While I don't know the 
 inner workings of Nginx but I can safely say that part of the reason for its speed 
 is the fact that it's written in C.&lt;/p&gt;
-&lt;p&gt;On the other hand, there's still room for optimizations in Tornado, 
-for example we can use &lt;code&gt;sendfile&lt;/code&gt; to write a file to socket. It should make 
-Tornado a little faster. &lt;/p&gt;
-&lt;p&gt;Nginx also uses some sort of caching mechanism, about which 
-I don't know anything yet. But if used that on Tornado, we should see some 
-performance improvement.&lt;/p&gt;
-&lt;p&gt;Surely, I'll keep investigating this further, but for this article, that's it.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><published>2017-11-16T00:00:00+05:30</published><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:/posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;p&gt;&lt;img alt="Writing an HTTP server from scratch in Python" src="/images/http-speak.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;Although there's still room for optimizations in Tornado, by using &lt;code&gt;sendfile&lt;/code&gt; 
+to write a file to socket which will make Tornado a little faster, but it still 
+won't be as fast as Nginx. So, serving large files with Tornado should only be 
+reserved for special cases where using Nginx is not possible. &lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><published>2017-11-16T00:00:00+05:30</published><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:/posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;p&gt;&lt;img alt="Writing an HTTP server from scratch in Python" src="/images/http-speak.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;This is supposed to be an introductory article that shows you how you can write 
 a simple, basic HTTP server. If you're interested in building your own HTTP server, 
 or just curious about how an HTTP server works, this article is a good starting 
