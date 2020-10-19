@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2020-02-15T00:00:00+05:30</updated><entry><title>How to fetch data or update state when a route changes in React Router</title><link href="https://bhch.github.io/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/" rel="alternate"></link><published>2019-04-17T00:00:00+05:30</published><updated>2019-04-17T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-04-17:/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/</id><summary type="html">&lt;p&gt;How to fetch data or update state when a route changes in React Router&lt;/p&gt;</summary><content type="html">&lt;h1 id="short-answer"&gt;Short answer&lt;a class="headerlink" href="#short-answer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bhch</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2020-10-19T00:00:00+05:30</updated><entry><title>How to fetch data or update state when a route changes in React Router</title><link href="https://bhch.github.io/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/" rel="alternate"></link><published>2019-04-17T00:00:00+05:30</published><updated>2019-04-17T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2019-04-17:/posts/2019/04/how-to-fetch-data-or-update-state-when-a-route-changes-in-react-router/</id><summary type="html">&lt;p&gt;How to fetch data or update state when a route changes in React Router&lt;/p&gt;</summary><content type="html">&lt;h1 id="short-answer"&gt;Short answer&lt;a class="headerlink" href="#short-answer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;Use React's &lt;a href="https://reactjs.org/docs/react-component.html#componentdidupdate"&gt;&lt;code&gt;componentDidUpdate&lt;/code&gt;&lt;/a&gt; method.&lt;/p&gt;
 &lt;h1 id="long-answer"&gt;Long answer&lt;a class="headerlink" href="#long-answer" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;componentDidUpdate&lt;/code&gt; is the right place to make some API requests, or update 
@@ -324,43 +324,35 @@ is the fact that it's written in C.&lt;/p&gt;
 &lt;p&gt;Although there's still room for optimizations in Tornado, by using &lt;code&gt;sendfile&lt;/code&gt; 
 to write a file to socket which will make Tornado a little faster, but it still 
 won't be as fast as Nginx. So, serving large files with Tornado should only be 
-reserved for special cases where using Nginx is not possible. &lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><published>2017-11-16T00:00:00+05:30</published><updated>2017-11-16T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:/posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;p&gt;&lt;img alt="Writing an HTTP server from scratch in Python" src="/images/http-speak.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;This is supposed to be an introductory article that shows you how you can write 
-a simple, basic HTTP server. If you're interested in building your own HTTP server, 
-or just curious about how an HTTP server works, this article is a good starting 
-point for that.&lt;/p&gt;
-&lt;p&gt;It goes without saying that one blog post can't be taken as a guide for building
-a production level HTTP server like Nginx or Apache. Those projects are results 
-of years of development with hundreds of developers involved and thousands of 
-man-hours devoted.&lt;/p&gt;
-&lt;p&gt;Having said that, in the end of this article I have provided a few pointers 
-about how you can turn this basic server into a production level server. Read 
-about it in the &lt;a href="#taking-our-server-to-the-next-level"&gt;"Taking our server to the next level"&lt;/a&gt; 
-section.&lt;/p&gt;
-&lt;p&gt;Let's get started, then.&lt;/p&gt;
+reserved for special cases where using Nginx is not possible. &lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>Writing an HTTP server from scratch</title><link href="https://bhch.github.io/posts/2017/11/writing-an-http-server-from-scratch/" rel="alternate"></link><published>2017-11-16T00:00:00+05:30</published><updated>2020-10-19T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-11-16:/posts/2017/11/writing-an-http-server-from-scratch/</id><summary type="html">&lt;p&gt;&lt;img alt="Writing an HTTP server from scratch in Python" src="/images/http-speak.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;h1 id="prelude"&gt;Prelude&lt;a class="headerlink" href="#prelude" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;This article will introduce you to the basics of HTTP servers and teach you 
+how you can write one. We'll use the Python programming language to write our server.&lt;/p&gt;
+&lt;p&gt;Please note that this is a basic tutorial and, therefore, should not be taken as a 
+guide for building a production level HTTP serv&lt;/p&gt;
+&lt;h3 id="github-repo"&gt;GitHub repo&lt;a class="headerlink" href="#github-repo" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Find the final code at GitHub: &lt;strong&gt;&lt;a href="https://github.com/bhch/crude-server"&gt;https://github.com/bhch/crude-server&lt;/a&gt;&lt;/strong&gt;. &lt;/p&gt;
+&lt;p&gt;The code in the repo contains some extra modifications, but you'll figure those out 
+when you read the source code. &lt;/p&gt;
 &lt;h1 id="steps-to-create-an-http-server"&gt;Steps to create an HTTP server&lt;a class="headerlink" href="#steps-to-create-an-http-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Create a TCP server.&lt;/strong&gt;&lt;br&gt;
- HTTP is built on top of TCP (Transmission Control Protocol), so we will need to
- create a program capable of sending and receiving data through a TCP socket. 
- Knowledge about the TCP protocol is not required but familiarity with Python's 
- &lt;code&gt;socket&lt;/code&gt; library is. Go through &lt;code&gt;socket&lt;/code&gt; library's &lt;a href="https://docs.python.org/3/howto/sockets.html"&gt;docs&lt;/a&gt;, or 
- read the &lt;a href="https://pymotw.com/3/socket/"&gt;PyMOTW&lt;/a&gt; page for good examples.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Teach our TCP server the HTTP protocol.&lt;/strong&gt;&lt;br&gt;
- At this point our TCP server doesn't understand HTTP. To convert it from a TCP 
- server to an HTTP server all we need to do is &lt;em&gt;teach&lt;/em&gt; it the HTTP protocol.
- You need to have some basic knowledge about the HTTP protocol, 
- for example, the structure of HTTP requests and responses. A good starting 
- point to learn about the HTTP protocol is &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP"&gt;Mozilla's docs on HTTP&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Viola! We have built an HTTP server.&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h4 id="1-create-a-tcp-server"&gt;1. Create a TCP server&lt;a class="headerlink" href="#1-create-a-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;HTTP is built on top of TCP (Transmission Control Protocol), so we will need to
+create a program capable of sending and receiving data through a TCP socket. 
+Knowledge about the TCP protocol is not required but familiarity with Python's 
+&lt;code&gt;socket&lt;/code&gt; library is. Go through &lt;code&gt;socket&lt;/code&gt; library's &lt;a href="https://docs.python.org/3/howto/sockets.html"&gt;docs&lt;/a&gt;, or 
+read the &lt;a href="https://pymotw.com/3/socket/"&gt;PyMOTW&lt;/a&gt; page for good examples.&lt;/p&gt;
+&lt;h4 id="2-teach-our-tcp-server-the-http-protocol"&gt;2. Teach our TCP server the HTTP protocol.&lt;a class="headerlink" href="#2-teach-our-tcp-server-the-http-protocol" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;At this point our TCP server doesn't understand HTTP. To convert it from a TCP 
+server to an HTTP server all we need to do is &lt;em&gt;teach&lt;/em&gt; it the HTTP protocol.
+You need to have some basic knowledge about the HTTP protocol, 
+for example, the structure of HTTP requests and responses. A good starting 
+point to learn about the HTTP protocol is &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP"&gt;Mozilla's docs on HTTP&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;That's it. That's all it takes to write an HTTP server.&lt;/p&gt;
 &lt;h1 id="step-1-creating-a-tcp-server"&gt;Step 1:  Creating a TCP server&lt;a class="headerlink" href="#step-1-creating-a-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;img alt="HTTP is built on top of TCP" src="/images/tcp-socket.png"&gt;&lt;/p&gt;
 &lt;p&gt;Since HTTP works through a TCP socket, we'll start by writing a simple TCP server.
 We will use Python's &lt;code&gt;socket&lt;/code&gt; library for this.&lt;/p&gt;
 &lt;h2 id="12-a-simple-echo-server"&gt;1.2 A simple Echo server&lt;a class="headerlink" href="#12-a-simple-echo-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Firstly, let's create a simple version of our TCP server - an Echo server. An 
+&lt;p&gt;Firstly, let's create a simple version of our TCP server: an Echo server. An 
 Echo server is a program that returns the data that it receives, nothing less, 
 nothing more.&lt;/p&gt;
 &lt;p&gt;Start by creating a file called &lt;code&gt;main.py&lt;/code&gt; for our code:&lt;/p&gt;
@@ -388,7 +380,9 @@ nothing more.&lt;/p&gt;
 
             &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Connected by&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-            &lt;span class="c1"&gt;# read the data sent by the client (1024 bytes)&lt;/span&gt;
+            &lt;span class="c1"&gt;# read the data sent by the client&lt;/span&gt;
+            &lt;span class="c1"&gt;# for the sake of this tutorial, &lt;/span&gt;
+            &lt;span class="c1"&gt;# we&amp;#39;ll only read the first 1024 bytes&lt;/span&gt;
             &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;conn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1024&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
             &lt;span class="c1"&gt;# send back the data to client&lt;/span&gt;
@@ -477,79 +471,102 @@ that it can be used as a base for our HTTP server.&lt;/p&gt;
 &lt;h1 id="step-2-teaching-the-http-protocol-to-our-tcp-server"&gt;Step 2: Teaching the HTTP protocol to our TCP server&lt;a class="headerlink" href="#step-2-teaching-the-http-protocol-to-our-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;&lt;img alt="HTTP protocol" src="/images/http-speak.png"&gt;&lt;/p&gt;
 &lt;p&gt;Instead of implementing the HTTP protocol in the &lt;code&gt;TCPServer&lt;/code&gt; class, we'll subclass it 
-and implement the protocol in the subclass. Add the following code to &lt;code&gt;main.py&lt;/code&gt;:&lt;/p&gt;
+and implement the protocol in the subclass. Let's start by handling the incoming 
+requests by overriding the &lt;code&gt;handle_request&lt;/code&gt; method. Add this to &lt;code&gt;main.py&lt;/code&gt; file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
 
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Request received!&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;# ... previous code ...&lt;/span&gt;
 
+&lt;span class="hll"&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Request received!&amp;quot;&lt;/span&gt; &lt;span class="c1"&gt;# send bytes, not string&lt;/span&gt;
+&lt;/span&gt;
 &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="hll"&gt;    &lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;    &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;If you run the above program and visit &lt;code&gt;127.0.0.1:8888&lt;/code&gt; from your browser, 
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Important:&lt;/strong&gt; Python's &lt;code&gt;socket&lt;/code&gt; library receives and sends data as &lt;code&gt;bytes&lt;/code&gt;, not as &lt;code&gt;str&lt;/code&gt; (string). 
+That's why we're using the &lt;code&gt;b""&lt;/code&gt; prefix with our strings. If we don't do that, 
+we'll get an error.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Now &lt;strong&gt;restart the server&lt;/strong&gt; by running the &lt;code&gt;main.py&lt;/code&gt; file. Visit &lt;code&gt;127.0.0.1:8888&lt;/code&gt; from your browser and 
 you should see &lt;code&gt;Request received!&lt;/code&gt; message on the screen.&lt;/p&gt;
 &lt;p&gt;Although, it's not a valid HTTP response yet. An HTTP response is made up of 
 the following parts:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;The response line (it's the first line)&lt;/li&gt;
+&lt;li&gt;The response line a.k.a status line (it's the first line)&lt;/li&gt;
 &lt;li&gt;Response headers (optional)&lt;/li&gt;
 &lt;li&gt;A blank line&lt;/li&gt;
 &lt;li&gt;Response body (optional)&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;An example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="m"&gt;1.1&lt;/span&gt; &lt;span class="m"&gt;200&lt;/span&gt; &lt;span class="ne"&gt;OK&lt;/span&gt;
-&lt;span class="na"&gt;Server&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="l"&gt;Tornado/4.3&lt;/span&gt;
-&lt;span class="na"&gt;Date&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="l"&gt;Wed, 18 Oct 2017 14:19:11 GMT&lt;/span&gt;
-&lt;span class="na"&gt;Content-type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="l"&gt;text/html; charset=UTF-8&lt;/span&gt;
-&lt;span class="na"&gt;Content-Length&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="l"&gt;13&lt;/span&gt;
-
-Hello, world!
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;HTTP&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;1.1&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;            &lt;span class="c1"&gt;# The first line is called the response line &lt;/span&gt;
+&lt;span class="n"&gt;Server&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Tornado&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;4.3&lt;/span&gt;        &lt;span class="c1"&gt;# Response header&lt;/span&gt;
+&lt;span class="n"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Wed&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;18&lt;/span&gt; &lt;span class="n"&gt;Oct&lt;/span&gt; &lt;span class="mi"&gt;2017&lt;/span&gt;     &lt;span class="c1"&gt;# Response header&lt;/span&gt;
+&lt;span class="n"&gt;Content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;html&lt;/span&gt;    &lt;span class="c1"&gt;# Response header&lt;/span&gt;
+&lt;span class="n"&gt;Content&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Length&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;13&lt;/span&gt;         &lt;span class="c1"&gt;# Response header&lt;/span&gt;
+                           &lt;span class="c1"&gt;# Blank line&lt;/span&gt;
+&lt;span class="n"&gt;Hello&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;world&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;              &lt;span class="c1"&gt;# Response body&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;For a better understanding of HTTP responses, &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages"&gt;read the docs&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The response line and the headers contain informaton for the browser. They are not 
+shown to the client. The response body contains the data which the browser displays 
+on the screen for the client.&lt;/p&gt;
+&lt;p&gt;The blank line plays a very important role in HTTP and many other protocols. It helps 
+to seperate the headers and response body. Without it, there's no way for browsers 
+to tell which part of the response should be shown to the user.&lt;/p&gt;
+&lt;p&gt;For a better understanding of HTTP responses, &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages"&gt;read the docs on Mozilla&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Let's make our server return a valid response this time:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;HTTP/1.1 200 OK&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# response line&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# blank line&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;Request received!&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# response body&lt;/span&gt;
-        &lt;span class="p"&gt;)&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;HTTP/1.1 200 OK&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+        &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Request received!&amp;quot;&amp;quot;&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_body&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;The &lt;code&gt;\r\n&lt;/code&gt; characters are line break characters. They are present at the end of 
+every line in an HTTP response except the response body. They are useful for 
+browsers to tell headers and response line apart.&lt;/p&gt;
 &lt;p&gt;This time our server will return a valid HTTP response.&lt;/p&gt;
 &lt;h2 id="21-headers"&gt;2.1 Headers&lt;a class="headerlink" href="#21-headers" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Our server doesn't return any headers yet. Let's return some, then.&lt;/p&gt;
-&lt;p&gt;Headers contain some general information, like name of the server, or the 
-content type of the response, or any other information that might be useful for 
-the browser but not so much for the user.&lt;/p&gt;
+&lt;p&gt;Our server doesn't return any headers yet. Let's make it return some.&lt;/p&gt;
+&lt;p&gt;Headers contain some general information about the website and the current page, 
+such as the name of the server, or the content type of the response, or any other 
+information that might be useful for the browser but not so much for the user.&lt;/p&gt;
 &lt;p&gt;First, let's give our server a name. I'll call it &lt;code&gt;Crude Server&lt;/code&gt; because it's 
-crude and raw and still at a very early stage.&lt;/p&gt;
-&lt;p&gt;Second, instead of return plain text, we'll return HTML in the response. For that, 
-we'll also have to send a &lt;code&gt;Content-Type&lt;/code&gt; header to let the browser know that this 
+crude, raw and a basic HTTP server.&lt;/p&gt;
+&lt;p&gt;Second, instead of returning plain text, we'll return HTML in the response. For that, 
+we'll also have to send the &lt;code&gt;Content-Type&lt;/code&gt; header to let the browser know that this 
 is an HTML response.&lt;/p&gt;
 &lt;p&gt;Now, let's make our server return this information in headers:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;HTTP/1.1 200 OK&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# response line&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;Server: Crude Server&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# header&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;Content-Type: text/html&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# header&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# blank line&lt;/span&gt;
-            &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class="sd"&gt;            &amp;lt;body&amp;gt;&lt;/span&gt;
-&lt;span class="sd"&gt;            &amp;lt;h1&amp;gt;Request received!&amp;lt;/h1&amp;gt;&lt;/span&gt;
-&lt;span class="sd"&gt;            &amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class="sd"&gt;            &amp;lt;/html&amp;gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class="c1"&gt;# response body&lt;/span&gt;
-        &lt;span class="p"&gt;)&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;HTTP/1.1 200 OK&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+&lt;span class="hll"&gt;        &lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Server: Crude Server&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+&lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Content-Type: text/html&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;
+        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+&lt;span class="hll"&gt;        &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&amp;quot;&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="s2"&gt;            &amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="s2"&gt;            &amp;lt;h1&amp;gt;Request received!&amp;lt;/h1&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="s2"&gt;            &amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="s2"&gt;            &amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="s2"&gt;        &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_body&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -562,6 +579,7 @@ very convenient. &lt;/p&gt;
         &lt;span class="s1"&gt;&amp;#39;Server&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;CrudeServer&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
         &lt;span class="s1"&gt;&amp;#39;Content-Type&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;text/html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="p"&gt;}&lt;/span&gt;
+
     &lt;span class="n"&gt;status_codes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
         &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;OK&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
         &lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Not Found&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -572,13 +590,13 @@ very convenient. &lt;/p&gt;
 &lt;span class="sd"&gt;        Compiles and returns the response&lt;/span&gt;
 &lt;span class="sd"&gt;        &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 
-        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="hll"&gt;        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;
+        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 
-        &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-
-        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-
-        &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="s2"&gt;            &amp;lt;html&amp;gt;&lt;/span&gt;
 &lt;span class="s2"&gt;                &amp;lt;body&amp;gt;&lt;/span&gt;
 &lt;span class="s2"&gt;                    &amp;lt;h1&amp;gt;Request received!&amp;lt;/h1&amp;gt;&lt;/span&gt;
@@ -586,17 +604,14 @@ very convenient. &lt;/p&gt;
 &lt;span class="s2"&gt;            &amp;lt;/html&amp;gt;&lt;/span&gt;
 &lt;span class="s2"&gt;        &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
 
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s%s%s%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
-                &lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_body&lt;/span&gt;
-            &lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_body&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Returns response line&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
         &lt;span class="n"&gt;reason&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;status_codes&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;HTTP/1.1 &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;reason&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;HTTP/1.1 &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;reason&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# call encode to convert str to bytes&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;extra_headers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Returns headers&lt;/span&gt;
@@ -610,30 +625,29 @@ very convenient. &lt;/p&gt;
 
         &lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
 
-        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;h&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;h&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;headers_copy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;headers_copy&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;headers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# call encode to convert str to bytes&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;I don't think the above code needs any explanation. If you read it, it will be all 
-clear to you.&lt;/p&gt;
+&lt;p&gt;So, we've created two new method: &lt;code&gt;response_line()&lt;/code&gt; and &lt;code&gt;response_headers()&lt;/code&gt; which will 
+compile the response line and headers for us. The comments in the code will help 
+clarify what's going on. &lt;/p&gt;
 &lt;h2 id="23-status-codes"&gt;2.3 Status codes&lt;a class="headerlink" href="#23-status-codes" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;As you can see in the code above, we've created a dictionary of status codes in 
 &lt;code&gt;HTTPServer&lt;/code&gt; class. But there are only 2 status codes in our dictionary. I've done that 
 intentionally to keep the code shorter. You can implement all the status codes 
 in your local version of the code. See &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status"&gt;Mozilla's docs&lt;/a&gt; for a list of all 
 the HTTP statuses.&lt;/p&gt;
-&lt;p&gt;Alternatively, you can use Python's &lt;code&gt;httplib&lt;/code&gt; from standard library. It has a dictionary 
-of all HTTP statuses which can be accessed from &lt;code&gt;httplib.responses&lt;/code&gt;. Example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;httplib&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="n"&gt;status_codes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;httplib&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;responses&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;p&gt;You can use Python's &lt;code&gt;http.client&lt;/code&gt; from the standard library. It has a dictionary 
+of all HTTP statuses which can be accessed from &lt;a href="https://docs.python.org/3/library/http.client.html#http.client.responses"&gt;&lt;code&gt;http.cleint.responses&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id="24-http-requests"&gt;2.4 HTTP requests&lt;a class="headerlink" href="#24-http-requests" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Currently, our server just sends a single response for every request. To make it 
+more functional, we'll need to read the requests of the client and send them the 
+content that they request. &lt;/p&gt;
+&lt;p&gt;Let's first understand what's an HTTP request.&lt;/p&gt;
 &lt;p&gt;An HTTP request is made up of the following parts:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;The request line (it's the first line)&lt;/li&gt;
@@ -680,143 +694,135 @@ further below.&lt;/p&gt;
 means our server is no good yet. We'll have to write some more code to parse the 
 incoming requests to know what HTTP method is used, to know what URI is requested, 
 etc.&lt;/p&gt;
-&lt;p&gt;Let's write a simple request parser. We'll create a class called &lt;code&gt;HTTPRequest&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPRequest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;p&gt;Let's write a simple request parser. We'll create a class called &lt;code&gt;HTTPRequest&lt;/code&gt;. 
+Add the following to the &lt;code&gt;main.py&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# main.py&lt;/span&gt;
+
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ... class TCPServer ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ... class HTTPServer ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPRequest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;http_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;1.1&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# default to HTTP/1.1 if request doesn&amp;#39;t provide a version&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt; &lt;span class="c1"&gt;# a dictionary for headers&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;http_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;1.1&amp;quot;&lt;/span&gt; &lt;span class="c1"&gt;# default to HTTP/1.1 if request doesn&amp;#39;t provide a version&lt;/span&gt;
 
-        &lt;span class="c1"&gt;# call self.parse method to parse the request data&lt;/span&gt;
+        &lt;span class="c1"&gt;# call self.parse() method to parse the request data&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;lines&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;lines&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
         &lt;span class="n"&gt;request_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;lines&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parse_request_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request_line&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;parse_request_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request_line&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request_line&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request_line&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot; &amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# call decode to convert bytes to str&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;# we put this in an if-block because sometimes &lt;/span&gt;
+            &lt;span class="c1"&gt;# browsers don&amp;#39;t send uri for homepage&lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# call decode to convert bytes to str&lt;/span&gt;
 
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;http_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# ... &lt;/span&gt;
+&lt;span class="c1"&gt;# ... if __name__ == &amp;#39;__main__&amp;#39; ...&lt;/span&gt;
+&lt;span class="c1"&gt;# ...&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;The above code only parses the Request line. We don't have to worry about request headers, 
-or request body for now.&lt;/p&gt;
+or request body for this tutorial.&lt;/p&gt;
 &lt;h2 id="26-implementing-http-request-methods"&gt;2.6 Implementing HTTP request methods&lt;a class="headerlink" href="#26-implementing-http-request-methods" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Our server can't distinguish between different request methods. We are serving 
 the same response for &lt;code&gt;GET&lt;/code&gt; or &lt;code&gt;POST&lt;/code&gt; or &lt;code&gt;OPTIONS&lt;/code&gt; or any other request method. &lt;/p&gt;
-&lt;p&gt;Let's modify our &lt;code&gt;HTTPServer&lt;/code&gt; class to identify between &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;OPTIONS&lt;/code&gt; requests.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;OPTIONS&lt;/code&gt; is the easiest method to implement, followed by &lt;code&gt;GET&lt;/code&gt;. 
-We'll create two methods on &lt;code&gt;HTTPServer&lt;/code&gt; 
-class - &lt;code&gt;handle_GET&lt;/code&gt; to handle &lt;code&gt;GET&lt;/code&gt; requests, and &lt;code&gt;handle_OPTIONS&lt;/code&gt; to handle &lt;code&gt;OPTIONS&lt;/code&gt; 
-requests.&lt;/p&gt;
+&lt;p&gt;We'll create one method in &lt;code&gt;HTTPServer&lt;/code&gt; class&amp;mdash;&lt;code&gt;handle_GET()&lt;/code&gt; to handle &lt;code&gt;GET&lt;/code&gt; requests.&lt;/p&gt;
 &lt;p&gt;For a &lt;code&gt;GET&lt;/code&gt; request, a server returns the requested resource. Say, if a request 
 comes in like &lt;code&gt;GET /index.html&lt;/code&gt;, the server will send the contents of &lt;em&gt;index.html&lt;/em&gt; 
 file in the response body.&lt;/p&gt;
-&lt;p&gt;For an &lt;code&gt;OPTIONS&lt;/code&gt; request, a server returns a response that lets the client know which 
-request methods this server supports. So, if a request comes in like &lt;code&gt;OPTIONS /index.html&lt;/code&gt;, 
-the server sends back a response with the &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Allow"&gt;&lt;code&gt;Allow&lt;/code&gt;&lt;/a&gt; header like this - 
-&lt;code&gt;Allow: OPTIONS, GET, POST&lt;/code&gt;. Since, we are only implementing &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;OPTIONS&lt;/code&gt; methods, 
-we'll send a header like &lt;code&gt;Allow: OPTIONS, GET&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="c1"&gt;# ... other code ...&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="c1"&gt;# create an instance of `HTTPRequest`&lt;/span&gt;
+&lt;span class="hll"&gt;        &lt;span class="c1"&gt;# create an instance of `HTTPRequest`&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTPRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="c1"&gt;# now, look at the request method and call the &lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="c1"&gt;# appropriate handler&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;handle_&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
+&lt;/span&gt;
+&lt;span class="hll"&gt;    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="c1"&gt;# We&amp;#39;ll write this method a little later&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="k"&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Okay, we've created one handler to handle &lt;code&gt;GET&lt;/code&gt; requests. In this tutoial, we won't implement handlers 
+for other request types. But the &lt;a href="https://github.com/bhch/crude-server"&gt;Github repo&lt;/a&gt; contains handler for &lt;code&gt;OPTIONS&lt;/code&gt; requests as well.&lt;/p&gt;
+&lt;h3 id="261-sending-501-response"&gt;2.6.1 Sending 501 Response&lt;a class="headerlink" href="#261-sending-501-response" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;501&lt;/code&gt; HTTP responses mean &lt;code&gt;Not Implemented&lt;/code&gt;. They are used for telling the client that the 
+server does't support the requested method type.&lt;/p&gt;
+&lt;p&gt;Since our server will only handle &lt;code&gt;GET&lt;/code&gt; requests, it's a good idea to send &lt;code&gt;501&lt;/code&gt; response
+for other request methods such as &lt;code&gt;POST&lt;/code&gt; or &lt;code&gt;PUT&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;So, let's modify our server to send a &lt;code&gt;501&lt;/code&gt; response:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# ... headers ...&lt;/span&gt;
+
+    &lt;span class="n"&gt;status_codes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;OK&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Not Found&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="hll"&gt;        &lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Not Implemented&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTPRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-        &lt;span class="c1"&gt;# now, look at the request method and call the &lt;/span&gt;
-        &lt;span class="c1"&gt;# appropriate handler&lt;/span&gt;
-        &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;handle_&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
+&lt;span class="hll"&gt;        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;handle_&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTP_501_handler&lt;/span&gt;
+&lt;/span&gt;
         &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_OPTIONS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-        &lt;span class="n"&gt;extra_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Allow&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;OPTIONS, GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-        &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;extra_headers&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s%s%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
-                &lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-                &lt;span class="n"&gt;blank_line&lt;/span&gt;
-            &lt;span class="p"&gt;)&lt;/span&gt;
-
+&lt;span class="hll"&gt;    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;HTTP_501_handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;h1&amp;gt;501 Not Implemented&amp;lt;/h1&amp;gt;&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_body&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="c1"&gt;# We&amp;#39;ll write this method a little later&lt;/span&gt;
         &lt;span class="k"&gt;pass&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Okay, we've created two handlers to handle &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;OPTIONS&lt;/code&gt; requests. But you might 
-have noticed those handlers don't return anything yet. We'll fix that in the next 
-section, and serve the content directly from files.&lt;/p&gt;
-&lt;p&gt;But before that, we can still improve our server a little bit. Suppose a &lt;code&gt;POST&lt;/code&gt; 
-request comes in. But we haven't implemented the &lt;code&gt;handle_POST&lt;/code&gt;, so our server will 
-crash because this line &lt;code&gt;handler = getattr(self, 'handle_%s' % request.method)&lt;/code&gt; will 
-raise an &lt;code&gt;AttributeError&lt;/code&gt;, since &lt;code&gt;handle_POST&lt;/code&gt; doesn't exist. We can 
-write some &lt;code&gt;try...except&lt;/code&gt; code to handle this exception. At the same time, it would 
-be nice to let the client know that we don't support this requests method. HTTP 
-has a status code &lt;code&gt;501 Not Implemented&lt;/code&gt; just for this purpose. A server must send 
-a &lt;code&gt;501&lt;/code&gt; response if it doesn't understand the incoming request method.&lt;/p&gt;
-&lt;p&gt;So, let's modify our server to send a &lt;code&gt;501&lt;/code&gt; response:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="n"&gt;status_codes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;OK&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Not Found&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Not Implemented&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_request&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;request&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HTTPRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;handle_&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-        &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTP_501_handler&lt;/span&gt;
-
-        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
-
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;HTTP_501_handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-        &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-
-        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-
-        &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;h1&amp;gt;501 Not Implemented&amp;lt;/h1&amp;gt;&amp;quot;&lt;/span&gt;
-
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s%s%s%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
-                &lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_body&lt;/span&gt;
-            &lt;span class="p"&gt;)&lt;/span&gt;
-
-    &lt;span class="c1"&gt;# ... other code ...&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Now, if a rquest comes in with any method other than &lt;code&gt;GET&lt;/code&gt; or &lt;code&gt;HEAD&lt;/code&gt;, our server 
+&lt;p&gt;Now, if a rquest comes in with any method other than &lt;code&gt;GET&lt;/code&gt;, our server 
 will appropriately return a &lt;code&gt;501&lt;/code&gt; response.&lt;/p&gt;
-&lt;h2 id="27-serving-content-from-files"&gt;2.7 Serving content from files&lt;a class="headerlink" href="#27-serving-content-from-files" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Let's now render some content from files instead of from strings as we're doing. &lt;/p&gt;
-&lt;p&gt;First, let's create a couple of files - &lt;em&gt;"index.html"&lt;/em&gt; and &lt;em&gt;"hello.html"&lt;/em&gt;. So, if a 
-request comes in like &lt;code&gt;GET /index.html&lt;/code&gt;, we'll serve the &lt;em&gt;index.html&lt;/em&gt; file. If 
+&lt;h2 id="27-handling-get-requests"&gt;2.7 Handling &lt;code&gt;GET&lt;/code&gt; requests&lt;a class="headerlink" href="#27-handling-get-requests" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Let's start fully implementing the &lt;code&gt;handle_GET()&lt;/code&gt; method. Now we'll serve content 
+from actual HTML and other files.&lt;/p&gt;
+&lt;h3 id="271-serving-content-from-files"&gt;2.7.1 Serving content from files&lt;a class="headerlink" href="#271-serving-content-from-files" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Let's serve some content from files instead of from strings as we've been doing until now. &lt;/p&gt;
+&lt;p&gt;First, let's create a couple of files - &lt;em&gt;"index.html"&lt;/em&gt; and &lt;em&gt;"hello.html"&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;Now, if a request comes in like &lt;code&gt;GET /index.html&lt;/code&gt;, we'll serve the &lt;em&gt;index.html&lt;/em&gt; file. If 
 a request comes in like &lt;code&gt;GET /hello.html&lt;/code&gt;, we'll serve the &lt;em&gt;hello.html&lt;/em&gt; file. &lt;/p&gt;
 &lt;p&gt;Keep both these files in the same directory as &lt;code&gt;main.py&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;index.html&lt;/em&gt;:&lt;/p&gt;
@@ -845,60 +851,44 @@ a request comes in like &lt;code&gt;GET /hello.html&lt;/code&gt;, we'll serve th
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Now, let's modify our handlers to render content according to the request URI. &lt;/p&gt;
-&lt;p&gt;But, suppose, a request comes in at &lt;code&gt;/something.html&lt;/code&gt;. This file doesn't exist. 
-So, our server should send a &lt;code&gt;404 Not Found&lt;/code&gt; response if it can't find a file 
-for the URI. So, we'll have to write code for that as well.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;p&gt;We'll also send a &lt;code&gt;404 Not Found&lt;/code&gt; response if a requested file doesn't exist.&lt;/p&gt;
+&lt;p&gt;Now, let's modify the handler method to serve content according to the request URI. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt; &lt;span class="c1"&gt;# remember to import os&lt;/span&gt;
+&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;
+
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="c1"&gt;# ... other code ...&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;handle_GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# remove the slash from URI&lt;/span&gt;
+        &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# remove the slash from the request URI&lt;/span&gt;
 
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-            &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
             &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-            &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;rb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
                 &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
         &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-            &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
             &lt;span class="n"&gt;response_headers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-            &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;h1&amp;gt;404 Not Found&amp;lt;/h1&amp;gt;&amp;quot;&lt;/span&gt;
+            &lt;span class="n"&gt;response_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;h1&amp;gt;404 Not Found&amp;lt;/h1&amp;gt;&amp;quot;&lt;/span&gt;
 
-        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;blank_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
 
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s%s%s%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
-                &lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                &lt;span class="n"&gt;response_body&lt;/span&gt;
-            &lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_headers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank_line&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response_body&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Now, run the server, and visit &lt;code&gt;127.0.0.1:8888/index.html&lt;/code&gt; and you should 
+&lt;p&gt;Now, &lt;strong&gt;restart the server&lt;/strong&gt; and visit &lt;code&gt;127.0.0.1:8888/index.html&lt;/code&gt; and you should 
 see the response containing the contents of &lt;em&gt;index.html&lt;/em&gt; file. &lt;/p&gt;
 &lt;p&gt;Also, try and visit a random url like &lt;code&gt;127.0.0.1:8888/blahblah.html&lt;/code&gt; and you should 
 get the &lt;code&gt;404 Not Found&lt;/code&gt; response.&lt;/p&gt;
-&lt;p&gt;Now, more importantly, our server should also be able to respond to &lt;code&gt;OPTIONS&lt;/code&gt; requests. 
-From our browsers, we can't make an &lt;code&gt;OPTIONS&lt;/code&gt; request. But you can install extensions 
-for that. Just do a Google search for &lt;code&gt;Rest client extension for &amp;lt;browser-name&amp;gt;&lt;/code&gt;. 
-A REST client extension will allow you to make requests using different request methods.&lt;/p&gt;
-&lt;p&gt;You can also use &lt;code&gt;curl&lt;/code&gt;, if you have that installed on your system. Example: &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl -X OPTIONS http://127.0.0.1:8888 -i
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Anyway, if you make an &lt;code&gt;OPTIONS&lt;/code&gt; request to the server, you should see the &lt;code&gt;Allow&lt;/code&gt; 
-header in the response headers but no response body.&lt;/p&gt;
 &lt;h2 id="28-serving-images-and-other-media"&gt;2.8 Serving images and other media&lt;a class="headerlink" href="#28-serving-images-and-other-media" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;To serve images, or videos, or any other media a server must send a proper 
-&lt;code&gt;Content-Type&lt;/code&gt; header to the browser, so that the browser can render the content 
-appropriately.&lt;/p&gt;
+&lt;code&gt;Content-Type&lt;/code&gt; header to the browser to tell that the browser about what kind of 
+content is being served so it can render the content appropriately.&lt;/p&gt;
 &lt;p&gt;Our server, as it is right now, can serve images, or videos. You can even try it - 
 put an image file next to the previously created HTML files and make a request for 
 that image from the browser - &lt;code&gt;127.0.0.1:8888/picture.png&lt;/code&gt; and you should see some 
@@ -909,12 +899,14 @@ it as an image.&lt;/p&gt;
 &lt;code&gt;mimetypes&lt;/code&gt; library to know a file's MIME type from it's extension. We can do it 
 manually, but there are hundreds of different file types - &lt;em&gt;"jpg, png, mp4, mp3, svg ..."&lt;/em&gt;, 
 so, why not use a library to make it easier.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;mimetypes&lt;/code&gt; library is included in Python's standard library, so no need to install 
+&lt;p&gt;&lt;code&gt;mimetypes&lt;/code&gt; library is included in Python's standard library, so there's no need to install 
 anything.&lt;/p&gt;
 &lt;p&gt;Let's modify our server to send proper &lt;code&gt;Content-Type&lt;/code&gt; header for different files. &lt;/p&gt;
-&lt;p&gt;The highlighted lines contain the newly added code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;mimetypes&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;
+&lt;span class="hll"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;mimetypes&lt;/span&gt; &lt;span class="c1"&gt;# remember to import mimetypes&lt;/span&gt;
 &lt;/span&gt;
+
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HTTPServer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TCPServer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="c1"&gt;# ... other code ...&lt;/span&gt;
 
@@ -922,7 +914,7 @@ anything.&lt;/p&gt;
         &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exists&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-            &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;response_line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;response_line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="hll"&gt;            &lt;span class="c1"&gt;# find out a file&amp;#39;s MIME type&lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;            &lt;span class="c1"&gt;# if nothing is found, just send `text/html`&lt;/span&gt;
@@ -935,22 +927,25 @@ anything.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Now, put an image next to &lt;em&gt;index.html&lt;/em&gt; and make a request for it from your browser. 
-You should see the image rendered properly. You can also try and embed the image 
+&lt;p&gt;Now, put an image next to &lt;em&gt;index.html&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Restart the server&lt;/strong&gt; and make a request for it from your browser. &lt;/p&gt;
+&lt;p&gt;You should see the image rendered properly. You can also try and embed the image 
 in &lt;em&gt;index.html&lt;/em&gt; file using &lt;code&gt;&amp;lt;img src="image-name.png"&amp;gt;&lt;/code&gt; and then request the &lt;code&gt;/index.html&lt;/code&gt;
 page. You should see the image there, too.&lt;/p&gt;
-&lt;h1 id="step-3-there-aint-no-step-3"&gt;Step 3: There ain't no step 3&lt;a class="headerlink" href="#step-3-there-aint-no-step-3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id="and-its-done"&gt;And it's done&lt;a class="headerlink" href="#and-its-done" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;We've built our server! Well, at least a minimal server for learning purpose. Now you 
-can just play around with it - try and implement more request methods, or more headers. &lt;/p&gt;
-&lt;p&gt;Hopefully, the way HTTP and HTTP servers work is pretty obvious to you now. But 
-we've only scratched the surface of the HTTP protocol and it's workings. So if you're 
-really serious about making a server that's production ready, read the next section 
-for some pointers.&lt;/p&gt;
+can play around with it&amp;mdash;try and implement more request methods, or more headers. &lt;/p&gt;
+&lt;p&gt;Also, see the code in the supplementary &lt;a href="https://github.com/bhch/crude-server"&gt;Github repo&lt;/a&gt;. It contains some imporovements 
+to the code, more comments and information.&lt;/p&gt;
+&lt;p&gt;Hopefully, the way HTTP and HTTP servers work is clear to you now.&lt;/p&gt;
 &lt;h1 id="taking-our-server-to-the-next-level"&gt;Taking our server to the next level&lt;a class="headerlink" href="#taking-our-server-to-the-next-level" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;Below are a few checkpoints that almost every production level server implements:&lt;/p&gt;
+&lt;p&gt;We've only scratched the surface of the HTTP protocol and it's workings. And 
+the server written in this tutorial is far from good. But if you want to improve 
+the server you can see the following checkpoints that almost every production 
+level server implements:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;Implement full HTTP&lt;/strong&gt;:&lt;br&gt;
- Our server only supports two methods - &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;OPTIONS&lt;/code&gt; and a few headers. It 
+ Our server only supports one method&amp;mdash;&lt;code&gt;GET&lt;/code&gt;&amp;mdash;and a few headers. It 
  has no support for Cookies, or caching. A good starting point towards a production 
  ready server would be to implement the full HTTP protocol. You can start by reading 
  &lt;a href="https://developer.mozilla.org/en-US/docs/Web/HTTP"&gt;Mozilla's web docs&lt;/a&gt; and implementing all the HTTP features one by one.&lt;/li&gt;
@@ -998,8 +993,7 @@ for some pointers.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;h1 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;You now know about the internal workings of an HTTP server. &lt;/p&gt;
-&lt;p&gt;In case there are errors in the code, or any other mistakes, please let me know. &lt;/p&gt;
-&lt;p&gt;Until next time.&lt;/p&gt;</content><category term="python"></category><category term="http"></category><category term="server"></category></entry><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><published>2017-10-15T00:00:00+05:30</published><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:/posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
+&lt;p&gt;In case there are errors in the code, or any other mistakes, please let me know. &lt;/p&gt;</content><category term="python"></category><category term="http"></category><category term="server"></category></entry><entry><title>Making multiple async HTTP requests using Tornado</title><link href="https://bhch.github.io/posts/2017/10/making-multiple-async-http-requests-using-tornado/" rel="alternate"></link><published>2017-10-15T00:00:00+05:30</published><updated>2017-10-15T00:00:00+05:30</updated><author><name>bhch</name></author><id>tag:bhch.github.io,2017-10-15:/posts/2017/10/making-multiple-async-http-requests-using-tornado/</id><summary type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
 multiple HTTP requests and process them asynchronously, I do.&lt;/p&gt;
 &lt;p&gt;The advantage of using callbacks in this case over coroutines is that 
 as soon as Tornado …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Although I don't like using callbacks for writing async code, but to make 
