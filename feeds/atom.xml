@@ -328,12 +328,13 @@ reserved for special cases where using Nginx is not possible. &lt;/p&gt;</conten
 &lt;p&gt;This article will introduce you to the basics of HTTP servers and teach you 
 how you can write one. We'll use the Python programming language to write our server.&lt;/p&gt;
 &lt;p&gt;Please note that this is a basic tutorial and, therefore, should not be taken as a 
-guide for building a production level HTTP serv&lt;/p&gt;
+guide for building a production level HTTP server.&lt;/p&gt;
 &lt;h3 id="github-repo"&gt;GitHub repo&lt;a class="headerlink" href="#github-repo" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;Find the final code at GitHub: &lt;strong&gt;&lt;a href="https://github.com/bhch/crude-server"&gt;https://github.com/bhch/crude-server&lt;/a&gt;&lt;/strong&gt;. &lt;/p&gt;
+&lt;p&gt;You can find the code on Github and test it out: &lt;strong&gt;&lt;a href="https://github.com/bhch/crude-server"&gt;https://github.com/bhch/crude-server&lt;/a&gt;&lt;/strong&gt;. &lt;/p&gt;
 &lt;p&gt;The code in the repo contains some extra modifications, but you'll figure those out 
 when you read the source code. &lt;/p&gt;
 &lt;h1 id="steps-to-create-an-http-server"&gt;Steps to create an HTTP server&lt;a class="headerlink" href="#steps-to-create-an-http-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;An HTTP server can be built in these two steps:&lt;/p&gt;
 &lt;h4 id="1-create-a-tcp-server"&gt;1. Create a TCP server&lt;a class="headerlink" href="#1-create-a-tcp-server" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;HTTP is built on top of TCP (Transmission Control Protocol), so we will need to
 create a program capable of sending and receiving data through a TCP socket. 

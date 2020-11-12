@@ -78,12 +78,13 @@
 <p>This article will introduce you to the basics of HTTP servers and teach you 
 how you can write one. We'll use the Python programming language to write our server.</p>
 <p>Please note that this is a basic tutorial and, therefore, should not be taken as a 
-guide for building a production level HTTP serv</p>
+guide for building a production level HTTP server.</p>
 <h3 id="github-repo">GitHub repo<a class="headerlink" href="#github-repo" title="Permanent link">&para;</a></h3>
-<p>Find the final code at GitHub: <strong><a href="https://github.com/bhch/crude-server">https://github.com/bhch/crude-server</a></strong>. </p>
+<p>You can find the code on Github and test it out: <strong><a href="https://github.com/bhch/crude-server">https://github.com/bhch/crude-server</a></strong>. </p>
 <p>The code in the repo contains some extra modifications, but you'll figure those out 
 when you read the source code. </p>
 <h1 id="steps-to-create-an-http-server">Steps to create an HTTP server<a class="headerlink" href="#steps-to-create-an-http-server" title="Permanent link">&para;</a></h1>
+<p>An HTTP server can be built in these two steps:</p>
 <h4 id="1-create-a-tcp-server">1. Create a TCP server<a class="headerlink" href="#1-create-a-tcp-server" title="Permanent link">&para;</a></h4>
 <p>HTTP is built on top of TCP (Transmission Control Protocol), so we will need to
 create a program capable of sending and receiving data through a TCP socket. 
