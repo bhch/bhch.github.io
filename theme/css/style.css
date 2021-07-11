@@ -209,10 +209,6 @@ a:focus {
 .post-description {
     line-height: 1.8;
 }
-.post-description p {
-    display: table;
-    width: 100%;
-}
 .post-container {
     display: block;
     margin: auto;
@@ -353,7 +349,6 @@ img {
     max-width: 100%;
 }
 .post-description img {
-    float: left;
     margin-right: 10px;
     margin-top: 6px;
 }
@@ -488,6 +483,9 @@ hr {
 .announcement a {
     color: #ac0041;
     text-decoration: underline;
+}
+.announcement a:not(.img-link):hover {
+    background-color: #ffe0eb;
 }
 .announcement p:first-child {
     margin-top: 0;
