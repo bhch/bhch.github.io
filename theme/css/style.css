@@ -28,16 +28,19 @@ body {
 }
 .content {
     padding: 2em 1em 0;
+    padding-top: 0;
 }
 .header {
     text-align: center;
     top: auto;
     margin: 3em auto;
+    margin-top: 2em;
 }
 @media (min-width: 48em) {
     .content {
         padding: 2em 3em 0;
         margin-left: 25%;
+        padding-top: 0;
     }
 
     .header {
@@ -65,27 +68,21 @@ a:focus {
 .link-heading > a {
     color: inherit;
 }
-
-@media (min-width: 48em) {
-    .header {
-        margin: 27% 2em 0;
-        text-align: center;
-    }
-}
 .sidebar {
     background-color: #e4d9fe;
 }
 .sidebar .author-avatar {
     border-radius: 100%;
-    width: 130px;
-    height: 130px;
+    width: 90px;
+    height: 90px;
 }
 .brand-title {
-    margin: 20px 0;
+    margin: 2px 0;
     text-transform: none;
 }
 .brand-tagline {
-    margin-bottom: 30px;
+    margin-top: 0;
+    margin-bottom: 8px;
     color: #010041;
     line-height: 1.35
 }
@@ -109,6 +106,25 @@ a:focus {
 .sidebar-menu p {
     margin: 2px 0;
     font-weight: bold;
+}
+
+@media (min-width: 48em) {
+    .header {
+        margin: 27% 2em 0;
+        text-align: center;
+    }
+    .sidebar .author-avatar {
+        border-radius: 100%;
+        width: 130px;
+        height: 130px;
+    }
+    .brand-title {
+        margin: 20px 0;
+    }
+    .brand-tagline {
+        margin-top: initial;
+        margin-bottom: 30px;
+    }
 }
 
 .hamburger {
@@ -200,7 +216,7 @@ a:focus {
 .post-container {
     display: block;
     margin: auto;
-    margin-top: 50px;
+    margin-top: 0px;
 }
 .rounded-button {
     font-size: small;
@@ -446,6 +462,46 @@ hr {
 .group {
     margin-bottom: 20px;
 }
+
+.announcement {
+    background-color: #f3f3f3;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #353535;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.announcement .title {
+    color: #555;
+    font-weight: bold;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
+    background-color: #eaeaea;
+}
+.announcement .body {
+    padding: 12px;
+    border-radius: 0 0 8px 8px;
+}
+.announcement p {
+    margin: 0;
+}
+.announcement .img-link {
+    display: block;
+    text-align: center;
+}
+.announcement img {
+    max-width: 75px;
+    height: auto;
+    margin-left: 12px;
+}
+
+@media (max-width: 500px) {
+    .announcement img {
+        max-width: 55px;
+    }
+}
+
 
 /*
  * Code highlighting 
