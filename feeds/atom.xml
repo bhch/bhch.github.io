@@ -1,5 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2021-04-04T00:00:00+05:30</updated><entry><title>Centring flex items and allowing overflow scroll</title><link href="https://bhch.github.io/posts/2021/04/centring-flex-items-and-allowing-overflow-scroll/" rel="alternate"></link><published>2021-04-04T00:00:00+05:30</published><updated>2021-04-04T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-04-04:/posts/2021/04/centring-flex-items-and-allowing-overflow-scroll/</id><summary type="html">&lt;p&gt;How to centre flex items and allow scrolling when the content overflows.&lt;/p&gt;</summary><content type="html">&lt;h2 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2021-07-15T00:00:00+05:30</updated><entry><title>Hiding, obfuscating or encrypting database IDs</title><link href="https://bhch.github.io/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/" rel="alternate"></link><published>2021-07-15T00:00:00+05:30</published><updated>2021-07-15T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-07-15:/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/</id><summary type="html">&lt;p&gt;How to hide, obfuscate or encrypt database object ids&lt;/p&gt;</summary><content type="html">&lt;h2 id="tldr"&gt;tl;dr&lt;a class="headerlink" href="#tldr" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;There are two options:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Optimus ID&lt;/strong&gt;: When you need &lt;strong&gt;integer only&lt;/strong&gt; ids.&lt;br&gt;
+    This is based on Knuth's Multiplicative hashing. You can find its implementation 
+    for almost every language. Here are some links for &lt;a href="https://github.com/jenssegers/optimus"&gt;PHP&lt;/a&gt;, &lt;a href="https://github.com/mpcabd/python-optimus"&gt;Python&lt;/a&gt;, &lt;a href="https://github.com/chamindu/optimus-js"&gt;JavaScript&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hashids&lt;/strong&gt;: When you need &lt;strong&gt;alphanumeric&lt;/strong&gt; ids.&lt;br&gt;
+    It's a very popular id obfuscation library. Their &lt;a href="https://hashids.org/"&gt;Official website&lt;/a&gt; has links for 
+    implementations in various languages.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The way these work is you give them the actual database id, then they will encrypt it 
+and return a completely different, unique and unpredictable output.&lt;/p&gt;
+&lt;p&gt;The good thing is they are reversible, so we don't need to save them in database. 
+We can just decrypt the encrypted id to get the original database id back.&lt;/p&gt;
+&lt;h2 id="why-you-might-need-to-hide-database-ids"&gt;Why you might need to hide database ids&lt;a class="headerlink" href="#why-you-might-need-to-hide-database-ids" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;First of all: it has &lt;strong&gt;nothing to do with database security&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;real reason&lt;/strong&gt; to obfuscate database ids is to &lt;strong&gt;prevent&lt;/strong&gt; users from &lt;strong&gt;guessing&lt;/strong&gt; 
+the number of objects in the database.&lt;/p&gt;
+&lt;p&gt;In most cases, this doesn't matter, but there are exceptions. I'll illustrate them using three examples:&lt;/p&gt;
+&lt;h4 id="example-1"&gt;Example 1&lt;a class="headerlink" href="#example-1" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Suppose you run an e-commerce store.&lt;/p&gt;
+&lt;p&gt;A competitor can easily guess the number of sales you're making each month by looking 
+at the order ids.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;This is very valuable data.&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The competitor could adjust their selling strategy depending on this data. &lt;/li&gt;
+&lt;li&gt;They can find the correlation between your sales and a campaign you're running 
+   and copy what you're doing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="example-2"&gt;Example 2&lt;a class="headerlink" href="#example-2" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A little subjective, but longer order ids look more "trustworthy".&lt;/p&gt;
+&lt;p&gt;An invoice with &lt;code&gt;Order ID: #10&lt;/code&gt; may make a user think, &lt;em&gt;"Wait, only ten people have bought from them? Is there something 
+wrong with their products?"&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Whereas &lt;code&gt;Order ID: #147-295-8700&lt;/code&gt; makes it seem that you're popular and get a lot of orders.&lt;/p&gt;
+&lt;h4 id="example-3"&gt;Example 3&lt;a class="headerlink" href="#example-3" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;This example is similar to Example 1. Using an object's id in the URL will give the 
+users or competition a hint about the number of objects.&lt;/p&gt;
+&lt;p&gt;In most cases, this doesn't matter, for example anybody can see how many blog posts 
+a website has. So, there's no point in hiding it. &lt;/p&gt;
+&lt;p&gt;But when the data is private, it's probably a good idea to obfuscate the database ids.&lt;/p&gt;
+&lt;h2 id="how-to-generate-long-order-ids"&gt;How to generate long order ids&lt;a class="headerlink" href="#how-to-generate-long-order-ids" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;There are good ideas and there are bad ideas. First, let's look at the techniques we 
+won't be using.&lt;/p&gt;
+&lt;h4 id="the-bad-ideas"&gt;The bad ideas:&lt;a class="headerlink" href="#the-bad-ideas" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Generate ids at random&lt;/strong&gt;:&lt;br&gt;
+&lt;strong&gt;Bad idea&lt;/strong&gt; because you need to save them in the database and then also need 
+    to query the database later to ensure uniqueness.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use UUIDs&lt;/strong&gt;:&lt;br&gt;
+&lt;strong&gt;Bad idea&lt;/strong&gt; because they're, in this case, unnecessarily too long. If a user wants 
+    to track their order, they'll have to type in a long id.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use MD5 or SHA1 hashes&lt;/strong&gt;:&lt;br&gt;
+&lt;strong&gt;Bad idea&lt;/strong&gt; because hashes are not reversible and, so, you need to save them in the database.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="the-good-idea"&gt;The good idea:&lt;a class="headerlink" href="#the-good-idea" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;We want to use encryption (or encoding) because it's reversible. That means there's no need to 
+save the generated ids in the database. We can just reverse the encrypted id to get 
+the database id which we can use to query the object from the database.&lt;/p&gt;
+&lt;p&gt;Here are two ways:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Optimus ID&lt;/strong&gt;:&lt;ul&gt;
+&lt;li&gt;When you need &lt;strong&gt;integer only&lt;/strong&gt; ids.&lt;/li&gt;
+&lt;li&gt;This is based on Knuth's Multiplicative hashing. You can find its implementation
+for almost every language. Here are some links for &lt;a href="https://github.com/jenssegers/optimus"&gt;PHP&lt;/a&gt;, &lt;a href="https://github.com/mpcabd/python-optimus"&gt;Python&lt;/a&gt;, &lt;a href="https://github.com/chamindu/optimus-js"&gt;JavaScript&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;I'm using this for orders in my &lt;a href="https://www.butterdomains.com/?utm_source=blog"&gt;domain registration service&lt;/a&gt; project.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hashids&lt;/strong&gt;: &lt;ul&gt;
+&lt;li&gt;When you need &lt;strong&gt;alphanumeric&lt;/strong&gt; ids.&lt;/li&gt;
+&lt;li&gt;A very popular id obfuscation library. Their &lt;a href="https://hashids.org/"&gt;Official website&lt;/a&gt; has links for
+implementations in various languages.&lt;/li&gt;
+&lt;li&gt;I'm using this for hiding domain ids in my &lt;a href="https://www.butterdomains.com/?utm_source=blog"&gt;domain registration service&lt;/a&gt; project.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If you know of any other approaches or libraries for obfuscating databse ids, please 
+comment about them; I'll update this post with your suggestions.&lt;/p&gt;</content></entry><entry><title>Centring flex items and allowing overflow scroll</title><link href="https://bhch.github.io/posts/2021/04/centring-flex-items-and-allowing-overflow-scroll/" rel="alternate"></link><published>2021-04-04T00:00:00+05:30</published><updated>2021-04-04T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-04-04:/posts/2021/04/centring-flex-items-and-allowing-overflow-scroll/</id><summary type="html">&lt;p&gt;How to centre flex items and allow scrolling when the content overflows.&lt;/p&gt;</summary><content type="html">&lt;h2 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Centring flexbox items using either &lt;code&gt;justify-content&lt;/code&gt; result 
 in quriky behaviour when the content overflows the container. Even after scrolling, 
 some items may not be fully visible.&lt;/p&gt;

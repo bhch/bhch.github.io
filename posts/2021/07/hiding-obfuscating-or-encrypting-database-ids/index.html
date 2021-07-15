@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiding, obfuscating or encrypting database IDs - Bharat Chauhan</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600|IBM+Plex+Sans:500|IBM+Plex+Mono:400" rel="stylesheet">
+
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    Bharat Chauhan
+                </a>
+            </h3>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">Hiding, obfuscating or encrypting database IDs</h1>
+<p class="post-meta">
+    Thu 15 July 2021
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+</p>
+    </header>
+
+<div class="announcement">
+    <div class="title">👋 Before we begin...</div>
+    <div class="body pure-g">
+        <div class="pure-u-3-4 pure-u-md-3-4">
+            <p>
+                May I <strong>share with you</strong> a project that I'm working on? 
+                It's a <strong>domain registration</strong> service which <strong>doesn't suck</strong>.
+            </p>
+            <p>
+                You can find it at: <a href="https://www.butterdomains.com/?utm_source=blog" target="_blank">butterdomains.com</a>.
+            </p>
+            <p>
+                <strong>Sign up for Beta</strong> if you like it.
+            </p>
+            <p>
+                Thank you!
+            </p>
+        </div>
+        <div class="pure-u-1-4">
+            <a href="https://www.butterdomains.com/?utm_source=blog" class="img-link" target="_blank">
+            <img src="https://www.butterdomains.com/static/logo-2.svg?v=4444e97af745f04a47b9099c0f3a91b145e37b92d445421c0eeb581682a4484d0d8c9cecc7a102aed95bcf0b75a3a22191e6c112cbf42e91f4eb3a161c52713e"/>
+            </a>
+        </div>
+    </div>
+</div>
+    <hr/>
+
+    <div class="post-description">
+        <h2 id="tldr">tl;dr<a class="headerlink" href="#tldr" title="Permanent link">&para;</a></h2>
+<p>There are two options:</p>
+<ol>
+<li><strong>Optimus ID</strong>: When you need <strong>integer only</strong> ids.<br>
+    This is based on Knuth's Multiplicative hashing. You can find its implementation 
+    for almost every language. Here are some links for <a href="https://github.com/jenssegers/optimus">PHP</a>, <a href="https://github.com/mpcabd/python-optimus">Python</a>, <a href="https://github.com/chamindu/optimus-js">JavaScript</a>.</li>
+<li><strong>Hashids</strong>: When you need <strong>alphanumeric</strong> ids.<br>
+    It's a very popular id obfuscation library. Their <a href="https://hashids.org/">Official website</a> has links for 
+    implementations in various languages.</li>
+</ol>
+<p>The way these work is you give them the actual database id, then they will encrypt it 
+and return a completely different, unique and unpredictable output.</p>
+<p>The good thing is they are reversible, so we don't need to save them in database. 
+We can just decrypt the encrypted id to get the original database id back.</p>
+<h2 id="why-you-might-need-to-hide-database-ids">Why you might need to hide database ids<a class="headerlink" href="#why-you-might-need-to-hide-database-ids" title="Permanent link">&para;</a></h2>
+<p>First of all: it has <strong>nothing to do with database security</strong>.</p>
+<p>The <strong>real reason</strong> to obfuscate database ids is to <strong>prevent</strong> users from <strong>guessing</strong> 
+the number of objects in the database.</p>
+<p>In most cases, this doesn't matter, but there are exceptions. I'll illustrate them using three examples:</p>
+<h4 id="example-1">Example 1<a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h4>
+<p>Suppose you run an e-commerce store.</p>
+<p>A competitor can easily guess the number of sales you're making each month by looking 
+at the order ids.</p>
+<p><strong>This is very valuable data.</strong></p>
+<ul>
+<li>The competitor could adjust their selling strategy depending on this data. </li>
+<li>They can find the correlation between your sales and a campaign you're running 
+   and copy what you're doing.</li>
+</ul>
+<h4 id="example-2">Example 2<a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h4>
+<p>A little subjective, but longer order ids look more "trustworthy".</p>
+<p>An invoice with <code>Order ID: #10</code> may make a user think, <em>"Wait, only ten people have bought from them? Is there something 
+wrong with their products?"</em>.</p>
+<p>Whereas <code>Order ID: #147-295-8700</code> makes it seem that you're popular and get a lot of orders.</p>
+<h4 id="example-3">Example 3<a class="headerlink" href="#example-3" title="Permanent link">&para;</a></h4>
+<p>This example is similar to Example 1. Using an object's id in the URL will give the 
+users or competition a hint about the number of objects.</p>
+<p>In most cases, this doesn't matter, for example anybody can see how many blog posts 
+a website has. So, there's no point in hiding it. </p>
+<p>But when the data is private, it's probably a good idea to obfuscate the database ids.</p>
+<h2 id="how-to-generate-long-order-ids">How to generate long order ids<a class="headerlink" href="#how-to-generate-long-order-ids" title="Permanent link">&para;</a></h2>
+<p>There are good ideas and there are bad ideas. First, let's look at the techniques we 
+won't be using.</p>
+<h4 id="the-bad-ideas">The bad ideas:<a class="headerlink" href="#the-bad-ideas" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Generate ids at random</strong>:<br>
+<strong>Bad idea</strong> because you need to save them in the database and then also need 
+    to query the database later to ensure uniqueness.</li>
+<li><strong>Use UUIDs</strong>:<br>
+<strong>Bad idea</strong> because they're, in this case, unnecessarily too long. If a user wants 
+    to track their order, they'll have to type in a long id.</li>
+<li><strong>Use MD5 or SHA1 hashes</strong>:<br>
+<strong>Bad idea</strong> because hashes are not reversible and, so, you need to save them in the database.</li>
+</ol>
+<h4 id="the-good-idea">The good idea:<a class="headerlink" href="#the-good-idea" title="Permanent link">&para;</a></h4>
+<p>We want to use encryption (or encoding) because it's reversible. That means there's no need to 
+save the generated ids in the database. We can just reverse the encrypted id to get 
+the database id which we can use to query the object from the database.</p>
+<p>Here are two ways:</p>
+<ol>
+<li><strong>Optimus ID</strong>:<ul>
+<li>When you need <strong>integer only</strong> ids.</li>
+<li>This is based on Knuth's Multiplicative hashing. You can find its implementation
+for almost every language. Here are some links for <a href="https://github.com/jenssegers/optimus">PHP</a>, <a href="https://github.com/mpcabd/python-optimus">Python</a>, <a href="https://github.com/chamindu/optimus-js">JavaScript</a>.</li>
+<li>I'm using this for orders in my <a href="https://www.butterdomains.com/?utm_source=blog">domain registration service</a> project.</li>
+</ul>
+</li>
+<li><strong>Hashids</strong>: <ul>
+<li>When you need <strong>alphanumeric</strong> ids.</li>
+<li>A very popular id obfuscation library. Their <a href="https://hashids.org/">Official website</a> has links for
+implementations in various languages.</li>
+<li>I'm using this for hiding domain ids in my <a href="https://www.butterdomains.com/?utm_source=blog">domain registration service</a> project.</li>
+</ul>
+</li>
+</ol>
+<h2 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h2>
+<p>If you know of any other approaches or libraries for obfuscating databse ids, please 
+comment about them; I'll update this post with your suggestions.</p>
+    </div>
+
+    <hr/>
+<div class="announcement">
+    <div class="title">👋 Hello, fellow developer!</div>
+    <div class="body pure-g">
+        <div class="pure-u-3-4 pure-u-md-3-4">
+            <p>
+                May I <strong>share with you</strong> a project that I'm working on? 
+                It's a <strong>domain registration</strong> service which <strong>doesn't suck</strong>.
+            </p>
+            <p>
+                You can find it at: <a href="https://www.butterdomains.com/?utm_source=blog" target="_blank">butterdomains.com</a>.
+            </p>
+            <p>
+                <strong>Sign up for Beta</strong> if you like it.
+            </p>
+            <p>
+                Thank you!
+            </p>
+        </div>
+        <div class="pure-u-1-4">
+            <a href="https://www.butterdomains.com/?utm_source=blog" class="img-link" target="_blank">
+            <img src="https://www.butterdomains.com/static/logo-2.svg?v=4444e97af745f04a47b9099c0f3a91b145e37b92d445421c0eeb581682a4484d0d8c9cecc7a102aed95bcf0b75a3a22191e6c112cbf42e91f4eb3a161c52713e"/>
+            </a>
+        </div>
+    </div>
+</div>    
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/';
+        var disqus_url = 'https://bhch.github.io/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script>
+
+                <!-- plain text -->
+                Bharat Chauhan
+
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
+
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

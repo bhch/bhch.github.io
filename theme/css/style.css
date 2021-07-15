@@ -213,6 +213,12 @@ a:focus {
     display: block;
     margin: auto;
     margin-top: 1rem;
+    max-width: 800px;
+}
+@media(min-width: 1400px) {
+    .post-container {
+        margin-left: 4.5rem;
+    }
 }
 .rounded-button {
     font-size: small;
