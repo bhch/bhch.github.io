@@ -518,10 +518,9 @@ hr {
 }
 
 /* Hide disqus ads */
-#disqus_thread > iframe:first-child {
+#disqus_thread > iframe:first-child:not(:last-child) {
     display: none;
 }
-
 
 /*
  * Code highlighting 
