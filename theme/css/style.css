@@ -506,13 +506,20 @@ hr {
 .announcement img {
     max-width: 75px;
     height: auto;
-    margin-left: 12px;
+}
+.announcement .body div.text {
+    padding-left: 12px;
 }
 
 @media (max-width: 500px) {
     .announcement img {
         max-width: 55px;
     }
+}
+
+/* Hide disqus ads */
+#disqus_thread > iframe:first-child {
+    display: none;
 }
 
 
