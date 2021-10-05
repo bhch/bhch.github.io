@@ -71,8 +71,8 @@
 
     <div class="post-description">
         <h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
-<p>Centring flexbox items using either <code>justify-content</code> result 
-in quriky behaviour when the content overflows the container. Even after scrolling, 
+<p>Centring flexbox items using <code>justify-content</code> results in a quriky behaviour 
+when the content overflows the container. Even after scrolling, 
 some items may not be fully visible.</p>
 <h2 id="the-solution">The solution<a class="headerlink" href="#the-solution" title="Permanent link">&para;</a></h2>
 <p>This is a three-step solution:</p>
@@ -115,6 +115,15 @@ some items may not be fully visible.</p>
 
 
 <p>And the scrolling should work now.</p>
+<h3 id="demo">Demo<a class="headerlink" href="#demo" title="Permanent link">&para;</a></h3>
+<p class="codepen" data-height="300" data-theme-id="light" data-default-tab="result" data-slug-hash="qBjzaYQ" data-user="bhch" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/bhch/pen/qBjzaYQ">
+  Overflow scroll flex centered items</a> by Bharat Chauhan (<a href="https://codepen.io/bhch">@bhch</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
 <h2 id="future-solution">Future solution<a class="headerlink" href="#future-solution" title="Permanent link">&para;</a></h2>
 <p>There's a <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content#values">new keyword called <code>safe</code></a> in the CSS working draft that can be used 
 with <code>justify-content</code> and <code>align-items</code> which will allow "safe" scrolling in 

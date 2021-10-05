@@ -77,8 +77,8 @@ implementations in various languages.&lt;/li&gt;
 &lt;h2 id="thats-it"&gt;That's it&lt;a class="headerlink" href="#thats-it" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;If you know of any other approaches or libraries for obfuscating databse ids, please 
 comment about them; I'll update this post with your suggestions.&lt;/p&gt;</content></entry><entry><title>Centring flex items and allowing overflow scroll</title><link href="https://bhch.github.io/posts/2021/04/centring-flex-items-and-allowing-overflow-scroll/" rel="alternate"></link><published>2021-04-04T00:00:00+05:30</published><updated>2021-04-04T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-04-04:/posts/2021/04/centring-flex-items-and-allowing-overflow-scroll/</id><summary type="html">&lt;p&gt;How to centre flex items and allow scrolling when the content overflows.&lt;/p&gt;</summary><content type="html">&lt;h2 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Centring flexbox items using either &lt;code&gt;justify-content&lt;/code&gt; result 
-in quriky behaviour when the content overflows the container. Even after scrolling, 
+&lt;p&gt;Centring flexbox items using &lt;code&gt;justify-content&lt;/code&gt; results in a quriky behaviour 
+when the content overflows the container. Even after scrolling, 
 some items may not be fully visible.&lt;/p&gt;
 &lt;h2 id="the-solution"&gt;The solution&lt;a class="headerlink" href="#the-solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;This is a three-step solution:&lt;/p&gt;
@@ -121,6 +121,15 @@ some items may not be fully visible.&lt;/p&gt;
 
 
 &lt;p&gt;And the scrolling should work now.&lt;/p&gt;
+&lt;h3 id="demo"&gt;Demo&lt;a class="headerlink" href="#demo" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h3&gt;
+&lt;p class="codepen" data-height="300" data-theme-id="light" data-default-tab="result" data-slug-hash="qBjzaYQ" data-user="bhch" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"&gt;
+  &lt;span&gt;See the Pen &lt;a href="https://codepen.io/bhch/pen/qBjzaYQ"&gt;
+  Overflow scroll flex centered items&lt;/a&gt; by Bharat Chauhan (&lt;a href="https://codepen.io/bhch"&gt;@bhch&lt;/a&gt;)
+  on &lt;a href="https://codepen.io"&gt;CodePen&lt;/a&gt;.&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"&gt;&lt;/script&gt;
+
 &lt;h2 id="future-solution"&gt;Future solution&lt;a class="headerlink" href="#future-solution" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;There's a &lt;a href="https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content#values"&gt;new keyword called &lt;code&gt;safe&lt;/code&gt;&lt;/a&gt; in the CSS working draft that can be used 
 with &lt;code&gt;justify-content&lt;/code&gt; and &lt;code&gt;align-items&lt;/code&gt; which will allow "safe" scrolling in 
