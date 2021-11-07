@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category 'Programming' - Bharat Chauhan</title>
+    <title>django admin - A better, user-friendly ArrayField widget - Bharat Chauhan</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -51,65 +51,83 @@
         <div class="pure-u-1 pure-u-md-5-6 post-container">
             <!-- A wrapper for all the blog posts -->
             <div class="posts">
+
 <section class="post">
     <header class="post-header">
-        <h1 class="post-title">Category 'Programming'</h1>
-        <p class="post-meta"><a class="tag" href="https://bhch.github.io/categories/">&larr; All categories</a></p>
-    </header>
-</section>
-<div class="post-list">
-        
-        <section class="post">
-            <header class="post-header">
-                <h2 class="link-heading"><a href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/">Fix the pip error: Couldn't find a version that satisfies the requirement</a></h2>
+
+        <h1 class="post-title">django admin - A better, user-friendly ArrayField widget</h1>
 <p class="post-meta">
-    Thu 13 April 2017
-        <strong>&nbsp; &middot; &nbsp;</strong> 
-        updated Fri 07 February 2020
+    Sun 07 November 2021
 
         <strong>&nbsp; &middot; &nbsp;</strong> 
         <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
         <strong>&nbsp; &middot; &nbsp;</strong>
         <span class="tags">
                 <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
-                <a href="https://bhch.github.io/tag/pip/" class="tag">pip</a>
+                <a href="https://bhch.github.io/tag/django/" class="tag">django</a>
         </span>
 </p>
-            </header>
+    </header>
 
-            <div class="post-description">
-                <p><p>How to fix the <code>pip</code> <em>"Couldn't find a version that satisfies the requirement"</em> error.</p></p>
-                <p><a href="https://bhch.github.io/posts/2017/04/fix-the-pip-error-couldnt-find-a-version-that-satisfies-the-requirement/" class="rounded-button">Read more &rarr;</a></p>
-            </div>
-        </section>
-        
-        <section class="post">
-            <header class="post-header">
-                <h2 class="link-heading"><a href="https://bhch.github.io/posts/2017/03/hello-world/">Hello, World!</a></h2>
-<p class="post-meta">
-    Mon 20 March 2017
+    <div class="post-description">
+        <h1 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h1>
+<p>The current <code>ArrayField</code> input in Django admin displays a single input box.
+You're supposed to use a comma to separate the values. This is anything except
+user-friendly.</p>
+<p>And this fails for two more reasons:</p>
+<ul>
+<li>If a value has a comma, then Django will interpret that value as two values</li>
+<li>Nested ArrayFields are not supported</li>
+</ul>
+<h1 id="custom-widget">Custom widget<a class="headerlink" href="#custom-widget" title="Permanent link">&para;</a></h1>
+<p>I've created a Django app called <a href="https://github.com/bhch/django-jsonform"><strong>django-jsonform</strong></a> which dynamically generates
+form inputs for <code>ArrayField</code>. This app was originally created for dynamic json forms, but
+it also supports <code>ArrayField</code>.</p>
+<p>It looks like this:</p>
+<p><img alt="Django admin better ArrayField using django-jsonform" src="/images/better-arrayfield-django-jsonform.gif"></p>
+<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
+<p>First, install <code>django-jsonform</code>:</p>
+<div class="highlight"><pre><span></span>$ pip install django-jsonform
+</pre></div>
 
-        <strong>&nbsp; &middot; &nbsp;</strong> 
-        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
-</p>
-            </header>
 
-            <div class="post-description">
-                <p><p>The mandatory first post.</p>
-<p>I still remember the day when I first decided to learn programming. I was so 
-sure of which language I will be learning. The <em>inspiration</em> to learn Python as 
-my first programming language came …</p></p>
-                <p><a href="https://bhch.github.io/posts/2017/03/hello-world/" class="rounded-button">Read more &rarr;</a></p>
-            </div>
-        </section>
-</div>
+<p>Now, <strong>we'll need to use the <a href="https://django-jsonform.readthedocs.io/en/stable/fields-and-widgets.html#arrayfield"><code>ArrayField</code> provided by <code>django-jsonform</code></a></strong> which is just a
+subclass of Django's default <code>ArrayField</code>. The only difference it that it will use
+the dynamic widget instead of a plain input field.</p>
+<p>This is what you'll do in your <code>models.py</code> file:</p>
+<div class="highlight"><pre><span></span><span class="c1"># models.py</span>
 
-<div class="paginator">
-        <a href="https://bhch.github.io/category/programming/" class="rounded-button">&larr; Newer</a>
-    <span class="rounded-button">2 / 2</span>
-         <span class="rounded-button">Older &rarr;</span>
-</div>
+<span class="hll"><span class="kn">from</span> <span class="nn">django_jsonform.models.fields</span> <span class="kn">import</span> <span class="n">ArrayField</span>
+</span>
 
+<span class="k">class</span> <span class="nc">ShoppingList</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">ArrayField</span><span class="p">(</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">8</span>
+    <span class="p">)</span>
+</pre></div>
+
+
+<p>Register your model in the admin site and you should see a dynamic, user-friendly
+widget as shown in the image earlier.</p>
+    </div>
+    
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/';
+        var disqus_url = 'https://bhch.github.io/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
             </div>
 
 <div class="footer">

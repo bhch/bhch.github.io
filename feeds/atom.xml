@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2021-07-15T00:00:00+05:30</updated><entry><title>Hiding, obfuscating or encrypting database IDs</title><link href="https://bhch.github.io/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/" rel="alternate"></link><published>2021-07-15T00:00:00+05:30</published><updated>2021-07-15T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-07-15:/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/</id><summary type="html">&lt;p&gt;How to hide, obfuscate or encrypt database object ids&lt;/p&gt;</summary><content type="html">&lt;h2 id="tldr"&gt;tl;dr&lt;a class="headerlink" href="#tldr" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2021-11-07T00:00:00+05:30</updated><entry><title>django admin - A better, user-friendly ArrayField widget</title><link href="https://bhch.github.io/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/" rel="alternate"></link><published>2021-11-07T00:00:00+05:30</published><updated>2021-11-07T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-11-07:/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/</id><summary type="html">&lt;p&gt;How to set up a better, dynamic, user-friendly ArrayField widget in django admin&lt;/p&gt;</summary><content type="html">&lt;h1 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;The current &lt;code&gt;ArrayField&lt;/code&gt; input in Django admin displays a single input box.
+You're supposed to use a comma to separate the values. This is anything except
+user-friendly.&lt;/p&gt;
+&lt;p&gt;And this fails for two more reasons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If a value has a comma, then Django will interpret that value as two values&lt;/li&gt;
+&lt;li&gt;Nested ArrayFields are not supported&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="custom-widget"&gt;Custom widget&lt;a class="headerlink" href="#custom-widget" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;I've created a Django app called &lt;a href="https://github.com/bhch/django-jsonform"&gt;&lt;strong&gt;django-jsonform&lt;/strong&gt;&lt;/a&gt; which dynamically generates
+form inputs for &lt;code&gt;ArrayField&lt;/code&gt;. This app was originally created for dynamic json forms, but
+it also supports &lt;code&gt;ArrayField&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;It looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Django admin better ArrayField using django-jsonform" src="/images/better-arrayfield-django-jsonform.gif"&gt;&lt;/p&gt;
+&lt;h1 id="usage"&gt;Usage&lt;a class="headerlink" href="#usage" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;First, install &lt;code&gt;django-jsonform&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install django-jsonform
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, &lt;strong&gt;we'll need to use the &lt;a href="https://django-jsonform.readthedocs.io/en/stable/fields-and-widgets.html#arrayfield"&gt;&lt;code&gt;ArrayField&lt;/code&gt; provided by &lt;code&gt;django-jsonform&lt;/code&gt;&lt;/a&gt;&lt;/strong&gt; which is just a
+subclass of Django's default &lt;code&gt;ArrayField&lt;/code&gt;. The only difference it that it will use
+the dynamic widget instead of a plain input field.&lt;/p&gt;
+&lt;p&gt;This is what you'll do in your &lt;code&gt;models.py&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# models.py&lt;/span&gt;
+
+&lt;span class="hll"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django_jsonform.models.fields&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ArrayField&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ShoppingList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;items&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ArrayField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+        &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Register your model in the admin site and you should see a dynamic, user-friendly
+widget as shown in the image earlier.&lt;/p&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>Hiding, obfuscating or encrypting database IDs</title><link href="https://bhch.github.io/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/" rel="alternate"></link><published>2021-07-15T00:00:00+05:30</published><updated>2021-07-15T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-07-15:/posts/2021/07/hiding-obfuscating-or-encrypting-database-ids/</id><summary type="html">&lt;p&gt;How to hide, obfuscate or encrypt database object ids&lt;/p&gt;</summary><content type="html">&lt;h2 id="tldr"&gt;tl;dr&lt;a class="headerlink" href="#tldr" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;There are two options:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;Optimus ID&lt;/strong&gt;: When you need &lt;strong&gt;integer only&lt;/strong&gt; ids.&lt;br&gt;
