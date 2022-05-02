@@ -65,20 +65,8 @@
     </header>
 
     <div class="post-description">
-        <h2 id="tldr">tl;dr<a class="headerlink" href="#tldr" title="Permanent link">&para;</a></h2>
-<p>There are two options:</p>
-<ol>
-<li><strong>Optimus ID</strong>: When you need <strong>integer only</strong> ids.<br>
-    This is based on Knuth's Multiplicative hashing. You can find its implementation 
-    for almost every language. Here are some links for <a href="https://github.com/jenssegers/optimus">PHP</a>, <a href="https://github.com/mpcabd/python-optimus">Python</a>, <a href="https://github.com/chamindu/optimus-js">JavaScript</a>.</li>
-<li><strong>Hashids</strong>: When you need <strong>alphanumeric</strong> ids.<br>
-    It's a very popular id obfuscation library. Their <a href="https://hashids.org/">Official website</a> has links for 
-    implementations in various languages.</li>
-</ol>
-<p>The way these work is you give them the actual database id, then they will encrypt it 
-and return a completely different, unique and unpredictable output.</p>
-<p>The good thing is they are reversible, so we don't need to save them in database. 
-We can just decrypt the encrypted id to get the original database id back.</p>
+        <p>There are certain cases in web development when you want to hide an object's database 
+ID (primary key) before exposing it to the user (such as order ids in an e-commerce store). </p>
 <h2 id="why-you-might-need-to-hide-database-ids">Why you might need to hide database ids<a class="headerlink" href="#why-you-might-need-to-hide-database-ids" title="Permanent link">&para;</a></h2>
 <p>First of all: it has <strong>nothing to do with database security</strong>.</p>
 <p>The <strong>real reason</strong> to obfuscate database ids is to <strong>prevent</strong> users from <strong>guessing</strong> 
@@ -103,42 +91,85 @@ wrong with their products?"</em>.</p>
 <p>This example is similar to Example 1. Using an object's id in the URL will give the 
 users or competition a hint about the number of objects.</p>
 <p>In most cases, this doesn't matter, for example anybody can see how many blog posts 
-a website has. So, there's no point in hiding it. </p>
+a website has. So, there's no point in hiding blog post ids. </p>
 <p>But when the data is private, it's probably a good idea to obfuscate the database ids.</p>
-<h2 id="how-to-generate-long-order-ids">How to generate long order ids<a class="headerlink" href="#how-to-generate-long-order-ids" title="Permanent link">&para;</a></h2>
-<p>There are good ideas and there are bad ideas. First, let's look at the techniques we 
-won't be using.</p>
-<h4 id="the-bad-ideas">The bad ideas:<a class="headerlink" href="#the-bad-ideas" title="Permanent link">&para;</a></h4>
-<ol>
-<li><strong>Generate ids at random</strong>:<br>
-<strong>Bad idea</strong> because you need to save them in the database and then also need 
-    to query the database later to ensure uniqueness.</li>
-<li><strong>Use UUIDs</strong>:<br>
-<strong>Bad idea</strong> because they're, in this case, unnecessarily too long. If a user wants 
-    to track their order, they'll have to type in a long id.</li>
-<li><strong>Use MD5 or SHA1 hashes</strong>:<br>
-<strong>Bad idea</strong> because hashes are not reversible and, so, you need to save them in the database.</li>
-</ol>
-<h4 id="the-good-idea">The good idea:<a class="headerlink" href="#the-good-idea" title="Permanent link">&para;</a></h4>
-<p>We want to use encryption (or encoding) because it's reversible. That means there's no need to 
-save the generated ids in the database. We can just reverse the encrypted id to get 
-the database id which we can use to query the object from the database.</p>
-<p>Here are two ways:</p>
-<ol>
-<li><strong>Optimus ID</strong>:<ul>
-<li>When you need <strong>integer only</strong> ids.</li>
-<li>This is based on Knuth's Multiplicative hashing. You can find its implementation
-for almost every language. Here are some links for <a href="https://github.com/jenssegers/optimus">PHP</a>, <a href="https://github.com/mpcabd/python-optimus">Python</a>, <a href="https://github.com/chamindu/optimus-js">JavaScript</a>.</li>
-<li>I'm using this for orders in my <a href="https://www.butterdomains.com/?utm_source=blog">domain registration service</a> project.</li>
+<h2 id="techniques-for-hiding-database-ids">Techniques for hiding database IDs<a class="headerlink" href="#techniques-for-hiding-database-ids" title="Permanent link">&para;</a></h2>
+<p>There a few techniques for obfuscating database ids.</p>
+<p>Let's compare them all:</p>
+<h4 id="1-generating-random-numbers">1. Generating random numbers<a class="headerlink" href="#1-generating-random-numbers" title="Permanent link">&para;</a></h4>
+<p>A random number (or alphanumeric string) is generated and saved in the database.
+This is just a bad solution and should almost always be avoided.</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simple and straight-forward</li>
 </ul>
-</li>
-<li><strong>Hashids</strong>: <ul>
-<li>When you need <strong>alphanumeric</strong> ids.</li>
-<li>A very popular id obfuscation library. Their <a href="https://hashids.org/">Official website</a> has links for
-implementations in various languages.</li>
-<li>I'm using this for hiding domain ids in my <a href="https://www.butterdomains.com/?utm_source=blog">domain registration service</a> project.</li>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Bad performance.</li>
+<li>Generated ids need to be saved in the database (needs extra column in the table)</li>
+<li>You need to query the database before saving them to ensure uniqueness.</li>
 </ul>
-</li>
+<h4 id="2-using-uuid">2. Using UUID<a class="headerlink" href="#2-using-uuid" title="Permanent link">&para;</a></h4>
+<p>Using UUID to generate a random string.</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simple and straight-forward</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Generated UUIds need to be saved in the database (needs extra column in the table).</li>
+<li>Not suitable for order ids. Might be too long to print on an invoice/receipt
+  and more prone to mistakes when typing it out.</li>
+<li>Slower db lookup than Integer primary key</li>
+</ul>
+<h4 id="3-using-hashes-such-as-md5-or-sha1">3. Using hashes such as MD5 or SHA1<a class="headerlink" href="#3-using-hashes-such-as-md5-or-sha1" title="Permanent link">&para;</a></h4>
+<p>This technique involves hashing an object's current primary key and then saving
+the hash in a new column. All in all, this is quite similar to using UUID.</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simple and straight-forward</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Hashes need to be saved in the database (needs extra column in the table).</li>
+<li>Not suitable for order ids. Might be too long to print on an invoice/receipt
+  and more prone to mistakes when typing it out.</li>
+<li>Slower db lookup than Integer primary key</li>
+</ul>
+<h4 id="4-encrypting-the-existing-ids">4. Encrypting the existing IDs<a class="headerlink" href="#4-encrypting-the-existing-ids" title="Permanent link">&para;</a></h4>
+<p>This technique involves encrypting the current Integer ID (primary key) of an
+object to get a new, completely random ID.</p>
+<p>The resulting IDs are reversible so you can just decrypt them to get the original
+primary key back and then fetch the object from the database.</p>
+<p>Since Integer lookups are faster then Varchar (string) lookups, this means you
+get better performance than other techniques mentioned previously.</p>
+<p>The encryption algorithms used are very fast and lightweight and have negligible
+performance effects which is faster than updating a row on the database.</p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Faster than other solutions because encrypted ids are reversible so no
+ database querying is required.</li>
+<li>No need to save in the database.</li>
+<li>Certain implementations and algorithms can generate short and unpredictable
+ ids which are suitable for order ids (and practical for printing on receipt/invoice).</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>A bit complex to get started with</li>
+</ul>
+<hr>
+<h2 id="my-opinion">My opinion<a class="headerlink" href="#my-opinion" title="Permanent link">&para;</a></h2>
+<p>I prefer the Encryption technique because it offers the best performance.</p>
+<p>You can decrypt and encrypt the IDs on the fly and there's on overhead of database
+querying to ensure uniqueness.</p>
+<p>I recommend these two options to generate IDs:</p>
+<ol>
+<li><strong>Optimus ID</strong>: When you need <strong>integer only</strong> ids.<br>
+    This is based on Knuth's Multiplicative hashing. You can find its implementation 
+    for almost every language. Here are some links for <a href="https://github.com/jenssegers/optimus">PHP</a>, <a href="https://github.com/mpcabd/python-optimus">Python</a>, <a href="https://github.com/chamindu/optimus-js">JavaScript</a>.</li>
+<li><strong>Hashids</strong>: When you need <strong>alphanumeric</strong> ids.<br>
+    It's a very popular id obfuscation library. Their <a href="https://hashids.org/">Official website</a> has links for 
+    implementations in various languages.</li>
 </ol>
 <h2 id="thats-it">That's it<a class="headerlink" href="#thats-it" title="Permanent link">&para;</a></h2>
 <p>If you know of any other approaches or libraries for obfuscating databse ids, please 
