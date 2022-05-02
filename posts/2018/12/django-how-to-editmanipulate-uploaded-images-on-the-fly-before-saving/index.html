@@ -89,7 +89,7 @@ generating thumbnails or compressing them. I'll show you how to do that. </p>
 
 <p>Now let's say we want to auto generate thumbnails from the image uploaded 
 by the user. </p>
-<h1 id="function-for-genrating-thumbnails">Function for genrating thumbnails<a class="headerlink" href="#function-for-genrating-thumbnails" title="Permanent link">&para;</a></h1>
+<h1 id="function-for-generating-thumbnails">Function for generating thumbnails<a class="headerlink" href="#function-for-generating-thumbnails" title="Permanent link">&para;</a></h1>
 <p>We'll create a new function called <code>make_thumbnail</code> which will 
 create thumbnails for the given image. Keep this in code wherever you like. </p>
 <p>This code works for Django &gt;= 1.7.</p>
@@ -121,7 +121,7 @@ create thumbnails for the given image. Keep this in code wherever you like. </p>
 <ol>
 <li><code>im.convert(RGB)</code> is done to convert the image's mode to RGB. Because sometimes 
  Pillow throws an error when we try to save an image in JPEG format if the image 
- is a GIF with a limited pallette. </li>
+ is a GIF with a limited palette. </li>
 <li><code>im.thumbnail(size)</code> is a method of Pillow's <code>Image</code> class which scales the 
  image to the given size while keeping the aspect ratio.</li>
 <li><code>thumbnail = File(thumb_io, name=image.name)</code> creates a Django-friendly <code>File</code> 
@@ -148,9 +148,9 @@ manipulating images on the fly. </p>
 
 
 <h1 id="that-is-it">That is it<a class="headerlink" href="#that-is-it" title="Permanent link">&para;</a></h1>
-<p>You can adapt and mofify the code to perform any operations you like on the images,
+<p>You can adapt and modify the code to perform any operations you like on the images,
 for example crop them, or even apply Instagram like fancy filters. </p>
-<p>It's upto you. </p>
+<p>It's up to you. </p>
     </div>
     
 </section>

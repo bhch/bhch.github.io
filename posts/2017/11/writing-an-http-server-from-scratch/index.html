@@ -122,13 +122,13 @@ nothing more.</p>
         <span class="c1"># start listening for connections</span>
         <span class="n">s</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Listening at&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Listening at&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
 
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># accept any new connection</span>
             <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
 
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Connected by&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected by&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
 
             <span class="c1"># read the data sent by the client</span>
             <span class="c1"># for the sake of this tutorial, </span>
@@ -186,11 +186,11 @@ that it can be used as a base for our HTTP server.</p>
         <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
         <span class="n">s</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Listening at&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Listening at&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">())</span>
 
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Connected by&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected by&quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
 
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_request</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -363,7 +363,7 @@ very convenient. </p>
 
         <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="c1"># call encode to convert str to bytes</span>
 
-    <span class="k">def</span> <span class="nf">response_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra_headers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">response_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra_headers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns headers</span>
 <span class="sd">        The `extra_headers` can be a dict for sending </span>
 <span class="sd">        extra headers for the current response</span>
@@ -457,8 +457,8 @@ Add the following to the <code>main.py</code> file:</p>
 
 <span class="k">class</span> <span class="nc">HTTPRequest</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">http_version</span> <span class="o">=</span> <span class="s2">&quot;1.1&quot;</span> <span class="c1"># default to HTTP/1.1 if request doesn&#39;t provide a version</span>
 
         <span class="c1"># call self.parse() method to parse the request data</span>

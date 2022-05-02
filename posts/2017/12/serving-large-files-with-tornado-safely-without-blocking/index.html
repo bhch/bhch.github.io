@@ -92,18 +92,18 @@ out of RAM.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">iostream</span>
 
 <span class="k">class</span> <span class="nc">DownloadHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="c1"># chunk size to read</span>
         <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1</span> <span class="c1"># 1 MiB</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">chunk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
                     <span class="k">break</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="c1"># write the chunk to response</span>
-                    <span class="n">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> <span class="c1"># send the chunk to client</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> <span class="c1"># send the chunk to client</span>
                 <span class="k">except</span> <span class="n">iostream</span><span class="o">.</span><span class="n">StreamClosedError</span><span class="p">:</span>
                     <span class="c1"># this means the client has closed the connection</span>
                     <span class="c1"># so break the loop</span>
@@ -140,18 +140,18 @@ which you can use to serve your clients fairly.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">iostream</span><span class="p">,</span> <span class="n">gen</span>
 
 <span class="k">class</span> <span class="nc">DownloadHandler</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 
         <span class="o">...</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-            <span class="n">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">iostream</span><span class="o">.</span><span class="n">StreamClosedError</span><span class="p">:</span>
             <span class="k">break</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">chunk</span>
             <span class="c1"># pause the coroutine so other handlers can run</span>
-            <span class="n">await</span> <span class="n">gen</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.000000001</span><span class="p">)</span> <span class="c1"># 1 nanosecond</span>
+            <span class="k">await</span> <span class="n">gen</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.000000001</span><span class="p">)</span> <span class="c1"># 1 nanosecond</span>
 </pre></div>
 
 

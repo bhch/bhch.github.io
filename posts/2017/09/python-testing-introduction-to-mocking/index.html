@@ -100,7 +100,7 @@ look roughly like this:</p>
 
 <span class="k">def</span> <span class="nf">send_verification_mail</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
     <span class="c1"># compose a mail and send</span>
-    <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
 
 
@@ -138,11 +138,11 @@ can be imported as <code>unittest.mock</code>. </p>
     <span class="c1"># to emulate a long running </span>
     <span class="c1"># process, we&#39;ll use time.sleep</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="kc">True</span>
 
 <span class="k">def</span> <span class="nf">call_long_process</span><span class="p">():</span>
     <span class="n">long_process</span><span class="p">()</span>
-    <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
 
 
@@ -186,7 +186,7 @@ function.</p>
 
 ..
 ----------------------------------------------------------------------
-Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">10</span>.004s
+Ran <span class="m">2</span> <span class="nb">test</span> <span class="k">in</span> <span class="m">10</span>.004s
 
 OK
 </pre></div>
@@ -206,7 +206,7 @@ for the process to finish.</p>
     <span class="c1"># same code as above ...</span>
 
     <span class="k">def</span> <span class="nf">test_call_long_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;main.long_process&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_process</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;main.long_process&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_process</span><span class="p">:</span>
 
             <span class="c1"># test the return value of `call_long_process` </span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">call_long_process</span><span class="p">())</span>
@@ -229,7 +229,7 @@ not. That would tell us if <code>call_long_process()</code> issued a call, or no
 
 ..
 ----------------------------------------------------------------------
-Ran <span class="m">2</span> <span class="nb">test</span> in <span class="m">5</span>.003s
+Ran <span class="m">2</span> <span class="nb">test</span> <span class="k">in</span> <span class="m">5</span>.003s
 
 OK
 </pre></div>

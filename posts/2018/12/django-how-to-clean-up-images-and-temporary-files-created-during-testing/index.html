@@ -119,7 +119,7 @@ whole folder. BOOM!</p>
 <span class="c1"># end of tests</span>
 
 <span class="k">def</span> <span class="nf">tearDownModule</span><span class="p">():</span>
-    <span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Deleting temporary files...</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Deleting temporary files...</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">TEST_DIR</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
