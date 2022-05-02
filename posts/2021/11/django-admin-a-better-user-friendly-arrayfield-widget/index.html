@@ -91,8 +91,18 @@ it also supports <code>ArrayField</code>.</p>
 </pre></div>
 
 
+<p>Second, add <code>django_jsonform</code> to your <code>INSTALLED_APPS</code>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># settings.py</span>
+
+<span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># ...</span>
+    <span class="s1">&#39;django_jsonform&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+
 <p>Now, <strong>we'll need to use the <a href="https://django-jsonform.readthedocs.io/en/stable/fields-and-widgets.html#arrayfield"><code>ArrayField</code> provided by <code>django-jsonform</code></a></strong> which is just a
-subclass of Django's default <code>ArrayField</code>. The only difference it that it will use
+subclass of Django's default <code>ArrayField</code>. The only difference is that it will use
 the dynamic widget instead of a plain input field.</p>
 <p>This is what you'll do in your <code>models.py</code> file:</p>
 <div class="highlight"><pre><span></span><span class="c1"># models.py</span>
@@ -102,7 +112,7 @@ the dynamic widget instead of a plain input field.</p>
 
 <span class="k">class</span> <span class="nc">ShoppingList</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">items</span> <span class="o">=</span> <span class="n">ArrayField</span><span class="p">(</span>
-        <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
         <span class="n">size</span><span class="o">=</span><span class="mi">8</span>
     <span class="p">)</span>
 </pre></div>
