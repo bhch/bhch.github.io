@@ -1,5 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2021-11-07T00:00:00+05:30</updated><entry><title>django admin - A better, user-friendly ArrayField widget</title><link href="https://bhch.github.io/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/" rel="alternate"></link><published>2021-11-07T00:00:00+05:30</published><updated>2021-11-07T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-11-07:/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/</id><summary type="html">&lt;p&gt;How to set up a better, dynamic, user-friendly ArrayField widget in django admin&lt;/p&gt;</summary><content type="html">&lt;h1 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2022-05-02T00:00:00+05:30</updated><entry><title>How to set up Sentry for Tornado applications</title><link href="https://bhch.github.io/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/" rel="alternate"></link><published>2022-05-02T00:00:00+05:30</published><updated>2022-05-02T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2022-05-02:/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/</id><summary type="html">&lt;p&gt;A quick guide on setting up Sentry error reporting for Tornado applications.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this article, I'll show you how I set up Sentry for my Tornado projects.&lt;/p&gt;
+&lt;p&gt;Please &lt;strong&gt;install Sentry&lt;/strong&gt; before proceeding.&lt;/p&gt;
+&lt;h2 id="basic-setup"&gt;Basic setup&lt;a class="headerlink" href="#basic-setup" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;This is a basic setup for quickly testing things out to ensure it works as expected.&lt;/p&gt;
+&lt;p&gt;However, ideally you will not want to run Sentry while you're developing your app
+in debug mode. &lt;a href="#setup-for-production-mode"&gt;See the next for &lt;strong&gt;running Sentry in production mode&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The code is full of comments which will, hopefully, explain things.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# app.py&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;setup_sentry&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Function for setting up sentry.&lt;/span&gt;
+
+&lt;span class="sd"&gt;    We keep all the sentry related imports local to this function&lt;/span&gt;
+&lt;span class="sd"&gt;    so that they are only imported when we actually want to set up&lt;/span&gt;
+&lt;span class="sd"&gt;    sentry such as in production mode.&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sentry_sdk&lt;/span&gt;
+    &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sentry_sdk.integrations.tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TornadoIntegration&lt;/span&gt;
+
+    &lt;span class="n"&gt;sentry_sdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;dsn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;secret_settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SENTRY_DSN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;integrations&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;TornadoIntegration&lt;/span&gt;&lt;span class="p"&gt;()],&lt;/span&gt;
+        &lt;span class="n"&gt;ignore_errors&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ne"&gt;KeyboardInterrupt&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="c1"&gt;# don&amp;#39;t report KeyboardInterrupt error &lt;/span&gt;
+                                           &lt;span class="c1"&gt;# (raised when stopping server with Ctrl+C)&lt;/span&gt;
+        &lt;span class="n"&gt;traces_sample_rate&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# turn off performance monitoring&lt;/span&gt;
+                              &lt;span class="c1"&gt;# set this option per your needs&lt;/span&gt;
+        &lt;span class="n"&gt;send_default_pii&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# include personally identifiable information&lt;/span&gt;
+                               &lt;span class="c1"&gt;# set this option per your needs&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;setup_sentry&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+    &lt;span class="c1"&gt;# rest of the code for running the app remains the same&lt;/span&gt;
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+    &lt;span class="c1"&gt;# app.listen(888)&lt;/span&gt;
+    &lt;span class="c1"&gt;# ioloop.IOLoop.current().start()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sentry has a lot more options for error reporting. You should go through their
+docs to learn about them and configure them as per your project's requirements.&lt;/p&gt;
+&lt;h2 id="setup-for-production-mode"&gt;Setup for production mode&lt;a class="headerlink" href="#setup-for-production-mode" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Ideally, you only want to run Sentry in production mode.&lt;/p&gt;
+&lt;p&gt;Tornado comes with a command line utility which can be used to create custom
+command line options for your application.&lt;/p&gt;
+&lt;p&gt;We'll define a &lt;code&gt;debug&lt;/code&gt; option for our app. When this &lt;code&gt;debug&lt;/code&gt; option is &lt;code&gt;True&lt;/code&gt;
+(that means not in production mode), we will not set up Sentry.&lt;/p&gt;
+&lt;p&gt;When &lt;code&gt;debug&lt;/code&gt; is &lt;code&gt;False&lt;/code&gt; (that means running in production mode), we will set up Sentry.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# app.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Define command line options&lt;/span&gt;
+&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;define&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;debug&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Debug mode&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;setup_sentry&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="c1"&gt;# same as in previous example&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parse_command_line&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;# parse command line options&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;setup_sentry&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now to run your app in production mode, all you have to do is pass the &lt;code&gt;debug&lt;/code&gt; option
+in the command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python app.py --debug&lt;span class="o"&gt;=&lt;/span&gt;False
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="logging"&gt;Logging&lt;a class="headerlink" href="#logging" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Apart from automatic error reporting, you can also use Tornado's built-in loggers
+to log custom messages. Sentry will pick these up too and notify you as they happen.&lt;/p&gt;
+&lt;p&gt;You can do it like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tornado.log&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;app_log&lt;/span&gt;
+
+&lt;span class="n"&gt;app_log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Something bad happened&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;app_log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exception&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Exception happened&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="bonus-tips"&gt;Bonus tips&lt;a class="headerlink" href="#bonus-tips" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here are a few bonus tips about using command line options.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tip #1&lt;/strong&gt;: You can use the &lt;code&gt;debug&lt;/code&gt; command line option to pass to your app's &lt;code&gt;debug&lt;/code&gt; setting
+instead of hard-coding a value:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;IndexHandler&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="hll"&gt;    &lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Tip #2&lt;/strong&gt;: You can also define an option for your app's port:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;define&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;port&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;888&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Port to listen on&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;listen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can pass a value of the port directly from the command line:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python app.py --port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;9999&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id="what-do-you-think"&gt;What do you think?&lt;a class="headerlink" href="#what-do-you-think" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Did you like this article? Comment below and let me know your opinions.
+If you have any suggestions, better ideas or improvements, I'd love to know them.&lt;/p&gt;</content><category term="python"></category><category term="tornado"></category></entry><entry><title>django admin - A better, user-friendly ArrayField widget</title><link href="https://bhch.github.io/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/" rel="alternate"></link><published>2021-11-07T00:00:00+05:30</published><updated>2021-11-07T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2021-11-07:/posts/2021/11/django-admin-a-better-user-friendly-arrayfield-widget/</id><summary type="html">&lt;p&gt;How to set up a better, dynamic, user-friendly ArrayField widget in django admin&lt;/p&gt;</summary><content type="html">&lt;h1 id="the-problem"&gt;The problem&lt;a class="headerlink" href="#the-problem" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;The current &lt;code&gt;ArrayField&lt;/code&gt; input in Django admin displays a single input box.
 You're supposed to use a comma to separate the values. This is anything except
 user-friendly.&lt;/p&gt;

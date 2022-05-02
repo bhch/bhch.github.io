@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to set up Sentry for Tornado applications - Bharat Chauhan</title>
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="https://bhch.github.io/theme/css/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="https://bhch.github.io/theme/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600|IBM+Plex+Sans:500|IBM+Plex+Mono:400" rel="stylesheet">
+
+    <link rel="shortcut icon" href="https://bhch.github.io/favicon.png">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4" 
+    >
+        <div class="header">
+            <img class="author-avatar" src="https://bhch.github.io/images/tyler.jpg">
+            <h3 class="brand-title">
+                <a href="https://bhch.github.io">
+                    Bharat Chauhan
+                </a>
+            </h3>
+            <p class="brand-tagline">A semi-regular technical blog where I post tutorials or                 write about new things I learn.</p>
+            <button id="hamburger" class="hamburger hamburger--squeeze" type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+            <div id="sidebar-menu" class="sidebar-menu">
+                <p><a href="/">home</a></p>
+                <p><a href="/about/">about</a></p>
+                <p><a href="/archive/">archive</a></p>
+                <p><a href="http://github.com/bhch/">github</a></p>
+                <p><a href="/feeds/atom.xml">atom</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div class="pure-u-1 pure-u-md-5-6 post-container">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+
+<section class="post">
+    <header class="post-header">
+
+        <h1 class="post-title">How to set up Sentry for Tornado applications</h1>
+<p class="post-meta">
+    Mon 02 May 2022
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/tornado/" class="tag">tornado</a>
+        </span>
+</p>
+    </header>
+
+    <div class="post-description">
+        <p>In this article, I'll show you how I set up Sentry for my Tornado projects.</p>
+<p>Please <strong>install Sentry</strong> before proceeding.</p>
+<h2 id="basic-setup">Basic setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h2>
+<p>This is a basic setup for quickly testing things out to ensure it works as expected.</p>
+<p>However, ideally you will not want to run Sentry while you're developing your app
+in debug mode. <a href="#setup-for-production-mode">See the next for <strong>running Sentry in production mode</strong></a>.</p>
+<p>The code is full of comments which will, hopefully, explain things.</p>
+<div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+
+<span class="k">def</span> <span class="nf">setup_sentry</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Function for setting up sentry.</span>
+
+<span class="sd">    We keep all the sentry related imports local to this function</span>
+<span class="sd">    so that they are only imported when we actually want to set up</span>
+<span class="sd">    sentry such as in production mode.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">sentry_sdk</span>
+    <span class="kn">from</span> <span class="nn">sentry_sdk.integrations.tornado</span> <span class="kn">import</span> <span class="n">TornadoIntegration</span>
+
+    <span class="n">sentry_sdk</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+        <span class="n">dsn</span><span class="o">=</span><span class="n">secret_settings</span><span class="o">.</span><span class="n">SENTRY_DSN</span><span class="p">,</span>
+        <span class="n">integrations</span><span class="o">=</span><span class="p">[</span><span class="n">TornadoIntegration</span><span class="p">()],</span>
+        <span class="n">ignore_errors</span><span class="o">=</span><span class="p">[</span><span class="ne">KeyboardInterrupt</span><span class="p">],</span> <span class="c1"># don&#39;t report KeyboardInterrupt error </span>
+                                           <span class="c1"># (raised when stopping server with Ctrl+C)</span>
+        <span class="n">traces_sample_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="c1"># turn off performance monitoring</span>
+                              <span class="c1"># set this option per your needs</span>
+        <span class="n">send_default_pii</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># include personally identifiable information</span>
+                               <span class="c1"># set this option per your needs</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">setup_sentry</span><span class="p">()</span>
+
+    <span class="c1"># ...</span>
+    <span class="c1"># rest of the code for running the app remains the same</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># app.listen(888)</span>
+    <span class="c1"># ioloop.IOLoop.current().start()</span>
+</pre></div>
+
+
+<p>Sentry has a lot more options for error reporting. You should go through their
+docs to learn about them and configure them as per your project's requirements.</p>
+<h2 id="setup-for-production-mode">Setup for production mode<a class="headerlink" href="#setup-for-production-mode" title="Permanent link">&para;</a></h2>
+<p>Ideally, you only want to run Sentry in production mode.</p>
+<p>Tornado comes with a command line utility which can be used to create custom
+command line options for your application.</p>
+<p>We'll define a <code>debug</code> option for our app. When this <code>debug</code> option is <code>True</code>
+(that means not in production mode), we will not set up Sentry.</p>
+<p>When <code>debug</code> is <code>False</code> (that means running in production mode), we will set up Sentry.</p>
+<div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+
+<span class="kn">from</span> <span class="nn">tornado</span> <span class="kn">import</span> <span class="n">options</span>
+
+<span class="c1"># Define command line options</span>
+<span class="n">options</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Debug mode&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">setup_sentry</span><span class="p">():</span>
+    <span class="o">...</span>
+    <span class="c1"># same as in previous example</span>
+    <span class="o">...</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">parse_command_line</span><span class="p">()</span> <span class="c1"># parse command line options</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">debug</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">setup_sentry</span><span class="p">()</span>
+
+    <span class="c1"># ...</span>
+</pre></div>
+
+
+<p>Now to run your app in production mode, all you have to do is pass the <code>debug</code> option
+in the command:</p>
+<div class="highlight"><pre><span></span>$ python app.py --debug<span class="o">=</span>False
+</pre></div>
+
+
+<h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
+<p>Apart from automatic error reporting, you can also use Tornado's built-in loggers
+to log custom messages. Sentry will pick these up too and notify you as they happen.</p>
+<p>You can do it like this:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tornado.log</span> <span class="kn">import</span> <span class="n">app_log</span>
+
+<span class="n">app_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Something bad happened&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="mi">1</span><span class="o">/</span><span class="mi">0</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">app_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Exception happened&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="bonus-tips">Bonus tips<a class="headerlink" href="#bonus-tips" title="Permanent link">&para;</a></h2>
+<p>Here are a few bonus tips about using command line options.</p>
+<p><strong>Tip #1</strong>: You can use the <code>debug</code> command line option to pass to your app's <code>debug</code> setting
+instead of hard-coding a value:</p>
+<div class="highlight"><pre><span></span><span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">IndexHandler</span><span class="p">,</span>
+    <span class="o">...</span>
+<span class="hll">    <span class="n">debug</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>Tip #2</strong>: You can also define an option for your app's port:</p>
+<div class="highlight"><pre><span></span><span class="n">options</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">888</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Port to listen on&#39;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="o">...</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div>
+
+
+<p>Then you can pass a value of the port directly from the command line:</p>
+<div class="highlight"><pre><span></span>$ python app.py --port<span class="o">=</span><span class="m">9999</span>
+</pre></div>
+
+
+<h2 id="what-do-you-think">What do you think?<a class="headerlink" href="#what-do-you-think" title="Permanent link">&para;</a></h2>
+<p>Did you like this article? Comment below and let me know your opinions.
+If you have any suggestions, better ideas or improvements, I'd love to know them.</p>
+    </div>
+    
+</section>
+
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2022/05/how-to-set-up-sentry-for-tornado-applications/';
+        var disqus_url = 'https://bhch.github.io/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+            </div>
+
+<div class="footer">
+    <p>
+        &copy; 
+        <!-- Use JS to render year of copyright-->
+        <script>document.write(new Date().getFullYear())</script>
+
+                <!-- plain text -->
+                Bharat Chauhan
+
+                <!-- middot spacer-->
+                &nbsp;&middot;&nbsp;
+
+
+
+                <!-- plain text -->
+                content available under
+
+
+
+                <!-- link -->
+                <a href="https://creativecommons.org/licenses/by/4.0/">cc-by-4.0</a>
+
+            <!-- middot spacer-->
+            &nbsp;&middot;&nbsp;
+
+            powered by <a href="http://blog.getpelican.com">Pelican</a> and 
+            <a href="https://github.com/bhch/beak/">beak</a>
+    </p>
+</div>        </div>
+    </div>
+</div>
+<script>
+// Sidebar Hamburger Menu
+var hamburger = document.getElementById("hamburger");
+var menu = document.getElementById("sidebar-menu");
+
+hamburger.addEventListener("click", function() {
+    // Toggle class "is-active"
+    if (hamburger.className == "hamburger hamburger--squeeze") {
+        hamburger.className = "hamburger hamburger--squeeze is-active";
+    } else {
+        hamburger.className = "hamburger hamburger--squeeze";
+    }
+    // Do something else, like open/close menu
+    if (menu.className == "sidebar-menu") {
+        menu.className = "sidebar-menu open";
+    } else {
+        menu.className = "sidebar-menu";
+    }
+});
+</script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-94030773-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
