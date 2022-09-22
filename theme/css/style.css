@@ -518,7 +518,7 @@ hr {
 }
 
 /* Hide disqus ads */
-#disqus_thread > iframe:first-child:not(:last-child) {
+#disqus_thread :not(iframe[src^="https://disqus.com/embed/comments/"]) {
     display: none;
 }
 
