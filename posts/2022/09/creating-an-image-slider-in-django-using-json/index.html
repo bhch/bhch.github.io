@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tags - Bharat Chauhan</title>
+    <title>Creating an image slider in Django using JSON - Bharat Chauhan</title>
     <link rel="stylesheet" href="https://bhch.github.io/theme/css/pure-min.css">
     <!--[if lte IE 8]>
       
@@ -51,35 +51,65 @@
         <div class="pure-u-1 pure-u-md-5-6 post-container">
             <!-- A wrapper for all the blog posts -->
             <div class="posts">
+
 <section class="post">
     <header class="post-header">
-        <h1 class="post-title">Tags</h1>
+
+        <h1 class="post-title">Creating an image slider in Django using JSON</h1>
+<p class="post-meta">
+    Thu 22 September 2022
+
+        <strong>&nbsp; &middot; &nbsp;</strong> 
+        <a href="https://bhch.github.io/category/programming/" class="faded-link" >Programming</a>
+        <strong>&nbsp; &middot; &nbsp;</strong>
+        <span class="tags">
+                <a href="https://bhch.github.io/tag/python/" class="tag">python</a>
+                <a href="https://bhch.github.io/tag/django/" class="tag">django</a>
+        </span>
+</p>
     </header>
 
     <div class="post-description">
-        <p class="tags">
-            <a href="https://bhch.github.io/tag/async/">async <span>1</span></a>
-            <a href="https://bhch.github.io/tag/css/">css <span>1</span></a>
-            <a href="https://bhch.github.io/tag/django/">django <span>6</span></a>
-            <a href="https://bhch.github.io/tag/haystack/">haystack <span>1</span></a>
-            <a href="https://bhch.github.io/tag/html/">html <span>1</span></a>
-            <a href="https://bhch.github.io/tag/http/">http <span>1</span></a>
-            <a href="https://bhch.github.io/tag/interactjs/">interactjs <span>1</span></a>
-            <a href="https://bhch.github.io/tag/javascript/">javascript <span>1</span></a>
-            <a href="https://bhch.github.io/tag/mock/">mock <span>2</span></a>
-            <a href="https://bhch.github.io/tag/pip/">pip <span>1</span></a>
-            <a href="https://bhch.github.io/tag/python/">python <span>14</span></a>
-            <a href="https://bhch.github.io/tag/react/">react <span>1</span></a>
-            <a href="https://bhch.github.io/tag/react-router/">react-router <span>1</span></a>
-            <a href="https://bhch.github.io/tag/requests/">requests <span>1</span></a>
-            <a href="https://bhch.github.io/tag/server/">server <span>1</span></a>
-            <a href="https://bhch.github.io/tag/tornado/">tornado <span>4</span></a>
-            <a href="https://bhch.github.io/tag/unittest/">unittest <span>2</span></a>
-            <a href="https://bhch.github.io/tag/urllib/">urllib <span>1</span></a>
-        </p>
+        <p>JSON is a great choice for storing and retrieving data which does not require
+querying and filtering. In such cases JSON might offer better performance than
+separate columns and foreignkeys.</p>
+<p>One such use case is image sliders.</p>
+<p>The traditional method to implement an image slider in Django is to create two
+models—<code>Slider</code> and <code>Slide</code>. The <code>Slide</code> model will have a <code>ForeignKey</code> to the
+<code>Slider</code> model so that one slider can have many slides.</p>
+<p>However, our use case will never require querying individual slides from the database.</p>
+<p>We'll always select a <code>Slider</code> object from the database and then loop over its
+related slides.</p>
+<p>Thus, We can ditch the foreignkey and keep the slides in a JSON array in the same
+<code>Slider</code> model.</p>
+<p>This will give us slightly better performance.</p>
+<h2 id="demo-app">Demo app<a class="headerlink" href="#demo-app" title="Permanent link">&para;</a></h2>
+<p><strong>Github repo: <a href="http://github.com/bhch/json-slider-demo">http://github.com/bhch/json-slider-demo</a></strong>.</p>
+<p>Download the demo app, install it and test it out.</p>
+<p>The repo contains usage instructions. You can modify it as per your needs.</p>
+<p>The demo app utilizes <a href="https://github.com/bhch/django-jsonform">django-jsonform</a> library to create a nice, user-friendly
+form for editing the JSON data.</p>
+<h2 id="final-result">Final result<a class="headerlink" href="#final-result" title="Permanent link">&para;</a></h2>
+<p>A short video of the final result:</p>
+<p><a href="https://github.com/bhch/json-slider-demo/issues/1"><img alt="Django dynamic menu using JSON" src="/images/json-slider-thumbnail.png"></a></p>
     </div>
+    
 </section>
 
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'bhch-blog';
+        var disqus_identifier = 'posts/2022/09/creating-an-image-slider-in-django-using-json/';
+        var disqus_url = 'https://bhch.github.io/posts/2022/09/creating-an-image-slider-in-django-using-json/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//bhch-blog.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
             </div>
 
 <div class="footer">

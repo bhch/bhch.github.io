@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2022-05-02T00:00:00+05:30</updated><entry><title>How to set up Sentry for Tornado applications</title><link href="https://bhch.github.io/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/" rel="alternate"></link><published>2022-05-02T00:00:00+05:30</published><updated>2022-05-02T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2022-05-02:/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/</id><summary type="html">&lt;p&gt;A quick guide on setting up Sentry error reporting for Tornado applications.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this article, I'll show you how I set up Sentry for my Tornado projects.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Bharat Chauhan</title><link href="https://bhch.github.io/" rel="alternate"></link><link href="https://bhch.github.io/feeds/atom.xml" rel="self"></link><id>https://bhch.github.io/</id><updated>2022-09-22T00:00:00+05:30</updated><entry><title>Creating an image slider in Django using JSON</title><link href="https://bhch.github.io/posts/2022/09/creating-an-image-slider-in-django-using-json/" rel="alternate"></link><published>2022-09-22T00:00:00+05:30</published><updated>2022-09-22T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2022-09-22:/posts/2022/09/creating-an-image-slider-in-django-using-json/</id><summary type="html">&lt;p&gt;How to implement an image slider using JSON in Django&lt;/p&gt;</summary><content type="html">&lt;p&gt;JSON is a great choice for storing and retrieving data which does not require
+querying and filtering. In such cases JSON might offer better performance than
+separate columns and foreignkeys.&lt;/p&gt;
+&lt;p&gt;One such use case is image sliders.&lt;/p&gt;
+&lt;p&gt;The traditional method to implement an image slider in Django is to create two
+models—&lt;code&gt;Slider&lt;/code&gt; and &lt;code&gt;Slide&lt;/code&gt;. The &lt;code&gt;Slide&lt;/code&gt; model will have a &lt;code&gt;ForeignKey&lt;/code&gt; to the
+&lt;code&gt;Slider&lt;/code&gt; model so that one slider can have many slides.&lt;/p&gt;
+&lt;p&gt;However, our use case will never require querying individual slides from the database.&lt;/p&gt;
+&lt;p&gt;We'll always select a &lt;code&gt;Slider&lt;/code&gt; object from the database and then loop over its
+related slides.&lt;/p&gt;
+&lt;p&gt;Thus, We can ditch the foreignkey and keep the slides in a JSON array in the same
+&lt;code&gt;Slider&lt;/code&gt; model.&lt;/p&gt;
+&lt;p&gt;This will give us slightly better performance.&lt;/p&gt;
+&lt;h2 id="demo-app"&gt;Demo app&lt;a class="headerlink" href="#demo-app" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Github repo: &lt;a href="http://github.com/bhch/json-slider-demo"&gt;http://github.com/bhch/json-slider-demo&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Download the demo app, install it and test it out.&lt;/p&gt;
+&lt;p&gt;The repo contains usage instructions. You can modify it as per your needs.&lt;/p&gt;
+&lt;p&gt;The demo app utilizes &lt;a href="https://github.com/bhch/django-jsonform"&gt;django-jsonform&lt;/a&gt; library to create a nice, user-friendly
+form for editing the JSON data.&lt;/p&gt;
+&lt;h2 id="final-result"&gt;Final result&lt;a class="headerlink" href="#final-result" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;A short video of the final result:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/bhch/json-slider-demo/issues/1"&gt;&lt;img alt="Django dynamic menu using JSON" src="/images/json-slider-thumbnail.png"&gt;&lt;/a&gt;&lt;/p&gt;</content><category term="python"></category><category term="django"></category></entry><entry><title>How to set up Sentry for Tornado applications</title><link href="https://bhch.github.io/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/" rel="alternate"></link><published>2022-05-02T00:00:00+05:30</published><updated>2022-05-02T00:00:00+05:30</updated><author><name>Bharat Chauhan</name></author><id>tag:bhch.github.io,2022-05-02:/posts/2022/05/how-to-set-up-sentry-for-tornado-applications/</id><summary type="html">&lt;p&gt;A quick guide on setting up Sentry error reporting for Tornado applications.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this article, I'll show you how I set up Sentry for my Tornado projects.&lt;/p&gt;
 &lt;p&gt;Please &lt;strong&gt;install Sentry&lt;/strong&gt; before proceeding.&lt;/p&gt;
 &lt;h2 id="basic-setup"&gt;Basic setup&lt;a class="headerlink" href="#basic-setup" title="Permanent link"&gt;&amp;para;&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;This is a basic setup for quickly testing things out to ensure it works as expected.&lt;/p&gt;
