@@ -40,7 +40,7 @@ in debug mode. &lt;a href="#setup-for-production-mode"&gt;See the next for &lt;s
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sentry_sdk.integrations.tornado&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TornadoIntegration&lt;/span&gt;
 
     &lt;span class="n"&gt;sentry_sdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;dsn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;secret_settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SENTRY_DSN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;dsn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;your-sentry-dsn&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
         &lt;span class="n"&gt;integrations&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;TornadoIntegration&lt;/span&gt;&lt;span class="p"&gt;()],&lt;/span&gt;
         &lt;span class="n"&gt;ignore_errors&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ne"&gt;KeyboardInterrupt&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="c1"&gt;# don&amp;#39;t report KeyboardInterrupt error &lt;/span&gt;
                                            &lt;span class="c1"&gt;# (raised when stopping server with Ctrl+C)&lt;/span&gt;
